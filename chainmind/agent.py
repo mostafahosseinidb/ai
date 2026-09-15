@@ -21,12 +21,17 @@ all live in state the agent cannot write to.
 
 from __future__ import annotations
 
+import json
+import tempfile
 from contextlib import contextmanager
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Iterable, Iterator, Mapping, Protocol, Sequence
 
 from .chain import Chain
 from .crypto import SigningKey, canonical_bytes, sha256_hex
+from .executors import Executor, InProcessExecutor
+from .sandbox import KERNEL_MEASURED
 from .mempool import Mempool
 from .meter import UsageRecord
 from .resources import PriceTable, ResourceKind, format_credits
@@ -246,16 +251,20 @@ class BudgetAwarePlanner:
 class AgentKernel:
     def __init__(self, key: SigningKey, ledger: Ledger, *, tools: ToolRegistry | None = None,
                  label: str = "", planner: Planner | None = None,
-                 halt_on_unsettled: bool = True) -> None:
+                 halt_on_unsettled: bool = True, executor: Executor | None = None,
+                 memory_path: Path | str | None = None) -> None:
         self.key = key
         self.ledger = ledger
         self.tools = tools if tools is not None else default_registry()
         self.label = label
         self.planner = planner or BudgetAwarePlanner()
         self.halt_on_unsettled = halt_on_unsettled
-        self.memory: dict[str, Any] = {}
+        #: Swap in a SandboxExecutor to have the kernel measure CPU time from
+        #: outside the tool rather than take the tool's word for it.
+        self.executor = executor or InProcessExecutor()
         self.journal: list[ActionOutcome] = []
         self._halted_reason: str | None = None
+        self._memory_path = Path(memory_path) if memory_path is not None else None
 
     # -- identity ----------------------------------------------------------
 
@@ -270,6 +279,29 @@ class AgentKernel:
     @property
     def halted(self) -> bool:
         return self._halted_reason is not None
+
+    @property
+    def memory_path(self) -> Path:
+        """Where the agent's notes live, created on first use.
+
+        Memory is a file rather than a dict so that the same tools work
+        whether they run in this process or in a sandboxed child, and so
+        that anything billed as storage really does reach storage.
+        """
+        if self._memory_path is None:
+            self._memory_path = Path(tempfile.mkdtemp(prefix="chainmind-")) / "memory.json"
+        return self._memory_path
+
+    @property
+    def memory(self) -> dict[str, Any]:
+        path = self._memory_path
+        if path is None or not path.exists():
+            return {}
+        try:
+            notes = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return {}
+        return notes if isinstance(notes, dict) else {}
 
     def register(self, metadata: Mapping[str, Any] | None = None) -> Transaction | None:
         """Announce this identity on chain.  A no-op if already registered.
@@ -334,7 +366,7 @@ class AgentKernel:
             self.journal.append(outcome)
             return outcome
 
-        result = tool.invoke(**kwargs)
+        result = self.executor.run(tool, kwargs, compute_budget_ms=self.compute_budget_ms())
         outcome = ActionOutcome(
             tool=tool_name,
             authorised=True,
@@ -349,9 +381,22 @@ class AgentKernel:
         self.journal.append(outcome)
         return outcome
 
+    def compute_budget_ms(self) -> int:
+        """CPU milliseconds the chain currently says this agent can pay for.
+
+        A sandboxing executor turns this into a hard ``RLIMIT_CPU``, which is
+        the moment a credit balance stops being an accounting entry and
+        becomes something the kernel enforces.
+        """
+        return self.ledger.state.affordable_units(self.address, ResourceKind.COMPUTE_MS)
+
     def _settle(self, outcome: ActionOutcome, result: ToolResult) -> None:
         """Write the measured usage to the chain, one transaction per resource."""
         evidence = result.usage.digest
+        # The executor says how it measured; only resources the kernel can
+        # actually observe are recorded as kernel-measured, so a sandboxed run
+        # does not launder a tool's self-reported token counts into "verified".
+        out_of_process = result.usage.context.get("measurement") == "out-of-process"
         submitted: list[Transaction] = []
         with _batched(self.ledger):
             for kind, amount in result.usage.items():
@@ -365,6 +410,11 @@ class AgentKernel:
                     evidence=evidence,
                     tool=result.tool,
                     note=result.error[:256] if not result.ok else "",
+                    measured=(
+                        "kernel"
+                        if out_of_process and ResourceKind.parse(kind) in KERNEL_MEASURED
+                        else "declared"
+                    ),
                 )
                 try:
                     self.ledger.submit(tx)
@@ -457,7 +507,7 @@ class AgentKernel:
                 break
             kwargs = dict(step.kwargs)
             if step.tool == "remember":
-                kwargs.setdefault("store", self.memory)
+                kwargs.setdefault("store", str(self.memory_path))
             outcome = self.perform(step.tool, **kwargs)
             outcomes.append(outcome)
             if outcome.refused:

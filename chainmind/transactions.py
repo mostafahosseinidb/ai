@@ -21,6 +21,7 @@ from .crypto import SigningKey, canonical_bytes, sha256_hex, verify_signature
 from .resources import ResourceKind
 
 __all__ = [
+    "MEASUREMENT_SOURCES",
     "TxType",
     "Transaction",
     "InvalidTransaction",
@@ -218,10 +219,21 @@ def _validate_grant(body: dict[str, Any]) -> None:
     _require_text(body.get("memo", ""), "memo")
 
 
+#: How a usage figure was obtained.  ``kernel`` means an operating system
+#: measured it from outside the code being billed; ``declared`` means the tool
+#: reported its own consumption and is believed.  An auditor reading the chain
+#: should be able to tell these apart without trusting a side channel.
+MEASUREMENT_SOURCES = frozenset({"declared", "kernel"})
+
+
 def _validate_usage(body: dict[str, Any]) -> None:
     _require(
-        set(body) <= {"resource", "amount", "evidence", "tool", "note"},
+        set(body) <= {"resource", "amount", "evidence", "tool", "note", "measured"},
         "unexpected fields in usage body",
+    )
+    _require(
+        body.get("measured", "declared") in MEASUREMENT_SOURCES,
+        f"measured must be one of {sorted(MEASUREMENT_SOURCES)}",
     )
     try:
         ResourceKind.parse(body.get("resource", ""))
@@ -303,12 +315,13 @@ def build_grant(key: SigningKey, nonce: int, *, beneficiary: str, amount: int,
 
 
 def build_usage(key: SigningKey, nonce: int, *, resource: ResourceKind | str, amount: int,
-                evidence: str, tool: str = "", note: str = "",
+                evidence: str, tool: str = "", note: str = "", measured: str = "declared",
                 timestamp: int | None = None) -> Transaction:
     kind = ResourceKind.parse(resource.value if isinstance(resource, ResourceKind) else resource)
     return _build(
         key, TxType.USAGE, nonce,
-        {"resource": kind.value, "amount": amount, "evidence": evidence, "tool": tool, "note": note},
+        {"resource": kind.value, "amount": amount, "evidence": evidence, "tool": tool,
+         "note": note, "measured": measured},
         timestamp,
     )
 

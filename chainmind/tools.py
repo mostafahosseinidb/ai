@@ -8,13 +8,16 @@ magnitude, not exactness; what settles on chain is always the measured usage.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Callable, Iterator, Mapping
 
 from .meter import Meter, UsageRecord
 from .resources import ResourceKind
 
-__all__ = ["Tool", "ToolRegistry", "ToolResult", "ToolError", "default_registry"]
+__all__ = ["Tool", "ToolRegistry", "ToolResult", "ToolError", "default_registry",
+           "describe_arguments"]
 
 
 class ToolError(Exception):
@@ -47,7 +50,7 @@ class Tool:
     estimate: Estimator
 
     def invoke(self, **kwargs: Any) -> ToolResult:
-        with Meter(self.name, context={"args": _describe(kwargs)}) as meter:
+        with Meter(self.name, context={"args": describe_arguments(kwargs)}) as meter:
             try:
                 value = self.run(meter, **kwargs)
             except Exception as exc:  # the work is billed even when it fails
@@ -64,7 +67,7 @@ class Tool:
         }
 
 
-def _describe(kwargs: Mapping[str, Any]) -> dict[str, Any]:
+def describe_arguments(kwargs: Mapping[str, Any]) -> dict[str, Any]:
     """A JSON-safe, size-bounded view of the arguments, for the evidence hash."""
     described: dict[str, Any] = {}
     for key, value in kwargs.items():
@@ -141,12 +144,27 @@ def default_registry() -> ToolRegistry:
         "Write a note to durable storage, billed by bytes stored.",
         lambda kw: {ResourceKind.STORAGE_BYTES: len(str(kw.get("text", "")).encode("utf-8"))},
     )
-    def remember(meter: Meter, store: dict, key: str, text: str) -> int:
-        payload = text.encode("utf-8")
-        store[key] = text
-        meter.record(ResourceKind.STORAGE_BYTES, len(payload))
+    def remember(meter: Meter, store: str, key: str, text: str) -> dict[str, Any]:
+        # The bill is in storage bytes, so the bytes really do go to storage.
+        # Writing to a file rather than to a dict in the parent's memory also
+        # makes this tool safe to run in a sandboxed child process, whose
+        # mutations to shared objects would otherwise vanish.
+        path = Path(store)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            notes = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+            if not isinstance(notes, dict):
+                notes = {}
+        except (OSError, json.JSONDecodeError):
+            notes = {}
+        notes[key] = text
+        serialised = json.dumps(notes, ensure_ascii=False, sort_keys=True)
+        path.write_text(serialised, encoding="utf-8")
+
+        written = len(text.encode("utf-8"))
+        meter.record(ResourceKind.STORAGE_BYTES, written)
         meter.note("key", key)
-        return len(payload)
+        return {"key": key, "bytes": written, "store": str(path)}
 
     @registry.add(
         "fetch",

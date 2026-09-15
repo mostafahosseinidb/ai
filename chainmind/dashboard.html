@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ChainMind — دفترکل منابع</title>
+<style>
+  /* Vazirmatn (SIL OFL 1.1) is served from this package, not from a CDN, so
+     the dashboard looks the same on a machine with no internet access.
+     `local()` first means an already-installed copy is preferred over the
+     download. */
+  @font-face {
+    font-family: "Vazirmatn";
+    src: local("Vazirmatn"), url("/fonts/Vazirmatn-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Vazirmatn";
+    src: local("Vazirmatn SemiBold"), url("/fonts/Vazirmatn-SemiBold.woff2") format("woff2");
+    font-weight: 600 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --font-ui: "Vazirmatn", system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+    color-scheme: light;
+    --plane:        #f9f9f7;
+    --surface:      #fcfcfb;
+    --ink:          #0b0b0b;
+    --ink-2:        #52514e;
+    --muted:        #898781;
+    --grid:         #e1e0d9;
+    --axis:         #c3c2b7;
+    --border:       rgba(11,11,11,0.10);
+    --kernel:       #2a78d6;
+    --declared:     #eb6834;
+    --good:         #0ca30c;
+    --warning:      #fab219;
+    --critical:     #d03b3b;
+    --radius:       10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --plane:    #0d0d0d;
+      --surface:  #1a1a19;
+      --ink:      #ffffff;
+      --ink-2:    #c3c2b7;
+      --muted:    #898781;
+      --grid:     #2c2c2a;
+      --axis:     #383835;
+      --border:   rgba(255,255,255,0.10);
+      --kernel:   #3987e5;
+      --declared: #d95926;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --plane:    #0d0d0d;
+    --surface:  #1a1a19;
+    --ink:      #ffffff;
+    --ink-2:    #c3c2b7;
+    --muted:    #898781;
+    --grid:     #2c2c2a;
+    --axis:     #383835;
+    --border:   rgba(255,255,255,0.10);
+    --kernel:   #3987e5;
+    --declared: #d95926;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 20px 16px 48px;
+    background: var(--plane);
+    color: var(--ink);
+    font: 14px/1.75 var(--font-ui);
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  header.top {
+    display: flex; flex-wrap: wrap; gap: 12px 20px;
+    align-items: baseline; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  h1 { font-size: 19px; margin: 0; font-weight: 650; letter-spacing: -0.01em; }
+  h1 .chainid { color: var(--ink-2); font-weight: 400; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  button {
+    font: inherit; font-size: 13px; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 5px 11px; cursor: pointer;
+  }
+  button:hover { border-color: var(--axis); }
+  button[aria-pressed="true"] { background: var(--kernel); border-color: var(--kernel); color: #fff; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px; margin-bottom: 14px;
+  }
+  .card > h2 {
+    font-size: 13px; font-weight: 600; margin: 0 0 2px; letter-spacing: 0.01em;
+  }
+  .card > p.sub { font-size: 12px; color: var(--muted); margin: 0 0 14px; }
+
+  /* ---- stat tiles ---- */
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 14px; }
+  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+  .tile .label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .tile .value { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; direction: ltr; text-align: right; }
+  .tile .value.hero { font-size: 30px; }
+  .tile .note { font-size: 11.5px; color: var(--ink-2); margin-top: 3px; }
+
+  /* ---- charts ---- */
+  .chart { width: 100%; overflow-x: auto; }
+  /* The page is RTL, but SVG's text-anchor follows the inherited direction,
+     which flips `end` to mean "left" and throws every label out of frame.
+     The charts lay themselves out right-to-left by coordinate instead. */
+  svg { display: block; max-width: 100%; direction: ltr; }
+  svg text { font: 11.5px var(--font-ui); fill: var(--muted); }
+  svg text.val { fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+  svg text.name { fill: var(--ink); }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 12px; font-size: 12px; color: var(--ink-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  /* ---- tables ---- */
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 500; font-size: 11.5px; }
+  td.num { font-variant-numeric: tabular-nums; direction: ltr; }
+  td.mono, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; direction: ltr; }
+  .scroll { max-height: 340px; overflow: auto; }
+
+  .pill { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border); color: var(--ink-2); }
+  .pill.kernel { color: var(--kernel); border-color: color-mix(in srgb, var(--kernel) 40%, transparent); }
+  .pill.declared { color: var(--declared); border-color: color-mix(in srgb, var(--declared) 40%, transparent); }
+
+  .event { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--grid); align-items: baseline; }
+  .event .icon { flex: none; font-size: 13px; width: 16px; text-align: center; }
+  .event .body { flex: 1; min-width: 0; }
+  .event .body .t { font-size: 12.5px; color: var(--ink); overflow-wrap: anywhere; }
+  .event .body .m { font-size: 11.5px; color: var(--muted); }
+  .event.refusal .icon { color: var(--warning); }
+  .event.goal .icon { color: var(--kernel); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 800px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .tooltip {
+    position: fixed; pointer-events: none; opacity: 0; transition: opacity .1s;
+    background: var(--surface); color: var(--ink); border: 1px solid var(--axis);
+    border-radius: 8px; padding: 7px 10px; font-size: 12px; z-index: 20;
+    box-shadow: 0 4px 16px rgba(0,0,0,.14); max-width: 260px;
+  }
+  .tooltip b { font-weight: 600; }
+  .tooltip .n { font-variant-numeric: tabular-nums; direction: ltr; display: inline-block; }
+
+  .status { font-size: 12px; color: var(--muted); }
+  .status.ok { color: var(--good); }
+  .status.bad { color: var(--critical); }
+  .empty { color: var(--muted); font-size: 12.5px; padding: 18px 0; text-align: center; }
+  .note-line { font-size: 11.5px; color: var(--muted); margin-top: 10px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>ChainMind <span class="chainid" id="chain-id">…</span></h1>
+    <div class="controls">
+      <span class="status" id="verify-status">—</span>
+      <button id="btn-verify" type="button">بازپخش و اعتبارسنجی</button>
+      <button id="btn-tables" type="button" aria-pressed="false">نمای جدولی</button>
+      <button id="btn-auto" type="button" aria-pressed="true">به‌روزرسانی خودکار</button>
+      <button id="btn-theme" type="button">تم</button>
+    </div>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <section class="card">
+    <h2>تفکیک مصرف بر حسب منبع</h2>
+    <p class="sub">هر میله، اعتبار سوخته‌شده برای آن منبع است. رنگ می‌گوید عدد از کجا آمده.</p>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--kernel)"></i> اندازه‌گیری هسته (قابل اتکا)</span>
+      <span><i class="swatch" style="background:var(--declared)"></i> اظهار ابزار (مورد اعتماد)</span>
+    </div>
+    <div class="chart" id="chart-resources"></div>
+    <div id="table-resources" hidden></div>
+  </section>
+
+  <section class="card">
+    <h2>هزینهٔ تجمعی در طول زنجیره</h2>
+    <p class="sub">مجموع اعتبار سوخته‌شده تا هر ارتفاع بلاک.</p>
+    <div class="chart" id="chart-spend"></div>
+    <div id="table-spend" hidden></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>حساب‌ها</h2>
+      <p class="sub">موجودی و مصرف هر هویت روی زنجیره.</p>
+      <div class="chart" id="chart-accounts"></div>
+      <div id="table-accounts" hidden></div>
+    </section>
+
+    <section class="card">
+      <h2>رویدادها</h2>
+      <p class="sub">هدف‌هایی که عامل اعلام کرده و اقدام‌هایی که زنجیره اجازه نداده.</p>
+      <div class="scroll" id="events"></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>آخرین رکوردهای مصرف</h2>
+    <p class="sub">هر سطر یک تراکنش امضاشده روی زنجیره است.</p>
+    <div class="scroll" id="usage-rows"></div>
+  </section>
+
+  <section class="card">
+    <h2>بلاک‌ها</h2>
+    <p class="sub">جدیدترین بلاک‌ها و تراکنش‌های داخلشان.</p>
+    <div class="scroll" id="blocks"></div>
+  </section>
+
+</div>
+<div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+const SVG_NS = "http://www.w3.org/2000/svg";
+const CREDIT = 1e6;
+
+const RESOURCE_FA = {
+  compute_ms:        "زمان پردازش",
+  llm_input_tokens:  "توکن ورودی مدل",
+  llm_output_tokens: "توکن خروجی مدل",
+  storage_bytes:     "بایت ذخیره‌سازی",
+  network_bytes:     "بایت شبکه",
+  tool_call:         "فراخوانی ابزار",
+};
+const state = { overview: null, usage: null, events: null, blocks: null, tables: false, auto: true };
+
+/* ---------- helpers ---------- */
+const el = (tag, attrs = {}, text) => {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") node.className = v; else node.setAttribute(k, v);
+  }
+  if (text !== undefined) node.textContent = text;
+  return node;
+};
+const svgTitle = (svg, text) => {
+  const node = document.createElementNS(SVG_NS, "title");
+  node.textContent = text;
+  svg.append(node);
+};
+const svgEl = (tag, attrs = {}) => {
+  const node = document.createElementNS(SVG_NS, tag);
+  for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+  return node;
+};
+const credits = (mc) => (mc / CREDIT).toFixed(6);
+const shortCredits = (mc) => {
+  if (mc === 0) return "0";
+  const c = mc / CREDIT;
+  if (c >= 1) return c.toFixed(2);
+  if (c >= 0.001) return c.toFixed(4);
+  return c.toFixed(6);
+};
+const num = (n) => n.toLocaleString("en-US");
+const short = (hex, n = 10) => (hex || "").slice(0, n);
+const resourceName = (key) => RESOURCE_FA[key] || key;
+
+const tooltip = document.getElementById("tooltip");
+function showTip(event, html) {
+  tooltip.innerHTML = html;
+  tooltip.style.opacity = "1";
+  const pad = 14;
+  const rect = tooltip.getBoundingClientRect();
+  let x = event.clientX - rect.width - pad;
+  if (x < 4) x = event.clientX + pad;
+  let y = event.clientY - rect.height - pad;
+  if (y < 4) y = event.clientY + pad;
+  tooltip.style.left = x + "px";
+  tooltip.style.top = y + "px";
+}
+const hideTip = () => { tooltip.style.opacity = "0"; };
+
+/* ---------- KPI tiles ---------- */
+function renderKpis() {
+  const o = state.overview, u = state.usage, e = state.events;
+  if (!o || !u) return;
+  const kernel = u.by_measurement.kernel || 0;
+  const declared = u.by_measurement.declared || 0;
+  const total = kernel + declared;
+  const ratio = total ? Math.round((kernel / total) * 100) : 0;
+
+  const tiles = [
+    { label: "اعتبار سوخته‌شده", value: shortCredits(o.burned_total), hero: true,
+      note: `از ${shortCredits(o.initial_supply)} اعتبار عرضه‌شده` },
+    { label: "در گردش", value: shortCredits(o.circulating),
+      note: `${o.accounts.length} حساب` },
+    { label: "ارتفاع زنجیره", value: num(o.height),
+      note: `دورهٔ ${o.epoch} · هر ${num(o.epoch_length)} بلاک` },
+    { label: "سهم اندازه‌گیری هسته", value: ratio + "٪",
+      note: total ? `${shortCredits(kernel)} از ${shortCredits(total)} اعتبار` : "هنوز مصرفی نیست" },
+    { label: "امتناع‌های ثبت‌شده", value: num(e ? e.refusals : 0),
+      note: "اقدام‌هایی که بودجه یا سهمیه اجازه نداد" },
+  ];
+
+  const root = document.getElementById("kpis");
+  root.replaceChildren(...tiles.map((t) => {
+    const tile = el("div", { class: "tile" });
+    tile.append(el("div", { class: "label" }, t.label));
+    tile.append(el("div", { class: "value" + (t.hero ? " hero" : "") }, t.value));
+    tile.append(el("div", { class: "note" }, t.note));
+    return tile;
+  }));
+}
+
+/* ---------- chart 1: resource breakdown (stacked horizontal bars) ---------- */
+function renderResources() {
+  const u = state.usage;
+  const host = document.getElementById("chart-resources");
+  const entries = Object.entries(u.by_resource).sort((a, b) => b[1].cost - a[1].cost);
+  if (!entries.length) { host.replaceChildren(el("div", { class: "empty" }, "هنوز مصرفی ثبت نشده است.")); return; }
+
+  const rowH = 30, gap = 10, labelW = 150, valueW = 76, top = 6;
+  const width = Math.max(520, host.clientWidth || 520);
+  const plotW = width - labelW - valueW - 8;
+  const height = top + entries.length * (rowH + gap);
+  const max = Math.max(...entries.map(([, v]) => v.cost));
+
+  const svg = svgEl("svg", { width, height, viewBox: `0 0 ${width} ${height}`, role: "img" });
+  svgTitle(svg, "تفکیک اعتبار سوخته‌شده بر حسب منبع");
+
+  entries.forEach(([key, value], i) => {
+    const y = top + i * (rowH + gap);
+    const barH = 16, barY = y + (rowH - barH) / 2;
+    // RTL layout: labels on the right, bars growing leftward from the label gutter.
+    const originX = width - labelW;
+
+    const name = svgEl("text", { x: width - 4, y: barY + 12, "text-anchor": "end", class: "name" });
+    name.textContent = resourceName(key);
+    svg.append(name);
+
+    const full = Math.max(2, (value.cost / max) * plotW);
+    const kernelW = value.cost ? (value.kernel / value.cost) * full : 0;
+    const declaredW = full - kernelW;
+
+    // Declared segment sits at the far end; a 2px gap keeps the two readable.
+    if (declaredW > 0.5) {
+      svg.append(svgEl("rect", {
+        x: originX - full, y: barY, width: Math.max(1, declaredW - (kernelW > 0.5 ? 2 : 0)),
+        height: barH, rx: 4, fill: "var(--declared)",
+      }));
+    }
+    if (kernelW > 0.5) {
+      svg.append(svgEl("rect", {
+        x: originX - kernelW, y: barY, width: Math.max(1, kernelW), height: barH,
+        rx: 4, fill: "var(--kernel)",
+      }));
+    }
+
+    const val = svgEl("text", { x: originX - full - 8, y: barY + 12, "text-anchor": "end", class: "val" });
+    val.textContent = shortCredits(value.cost);
+    svg.append(val);
+
+    const hit = svgEl("rect", { x: 0, y, width, height: rowH, fill: "transparent", style: "cursor:crosshair" });
+    hit.addEventListener("mousemove", (ev) => showTip(ev,
+      `<b>${resourceName(key)}</b><br>` +
+      `مقدار: <span class="n">${num(value.amount)}</span> ${state.overview.resources[key] || ""}<br>` +
+      `هزینه: <span class="n">${credits(value.cost)}</span> اعتبار<br>` +
+      `اندازه‌گیری هسته: <span class="n">${credits(value.kernel)}</span> · ` +
+      `اظهاری: <span class="n">${credits(value.cost - value.kernel)}</span>`));
+    hit.addEventListener("mouseleave", hideTip);
+    svg.append(hit);
+  });
+
+  host.replaceChildren(svg);
+
+  const table = el("table");
+  table.append(rowOf("th", ["منبع", "مقدار", "هزینه (اعتبار)", "اندازه‌گیری هسته"]));
+  entries.forEach(([key, v]) => table.append(rowOf("td",
+    [resourceName(key), num(v.amount), credits(v.cost), credits(v.kernel)], [false, true, true, true])));
+  document.getElementById("table-resources").replaceChildren(table);
+}
+
+/* ---------- chart 2: cumulative spend ---------- */
+function renderSpend() {
+  const series = state.usage.series;
+  const host = document.getElementById("chart-spend");
+  if (series.length < 2) { host.replaceChildren(el("div", { class: "empty" }, "برای رسم نمودار، دست‌کم دو بلاک لازم است.")); return; }
+
+  const width = Math.max(520, host.clientWidth || 520);
+  const height = 220, padT = 12, padB = 28, padL = 16, padR = 64;
+  const plotW = width - padL - padR, plotH = height - padT - padB;
+  const max = Math.max(1, ...series.map((p) => p.cumulative));
+  const lastH = series[series.length - 1].height || 1;
+
+  // RTL: block 0 on the right, newest on the left.
+  const xOf = (h) => width - padR - (h / lastH) * plotW;
+  const yOf = (v) => padT + plotH - (v / max) * plotH;
+
+  const svg = svgEl("svg", { width, height, viewBox: `0 0 ${width} ${height}`, role: "img" });
+  svgTitle(svg, "هزینهٔ تجمعی بر حسب ارتفاع بلاک");
+
+  for (let i = 0; i <= 4; i++) {
+    const v = (max / 4) * i, y = yOf(v);
+    svg.append(svgEl("line", { x1: padL, y1: y, x2: width - padR, y2: y,
+      stroke: i === 0 ? "var(--axis)" : "var(--grid)", "stroke-width": 1 }));
+    const t = svgEl("text", { x: width - padR + 6, y: y + 4, class: "val" });
+    t.textContent = shortCredits(v);
+    svg.append(t);
+  }
+
+  const points = series.map((p) => [xOf(p.height), yOf(p.cumulative)]);
+  const line = points.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const area = `${line} L${points[points.length - 1][0].toFixed(1)},${yOf(0)} L${points[0][0].toFixed(1)},${yOf(0)} Z`;
+
+  svg.append(svgEl("path", { d: area, fill: "var(--kernel)", opacity: "0.10" }));
+  svg.append(svgEl("path", { d: line, fill: "none", stroke: "var(--kernel)", "stroke-width": 2,
+    "stroke-linejoin": "round", "stroke-linecap": "round" }));
+
+  [0, lastH].forEach((h) => {
+    const t = svgEl("text", { x: xOf(h), y: height - 8, "text-anchor": "middle", class: "val" });
+    t.textContent = "#" + h;
+    svg.append(t);
+  });
+
+  const crosshair = svgEl("line", { y1: padT, y2: padT + plotH, stroke: "var(--axis)", "stroke-width": 1, opacity: "0" });
+  const marker = svgEl("circle", { r: 4.5, fill: "var(--kernel)", stroke: "var(--surface)", "stroke-width": 2, opacity: "0" });
+  svg.append(crosshair, marker);
+
+  const surface = svgEl("rect", { x: padL, y: padT, width: plotW + (padR - padL), height: plotH,
+    fill: "transparent", style: "cursor:crosshair" });
+  surface.addEventListener("mousemove", (ev) => {
+    const box = svg.getBoundingClientRect();
+    const x = ev.clientX - box.left;
+    let best = series[0], bestD = Infinity;
+    for (const p of series) {
+      const d = Math.abs(xOf(p.height) - x);
+      if (d < bestD) { bestD = d; best = p; }
+    }
+    const px = xOf(best.height), py = yOf(best.cumulative);
+    crosshair.setAttribute("x1", px); crosshair.setAttribute("x2", px); crosshair.setAttribute("opacity", "1");
+    marker.setAttribute("cx", px); marker.setAttribute("cy", py); marker.setAttribute("opacity", "1");
+    showTip(ev, `<b>بلاک #${best.height}</b><br>` +
+      `تجمعی: <span class="n">${credits(best.cumulative)}</span> اعتبار<br>` +
+      `در این بلاک: <span class="n">${credits(best.spent)}</span>`);
+  });
+  surface.addEventListener("mouseleave", () => {
+    crosshair.setAttribute("opacity", "0"); marker.setAttribute("opacity", "0"); hideTip();
+  });
+  svg.append(surface);
+  host.replaceChildren(svg);
+
+  const table = el("table");
+  table.append(rowOf("th", ["ارتفاع", "هزینهٔ بلاک", "تجمعی"]));
+  series.filter((p) => p.spent > 0).slice(-40).reverse().forEach((p) =>
+    table.append(rowOf("td", ["#" + p.height, credits(p.spent), credits(p.cumulative)], [true, true, true])));
+  document.getElementById("table-spend").replaceChildren(table);
+}
+
+/* ---------- chart 3: account balances ---------- */
+function renderAccounts() {
+  const o = state.overview;
+  const host = document.getElementById("chart-accounts");
+  // The treasury is orders of magnitude larger than any agent's wallet, and
+  // putting them on one scale flattens every agent to an invisible sliver.
+  // The subject here is what the agents hold; the treasury is context, so it
+  // goes in a caption rather than in the bars.
+  const agents = o.accounts.filter((a) => a.role !== "authority");
+  const accounts = (agents.length ? agents : o.accounts).slice()
+    .sort((a, b) => b.balance - a.balance);
+  const treasury = o.accounts
+    .filter((a) => a.role === "authority")
+    .reduce((sum, a) => sum + a.balance, 0);
+  const max = Math.max(1, ...accounts.map((a) => a.balance));
+
+  const rowH = 26, gap = 12, labelW = 120, top = 4;
+  const width = Math.max(320, host.clientWidth || 320);
+  const plotW = Math.max(60, width - labelW - 70);
+  const height = top + accounts.length * (rowH + gap);
+
+  const svg = svgEl("svg", { width, height, viewBox: `0 0 ${width} ${height}`, role: "img" });
+  svgTitle(svg, "موجودی حساب‌ها");
+
+  accounts.forEach((account, i) => {
+    const y = top + i * (rowH + gap), barH = 14, barY = y + 4;
+    const originX = width - labelW;
+    const name = svgEl("text", { x: width - 4, y: barY + 11, "text-anchor": "end", class: "name" });
+    name.textContent = account.label || short(account.address, 8);
+    svg.append(name);
+
+    const w = Math.max(2, (account.balance / max) * plotW);
+    svg.append(svgEl("rect", { x: originX - w, y: barY, width: w, height: barH, rx: 4, fill: "var(--kernel)" }));
+
+    const val = svgEl("text", { x: originX - w - 8, y: barY + 11, "text-anchor": "end", class: "val" });
+    val.textContent = shortCredits(account.balance);
+    svg.append(val);
+
+    const role = svgEl("text", { x: width - 4, y: barY + 25, "text-anchor": "end" });
+    role.textContent = account.role === "authority" ? "مرجع" : account.role === "validator" ? "اعتبارسنج" : "عامل";
+    svg.append(role);
+
+    const hit = svgEl("rect", { x: 0, y, width, height: rowH + gap, fill: "transparent", style: "cursor:crosshair" });
+    hit.addEventListener("mousemove", (ev) => showTip(ev,
+      `<b>${account.label || short(account.address, 12)}</b><br>` +
+      `<span class="mono">${short(account.address, 24)}…</span><br>` +
+      `موجودی: <span class="n">${credits(account.balance)}</span><br>` +
+      `سوزانده: <span class="n">${credits(account.burned)}</span>`));
+    hit.addEventListener("mouseleave", hideTip);
+    svg.append(hit);
+  });
+  const caption = el("div", { class: "note-line" },
+    `خزانهٔ مرجع: ${shortCredits(treasury)} اعتبار (خارج از مقیاس نمودار)`);
+  host.replaceChildren(svg, caption);
+
+  const table = el("table");
+  table.append(rowOf("th", ["برچسب", "نقش", "موجودی", "سوزانده"]));
+  o.accounts.forEach((a) => table.append(rowOf("td",
+    [a.label || short(a.address, 10), a.role, credits(a.balance), credits(a.burned)],
+    [false, false, true, true])));
+  document.getElementById("table-accounts").replaceChildren(table);
+}
+
+/* ---------- lists ---------- */
+function rowOf(cell, values, numeric = []) {
+  const tr = el("tr");
+  values.forEach((v, i) => {
+    const node = el(cell, numeric[i] ? { class: "num" } : {}, String(v));
+    tr.append(node);
+  });
+  return tr;
+}
+
+function renderEvents() {
+  const host = document.getElementById("events");
+  const events = state.events.events;
+  if (!events.length) { host.replaceChildren(el("div", { class: "empty" }, "هنوز رویدادی ثبت نشده.")); return; }
+  host.replaceChildren(...events.map((event) => {
+    const refusal = event.topic === "budget-refusal";
+    const node = el("div", { class: "event " + (refusal ? "refusal" : "goal") });
+    node.append(el("div", { class: "icon" }, refusal ? "⚠" : "◆"));
+    const body = el("div", { class: "body" });
+    body.append(el("div", { class: "t" }, event.summary || event.topic));
+    body.append(el("div", { class: "m" },
+      `${refusal ? "امتناع" : "هدف"} · بلاک #${event.height} · ${short(event.agent, 10)}`));
+    node.append(body);
+    return node;
+  }));
+}
+
+function renderUsageRows() {
+  const host = document.getElementById("usage-rows");
+  const rows = state.usage.rows.slice().reverse();
+  if (!rows.length) { host.replaceChildren(el("div", { class: "empty" }, "هنوز رکورد مصرفی نیست.")); return; }
+  const table = el("table");
+  table.append(rowOf("th", ["بلاک", "منبع", "مقدار", "هزینه", "ابزار", "اندازه‌گیری", "شناسه"]));
+  rows.forEach((row) => {
+    const tr = el("tr");
+    tr.append(el("td", { class: "num" }, "#" + row.height));
+    tr.append(el("td", {}, resourceName(row.resource)));
+    tr.append(el("td", { class: "num" }, num(row.amount)));
+    tr.append(el("td", { class: "num" }, credits(row.cost)));
+    tr.append(el("td", {}, row.tool || "—"));
+    const badge = el("td");
+    badge.append(el("span", { class: "pill " + row.measured },
+      row.measured === "kernel" ? "هسته" : "اظهاری"));
+    tr.append(badge);
+    tr.append(el("td", { class: "mono" }, short(row.txid, 12)));
+    table.append(tr);
+  });
+  host.replaceChildren(table);
+}
+
+function renderBlocks() {
+  const host = document.getElementById("blocks");
+  const table = el("table");
+  table.append(rowOf("th", ["ارتفاع", "هش", "تراکنش‌ها", "ریشهٔ حالت"]));
+  state.blocks.blocks.forEach((block) => {
+    const tr = el("tr");
+    tr.append(el("td", { class: "num" }, "#" + block.height));
+    tr.append(el("td", { class: "mono" }, short(block.hash, 14)));
+    const kinds = {};
+    block.transactions.forEach((tx) => { kinds[tx.type] = (kinds[tx.type] || 0) + 1; });
+    const summary = Object.entries(kinds).map(([k, n]) => `${k}×${n}`).join("، ") || "—";
+    tr.append(el("td", {}, summary));
+    tr.append(el("td", { class: "mono" }, short(block.state_root, 14)));
+    table.append(tr);
+  });
+  host.replaceChildren(table);
+}
+
+/* ---------- data ---------- */
+async function fetchJson(path) {
+  const response = await fetch(path, { cache: "no-store" });
+  if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || response.statusText);
+  return response.json();
+}
+
+async function refresh() {
+  try {
+    const [overview, usage, events, blocks] = await Promise.all([
+      fetchJson("/api/overview"), fetchJson("/api/usage"),
+      fetchJson("/api/events"), fetchJson("/api/blocks?limit=40"),
+    ]);
+    Object.assign(state, { overview, usage, events, blocks });
+    document.getElementById("chain-id").textContent =
+      `${overview.chain_id} · ${overview.consensus.name.toUpperCase()}`;
+    renderKpis(); renderResources(); renderSpend(); renderAccounts();
+    renderEvents(); renderUsageRows(); renderBlocks();
+  } catch (error) {
+    const status = document.getElementById("verify-status");
+    status.textContent = "خطا: " + error.message;
+    status.className = "status bad";
+  }
+}
+
+/* ---------- controls ---------- */
+document.getElementById("btn-verify").addEventListener("click", async () => {
+  const status = document.getElementById("verify-status");
+  status.textContent = "در حال بازپخش…"; status.className = "status";
+  try {
+    const result = await fetchJson("/api/verify");
+    status.textContent = result.valid
+      ? `✓ معتبر · ${result.blocks} بلاک · ریشهٔ حالت ${short(result.state_root, 10)}…`
+      : "✗ نامعتبر: " + result.error;
+    status.className = "status " + (result.valid ? "ok" : "bad");
+  } catch (error) {
+    status.textContent = "✗ " + error.message; status.className = "status bad";
+  }
+});
+
+document.getElementById("btn-tables").addEventListener("click", (ev) => {
+  state.tables = !state.tables;
+  ev.currentTarget.setAttribute("aria-pressed", String(state.tables));
+  ["resources", "spend", "accounts"].forEach((name) => {
+    document.getElementById("chart-" + name).hidden = state.tables;
+    document.getElementById("table-" + name).hidden = !state.tables;
+  });
+});
+
+let timer = setInterval(refresh, 4000);
+document.getElementById("btn-auto").addEventListener("click", (ev) => {
+  state.auto = !state.auto;
+  ev.currentTarget.setAttribute("aria-pressed", String(state.auto));
+  clearInterval(timer);
+  if (state.auto) timer = setInterval(refresh, 4000);
+});
+
+document.getElementById("btn-theme").addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme");
+  const next = current === "dark" ? "light" : current === "light" ? null : "dark";
+  if (next) document.documentElement.setAttribute("data-theme", next);
+  else document.documentElement.removeAttribute("data-theme");
+  refresh();
+});
+
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (state.overview) { renderResources(); renderSpend(); renderAccounts(); }
+  }, 150);
+});
+
+refresh();
+</script>
+</body>
+</html>

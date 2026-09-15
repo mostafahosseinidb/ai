@@ -8,6 +8,7 @@ directory (``.chainmind`` by default) holding the ledger file and the keys.
 from __future__ import annotations
 
 import argparse
+import errno
 import json
 import os
 import stat
@@ -19,6 +20,8 @@ from .agent import AgentKernel, LocalLedger
 from .chain import Chain, ChainError
 from .consensus import ProofOfAuthority, ProofOfWork
 from .crypto import SigningKey
+from .executors import InProcessExecutor, SandboxExecutor
+from .sandbox import SUPPORTED as SANDBOX_SUPPORTED
 from .resources import CREDIT, DEFAULT_PRICES, ResourceKind, format_credits
 from .state import GenesisConfig, StateError
 from .transactions import TxType, build_grant, build_policy_update
@@ -239,8 +242,16 @@ def cmd_run(args: argparse.Namespace) -> int:
     authority = workspace.load_key(args.sealer)
     agent_key = workspace.load_key(args.agent)
 
+    if args.sandbox and not SANDBOX_SUPPORTED:
+        raise SystemExit("--sandbox needs os.fork and os.wait4, which this platform lacks")
+    executor = (
+        SandboxExecutor(max_compute_ms=args.max_compute_ms) if args.sandbox
+        else InProcessExecutor()
+    )
+
     ledger = LocalLedger(chain, authority)
-    kernel = AgentKernel(agent_key, ledger, label=args.agent)
+    kernel = AgentKernel(agent_key, ledger, label=args.agent, executor=executor,
+                         memory_path=workspace.root / "memory" / f"{args.agent}.json")
 
     before = kernel.balance
     outcomes = kernel.run(args.goal, max_steps=args.max_steps)
@@ -250,6 +261,7 @@ def cmd_run(args: argparse.Namespace) -> int:
     payload = {
         "goal": args.goal,
         "agent": kernel.address,
+        "executor": executor.name,
         "spent": spent,
         "balance": kernel.balance,
         "halted": kernel.halted,
@@ -261,7 +273,8 @@ def cmd_run(args: argparse.Namespace) -> int:
             for o in outcomes
         ],
     }
-    lines = [f"goal      {args.goal}", f"agent     {kernel.address[:16]}...", ""]
+    lines = [f"goal      {args.goal}", f"agent     {kernel.address[:16]}...",
+             f"metering  {executor.name}", ""]
     lines += [f"  {o.summary()}" for o in outcomes] or ["  (the planner proposed nothing affordable)"]
     lines += ["", f"spent     {format_credits(spent)}", f"balance   {format_credits(kernel.balance)}",
               f"height    {chain.height}"]
@@ -375,6 +388,39 @@ def cmd_verify(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_serve(args: argparse.Namespace) -> int:
+    from .server import serve
+
+    workspace = Workspace(args.workspace)
+    if not workspace.exists():
+        raise SystemExit(f"no ledger at {workspace.ledger_path}; run 'chainmind init' first")
+    workspace.load_chain()   # fail loudly here rather than on the first request
+
+    try:
+        server = serve(workspace.ledger_path, host=args.host, port=args.port,
+                       quiet=not args.verbose)
+    except OSError as exc:
+        if exc.errno == errno.EADDRINUSE:
+            raise SystemExit(
+                f"port {args.port} is already in use; pass --port to pick another one"
+            ) from exc
+        raise SystemExit(f"could not bind {args.host}:{args.port}: {exc}") from exc
+    where = f"http://{args.host}:{args.port}/"
+    print(f"dashboard  {where}")
+    print(f"ledger     {workspace.ledger_path}")
+    print("read-only  no route on this server can change the ledger or read your keys")
+    if args.host not in ("127.0.0.1", "localhost", "::1"):
+        print(f"warning    bound to {args.host}: balances and addresses are reachable from the network")
+    print("\nCtrl-C to stop.")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nstopped.")
+    finally:
+        server.server_close()
+    return 0
+
+
 def cmd_keys(args: argparse.Namespace) -> int:
     workspace = Workspace(args.workspace)
     names = workspace.key_names()
@@ -440,6 +486,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--agent", default="agent", help="key name of the acting agent")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
     p.add_argument("--max-steps", type=int, default=8)
+    p.add_argument("--sandbox", action="store_true",
+                   help="run tools in a child process and bill the CPU time the kernel reports")
+    p.add_argument("--max-compute-ms", type=int, default=30_000,
+                   help="ceiling on the CPU limit handed to a sandboxed tool")
     p.set_defaults(func=cmd_run)
 
     p = sub.add_parser("status", help="show accounts, prices and quotas")
@@ -453,6 +503,13 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("verify", help="replay the whole chain and check every invariant")
     p.set_defaults(func=cmd_verify)
+
+    p = sub.add_parser("serve", help="open a read-only dashboard over the ledger")
+    p.add_argument("--host", default="127.0.0.1",
+                   help="interface to bind (default: loopback only)")
+    p.add_argument("--port", type=int, default=8787)
+    p.add_argument("--verbose", action="store_true", help="log every request")
+    p.set_defaults(func=cmd_serve)
 
     return parser
 

@@ -21,5 +21,8 @@ chainmind = "chainmind.cli:main"
 [tool.setuptools.packages.find]
 include = ["chainmind*"]
 
+[tool.setuptools.package-data]
+chainmind = ["dashboard.html", "fonts/*.woff2", "fonts/*.txt"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

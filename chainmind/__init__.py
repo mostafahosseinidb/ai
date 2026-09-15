@@ -22,8 +22,10 @@ from .block import Block, BlockHeader
 from .chain import Chain, ChainError, ProposalResult
 from .consensus import ConsensusError, ProofOfAuthority, ProofOfWork
 from .crypto import SigningKey, VerifyingKey, merkle_root, sha256_hex
+from .executors import Executor, InProcessExecutor, SandboxExecutor
 from .mempool import Mempool
 from .meter import Meter, UsageRecord
+from .sandbox import SUPPORTED as SANDBOX_SUPPORTED, SandboxLimits, SandboxResult, SandboxUnavailable
 from .resources import CREDIT, DEFAULT_PRICES, MICROCREDIT, PriceTable, ResourceKind, format_credits
 from .state import Account, GenesisConfig, Receipt, StateError, WorldState
 from .tools import Tool, ToolError, ToolRegistry, ToolResult, default_registry
@@ -42,6 +44,8 @@ __version__ = "0.1.0"
 
 __all__ = [
     "ActionOutcome", "Account", "AgentHalted", "AgentKernel", "Block", "BlockHeader",
+    "Executor", "InProcessExecutor", "SandboxExecutor", "SandboxLimits", "SandboxResult",
+    "SandboxUnavailable", "SANDBOX_SUPPORTED",
     "BudgetAwarePlanner", "CREDIT", "Chain", "ChainError", "ConsensusError", "DEFAULT_PRICES",
     "GenesisConfig", "InvalidTransaction", "LocalLedger", "MICROCREDIT", "Mempool", "Meter",
     "PriceTable", "ProofOfAuthority", "ProofOfWork", "ProposalResult", "Receipt", "ResourceKind",
