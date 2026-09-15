@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chainmind"
-version = "0.8.0"
+version = "0.9.0"
 description = "An autonomous AI agent whose resource consumption is governed by a verifiable blockchain ledger"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -13,10 +13,14 @@ dependencies = []
 
 [project.optional-dependencies]
 # The ledger, the agent, the dashboard and the network are standard library
-# only. These are for choosing how the model runs.
+# only. These are for choosing how the model runs, and every one of them has
+# a working fallback in-tree.
 #
-#   embedded  -- load a .gguf into this process; no second program to run
-#   (no extra) -- talk to a runtime already listening on this machine
+#   own        -- run the model this project trained; NumPy makes it fast,
+#                 and a pure-Python path runs it without
+#   embedded   -- load an open .gguf into this process; no second program
+#   (no extra) -- talk to an inference server already listening here
+own = ["numpy>=1.24"]
 embedded = ["llama-cpp-python>=0.3"]
 fast-crypto = ["cryptography>=41"]   # a faster Ed25519; a pure-Python one ships in-tree
 dev = ["pytest>=7"]

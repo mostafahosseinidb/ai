@@ -106,28 +106,61 @@ chainmind runtime
 ```
 
 ```
-runtime   ollama at http://127.0.0.1:11434
-models    qwen2.5:7b, llama3.1
+own       yes — trained here; architecture, vocabulary and weights all from this project
+          atlas  (12.4M parameters, 6×256, context 512)
+          arithmetic: numpy
+embedded  no — no .gguf file in .chainmind/models
+served    no — no inference server is listening on this machine.
 
 no key, no account, no outbound request.
 ```
 
-هر runtime ای که از قبل روی ماشین اجراست کافی است. ChainMind هیچ سروری بالا نمی‌آورد و هیچ وزنی دانلود نمی‌کند — فقط به آنچه هست وصل می‌شود.
+سه راه هست، به ترتیبِ «چه مقدار از مدل جای دیگری ساخته شده»:
+
+### خودی — مدلی که همین پروژه آموزش داده
 
 ```bash
-ollama serve && ollama pull qwen2.5:7b     # یا
-llama-server -m model.gguf --port 8080
+pip install numpy
+chainmind learning --export corpus/chats.jsonl        # اگر چیزی جمع شده
+python3 training/pretrain.py --corpus corpus --workspace .chainmind
 ```
 
-این آدرس‌ها خودکار آزموده می‌شوند: `11434` (Ollama)، `8080` (llama.cpp)، `1234` (LM Studio)، `8000` (vLLM). برای جای دیگر:
+از عدد تصادفی شروع می‌کند، واژگان را از متن شما یاد می‌گیرد، و
+`.chainmind/models/atlas.cmw` را می‌نویسد. هیچ فایلی از بیرون نمی‌آید.
+حساب‌وکتابش با NumPy سریع است و بدون آن با کتابخانهٔ استاندارد کار می‌کند —
+کندتر، همان جواب. برای اجبار به مسیر کند: `CHAINMIND_PURE_PYTHON_MATH=1`.
+
+هزینه‌اش را `training/README.md` بی‌تعارف می‌گوید: چنین مدلی کوچک است و در
+دانش عمومی خیلی ضعیف‌تر از هر مدل بازی است که می‌توانستید اجرا کنید.
+
+### داخلی — وزن‌های باز، داخل همین فرایند
+
+```bash
+pip install 'chainmind[embedded]'
+cp <any-open-model>.gguf .chainmind/models/
+```
+
+تواناتر، و از لحظه‌ای که فایل روی دیسک شماست مال شماست — ولی وزن‌هایش جای
+دیگری آموزش دیده.
+
+### سرویس‌شده — موتوری که از قبل اینجا در حال اجراست
+
+اگر موتور استنتاجی روی این ماشین دارید، ChainMind از آن استفاده می‌کند.
+هیچ سروری بالا نمی‌آورد و هیچ وزنی دانلود نمی‌کند.
 
 ```bash
 export CHAINMIND_LOCAL_URL=http://192.168.1.10:8080
-export CHAINMIND_LOCAL_DIALECT=openai        # یا ollama
-export CHAINMIND_LOCAL_MODEL=qwen2.5:7b
+export CHAINMIND_LOCAL_DIALECT=openai        # یا دیالکت /api/chat
+export CHAINMIND_LOCAL_MODEL=<name>
 ```
 
-نکتهٔ اندازه‌گیری: llama.cpp نقطهٔ `/tokenize` دارد، پس برآورد توکن ورودی **دقیق** است. Ollama چنین چیزی ندارد، پس تقریبِ بدبینانه استفاده می‌شود — جهت خطا عمدی است.
+بدون تنظیم، این پورت‌های لوکال آزموده می‌شوند: `11434`، `8080`، `1234`، `8000`.
+
+نکتهٔ اندازه‌گیری: در حالت خودی توکنایزر **همین‌جاست**، پس شمارش ورودی
+دقیقاً همان عددی است که خرج می‌شود. سرورهایی که `/tokenize` دارند هم دقیق‌اند؛
+جایی که شمارش در دسترس نیست، تقریبِ بدبینانه استفاده می‌شود — جهت خطا عمدی
+است، چون برآوردِ کمتر از واقع همان راهی است که یک اقدام از کنترل بودجه رد
+می‌شود.
 
 ## ۳٫۵ پرامپت بده، جواب بگیر
 

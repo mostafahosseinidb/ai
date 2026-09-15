@@ -1,10 +1,20 @@
-# Only needed to TRAIN. Nothing in chainmind/ imports any of this, and a node
-# runs the finished adapter without any of it installed.
+# Only needed to train. Nothing in chainmind/ imports any of this, and a node
+# runs the finished model without any of it installed.
 #
 #   python3 -m venv training/.venv
 #   training/.venv/bin/pip install -r training/requirements.txt
 #
-# Pick the torch build that matches your hardware first; see pytorch.org.
+# Two different jobs live here, and they do not need the same things.
+
+# --- pretrain.py: the model this project trains from scratch --------------
+# NumPy and nothing else. The forward and backward passes are written out in
+# that file, so there is no framework between you and the arithmetic.
+numpy>=1.24
+
+# --- train_lora.py: fine-tuning open weights ------------------------------
+# A much heavier stack, and only needed if you are adapting somebody else's
+# model rather than training your own. Pick the torch build that matches your
+# hardware first; see pytorch.org.
 torch>=2.2
 transformers>=4.44
 peft>=0.12

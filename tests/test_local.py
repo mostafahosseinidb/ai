@@ -27,10 +27,13 @@ class DiscoveryTests(unittest.TestCase):
         self.assertEqual(dialect, "openai")
         self.assertIn("llama3.1", models)
 
-    def test_nothing_listening_says_how_to_start_one(self):
+    def test_nothing_listening_points_at_the_self_contained_routes(self):
         with self.assertRaises(LocalRuntimeUnavailable) as ctx:
             discover_runtime([("http://127.0.0.1:1", "ollama")])
-        self.assertIn("ollama serve", str(ctx.exception))
+        message = str(ctx.exception)
+        self.assertIn("training/pretrain.py", message)
+        self.assertIn(".gguf", message)
+        self.assertNotIn("ollama serve", message)
 
     def test_an_explicit_url_overrides_the_search(self):
         with FakeRuntime("ollama") as runtime:
@@ -147,12 +150,12 @@ class RuntimeSelectionTests(unittest.TestCase):
             engine = build_model("llama3.1")
         self.assertEqual(engine.model, "llama3.1")
 
-    def test_nothing_running_says_how_to_start_one(self):
+    def test_nothing_running_says_how_to_get_a_model(self):
         os.environ["CHAINMIND_LOCAL_URL"] = "http://127.0.0.1:1"
         os.environ["CHAINMIND_LOCAL_DIALECT"] = "ollama"
         with self.assertRaises(ModelUnavailable) as ctx:
             build_model()
-        self.assertIn("ollama serve", str(ctx.exception))
+        self.assertIn("training/pretrain.py", str(ctx.exception))
 
     def test_the_project_offers_no_hosted_path(self):
         # Guards the promise rather than the implementation: nothing in the
@@ -250,14 +253,18 @@ class DependencyPromiseTests(unittest.TestCase):
     a deployment.
     """
 
-    #: The allowed exceptions, each optional, each imported inside a function
-    #: so that its absence is a clear message rather than an import error:
-    #:   cryptography -- a faster Ed25519; a tested pure-Python one ships here
-    #:   llama_cpp    -- in-process inference; the served backend needs none
-    #: Both are asserted below to be absent from module scope. Adding a third
-    #: should require the same argument, which is why this list is a test and
-    #: not a comment.
-    ALLOWED = {("crypto.py", "cryptography"), ("embedded.py", "llama_cpp")}
+    #: The allowed exceptions. Each is optional, each has a tested
+    #: standard-library fallback or an alternative backend, and each is
+    #: imported inside a function so that its absence is a clear message
+    #: rather than an import error. All three are asserted below to be absent
+    #: from module scope, and the package is imported with all three blocked.
+    #: Adding a fourth should require the same argument, which is why this
+    #: list is a test and not a comment.
+    ALLOWED = {
+        ("crypto.py", "cryptography"),      # a faster Ed25519
+        ("embedded.py", "llama_cpp"),       # in-process GGUF inference
+        ("nano.py", "numpy"),               # arithmetic for the project's own model
+    }
 
     def external_imports(self):
         import ast
@@ -313,20 +320,55 @@ class DependencyPromiseTests(unittest.TestCase):
                 self.assertNotIn(package, top_level)
 
                 # And it must still be reachable, or the code path is dead.
-                nested = [
-                    (node.module or "").split(".")[0]
-                    for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)
-                ]
+                nested: list[str] = []
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.ImportFrom):
+                        nested.append((node.module or "").split(".")[0])
+                    elif isinstance(node, ast.Import):
+                        nested += [alias.name.split(".")[0] for alias in node.names]
                 self.assertIn(package, nested)
 
     def test_the_package_runs_with_every_optional_dependency_absent(self):
-        # The state this container is actually in, and the state a fresh
-        # install is in: neither extra present, everything still imports.
-        import importlib.util
+        """A fresh install has none of them, so import the package with none.
 
-        self.assertIsNone(importlib.util.find_spec("llama_cpp"))
-        import chainmind  # noqa: F401
-        from chainmind import cli, embedded, local, models  # noqa: F401
+        Run in a subprocess with the three blocked at the import hook rather
+        than by checking what this container happens to have: a developer who
+        installs NumPy to work on the model should not be the reason this
+        stops testing the promise.
+        """
+        import pathlib
+        import subprocess
+        import sys
+
+        import chainmind
+
+        root = pathlib.Path(chainmind.__file__).resolve().parent.parent
+        blocked = sorted(package for _file, package in self.ALLOWED)
+        script = (
+            "import sys\n"
+            f"BLOCKED = {blocked!r}\n"
+            "class Blocker:\n"
+            "    def find_module(self, name, path=None):\n"
+            "        return None\n"
+            "    def find_spec(self, name, path=None, target=None):\n"
+            "        if name.split('.')[0] in BLOCKED:\n"
+            "            raise ImportError(name + ' is blocked for this test')\n"
+            "        return None\n"
+            "sys.meta_path.insert(0, Blocker())\n"
+            "for name in BLOCKED:\n"
+            "    sys.modules.pop(name, None)\n"
+            "import chainmind\n"
+            "from chainmind import cli, crypto, embedded, local, models, nano, native\n"
+            "assert crypto.BACKEND == 'pure-python', crypto.BACKEND\n"
+            "assert nano.backend_name() == 'pure-python', nano.backend_name()\n"
+            "print('ok')\n"
+        )
+        result = subprocess.run(
+            [sys.executable, "-c", script], capture_output=True, text=True,
+            cwd=str(root),
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("ok", result.stdout)
 
     def test_training_lives_outside_the_package(self):
         # torch belongs to training, and training is not part of running.

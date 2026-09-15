@@ -252,7 +252,7 @@ class SelectionTests(WorkspaceTestCase):
         self.assertFalse(model_is_path("qwen2.5:7b"))
         self.assertFalse(model_is_path(None))
 
-    def test_a_workspace_with_no_model_and_no_runtime_names_both(self):
+    def test_a_workspace_with_no_model_and_no_runtime_names_every_route(self):
         import os
         os.environ["CHAINMIND_LOCAL_URL"] = "http://127.0.0.1:1"
         os.environ["CHAINMIND_LOCAL_DIALECT"] = "ollama"
@@ -261,8 +261,9 @@ class SelectionTests(WorkspaceTestCase):
         with self.assertRaises(ModelUnavailable) as ctx:
             build_model(workspace=self.root)
         message = str(ctx.exception)
-        self.assertIn("in this workspace", message)
-        self.assertIn("on this machine", message)
+        self.assertIn("own model", message)
+        self.assertIn("open weights", message)
+        self.assertIn("running runtime", message)
 
 
 class KernelTests(WorkspaceTestCase):

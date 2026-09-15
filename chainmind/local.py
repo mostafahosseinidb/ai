@@ -1,21 +1,30 @@
-"""Running the agent's own model, on the agent's own machine.
+"""The fallback backend: a runtime somebody is already running here.
 
-This is the only way the agent thinks.  There is no hosted backend, no SDK,
-no account and no key: the module talks to an inference runtime already
-running on the machine -- Ollama, llama.cpp's server, LM Studio, vLLM --
-over plain HTTP with nothing but the standard library.
+**This is the last of three, and the least self-contained.**  Prefer
+:mod:`chainmind.native` (the model this project trained, loaded into this
+process) or :mod:`chainmind.embedded` (open weights, also in this process).
+Both mean one program instead of two, nothing listening on a port, and
+nothing to start before the agent can wake up.
+
+What is left for this module is the case where a general-purpose inference
+server is already part of your setup and it would be silly to load a second
+copy of the weights.  There is no hosted backend, no SDK, no account and no
+key: it talks to a server on your own machine over plain HTTP with nothing
+but the standard library.
 
 Nothing here reaches the public internet.  Every request goes to a loopback
 or operator-chosen address, and the proxy is deliberately bypassed so a
 machine-wide ``HTTPS_PROXY`` cannot quietly route the agent's thinking
 through somebody else.
 
-Two dialects cover essentially every local runtime:
+Two dialects cover essentially every local server, and which one is in use
+is reported rather than advertised -- naming a particular product here would
+be recommending it, and this project does not:
 
-*   **Ollama** (``/api/chat``), which reports ``prompt_eval_count`` and
-    ``eval_count``.
 *   **OpenAI-compatible** (``/v1/chat/completions``), spoken by llama.cpp's
-    server, vLLM, LM Studio and most others, which reports ``usage``.
+    own server and most others, which reports ``usage``.
+*   The ``/api/chat`` dialect, which reports ``prompt_eval_count`` and
+    ``eval_count``.
 
 A word on provenance.  Token counts from a local runtime are recorded as
 ``provider``, the same class as a hosted API, because the property that
@@ -127,9 +136,12 @@ def discover_runtime(endpoints: Sequence[tuple[str, str]] | None = None
         return base, dialect, _model_names(payload, dialect)
 
     raise LocalRuntimeUnavailable(
-        "no local inference runtime is listening. Start one first, for example:\n"
-        "    ollama serve && ollama pull llama3.1\n"
-        "or point CHAINMIND_LOCAL_URL at an existing server.\n"
+        "no inference server is listening on this machine.\n"
+        "This is the fallback backend; the two that need no second program are:\n"
+        "    python3 training/pretrain.py --corpus <your text>   # train this "
+        "project's own model\n"
+        "    ...or put an open .gguf file in .chainmind/models/\n"
+        "If you do run a server, point CHAINMIND_LOCAL_URL at it.\n"
         f"tried: {', '.join(tried) if tried else 'nothing'}"
     )
 
@@ -205,7 +217,7 @@ class LocalModel:
         under-estimates the turn, and an under-estimate is precisely how an
         action slips past the budget check this project exists to enforce.
 
-        llama.cpp exposes ``/tokenize``; Ollama has no counting endpoint at
+        Some servers expose ``/tokenize``; the other dialect has none at
         all.  Where an exact count is not available this over-estimates on
         purpose.
         """

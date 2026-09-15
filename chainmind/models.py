@@ -1,20 +1,29 @@
 """Choosing and wrapping the model the agent thinks with.
 
-There is exactly one kind of backend: an inference runtime the operator runs
-themselves.  No hosted API, no SDK, no account, no key, no outbound request
-to anyone.  The project depends on nothing it cannot be handed on a USB
-stick.
+No hosted API, no SDK, no account, no key, no outbound request to anyone.
+The project depends on nothing it cannot be handed on a USB stick.
 
 What this module owns is the seam between the agent kernel and whatever is
-doing the thinking: resolve a runtime, wrap it as a metered tool, and give
+doing the thinking: resolve a backend, wrap it as a metered tool, and give
 the rest of the program one name to call it by.
 
-On the limit of the claim, stated plainly: running the weights yourself
-removes the dependency on a *service*.  It does not mean the weights were
-invented here -- open models come from somewhere, and pretending otherwise
-would be the kind of thing this project exists to make impossible.  What
-you get is that nobody can close your account, change your price, or
-retire your model.
+There are three, and they differ in how much of the model came from
+somewhere else:
+
+*   **own** (:mod:`chainmind.native`) -- architecture, tokenizer and weights
+    all produced here, by ``training/pretrain.py``, from your corpus.
+    Nothing was downloaded. It is also, unavoidably, a small model: see that
+    module for the arithmetic of why.
+*   **embedded** (:mod:`chainmind.embedded`) -- somebody else's open weights,
+    loaded into this process. Far more capable, and yours once the file is on
+    your disk, but the weights were trained elsewhere.
+*   **served** (:mod:`chainmind.local`) -- an inference runtime already
+    listening on this machine. Still local, still no account, but a second
+    program to install and keep running.
+
+None of the three reaches the public internet. The distinction the ledger
+records is the weights fingerprint, so an auditor can always tell which of
+them produced a given answer.
 """
 
 from __future__ import annotations
@@ -31,6 +40,13 @@ from .embedded import (
 )
 from .local import LocalModel, LocalRuntimeUnavailable, discover_runtime
 from .meter import Meter
+from .nano import backend_name, load_weights
+from .native import (
+    NATIVE_SUFFIXES,
+    NativeModel,
+    NativeUnavailable,
+    discover_native,
+)
 from .tools import Tool, ToolError
 
 __all__ = [
@@ -53,50 +69,62 @@ def build_model(model: str | None = None, *, workspace: Any = None,
                 **overrides: Any) -> Any:
     """Find something to think with, preferring the most self-contained option.
 
-    Order matters and is deliberate:
+    Order matters and is deliberate -- least borrowed first:
 
-    1.  A weights file in the workspace, loaded into this process.  Nothing
-        else to install, nothing else to keep running, and the file is the
-        agent's own.
-    2.  An inference runtime already listening on this machine.  Still local,
+    1.  The agent's own model: a ``.cmw`` file this project trained, loaded
+        into this process. No part of it came from anywhere else.
+    2.  Open weights in the workspace, loaded into this process. Somebody
+        else's model, but yours to keep and nothing else to run.
+    3.  An inference runtime already listening on this machine. Still local,
         still no account -- but a second program.
 
-    Neither reaches the public internet.  Nothing here starts a server or
+    None of them reaches the public internet. Nothing here starts a server or
     downloads weights: it uses what is there, or says clearly what is not.
     """
     params: dict[str, Any] = dict(overrides)
     if model:
         params["model"] = model
 
+    file_params = {k: v for k, v in params.items() if k != "model"}
+    named_file = Path(model) if model_is_path(model) else None
+
+    native_error: Exception | None = None
+    if named_file is None or named_file.suffix.lower() in NATIVE_SUFFIXES:
+        if workspace is not None or named_file is not None:
+            try:
+                return NativeModel(path=named_file, workspace=workspace, **file_params)
+            except NativeUnavailable as exc:
+                native_error = exc
+
     embedded_error: Exception | None = None
-    if workspace is not None or model_is_path(model):
-        try:
-            return EmbeddedModel(
-                path=Path(model) if model_is_path(model) else None,
-                workspace=workspace,
-                **{k: v for k, v in params.items() if k != "model"},
-            )
-        except EmbeddedUnavailable as exc:
-            embedded_error = exc
+    if named_file is None or named_file.suffix.lower() in MODEL_SUFFIXES:
+        if workspace is not None or named_file is not None:
+            try:
+                return EmbeddedModel(path=named_file, workspace=workspace, **file_params)
+            except EmbeddedUnavailable as exc:
+                embedded_error = exc
 
     try:
         return LocalModel(**params)
     except LocalRuntimeUnavailable as exc:
-        if embedded_error is not None:
-            raise ModelUnavailable(
-                f"no model available.\n\n"
-                f"in this workspace: {embedded_error}\n\n"
-                f"on this machine:   {exc}"
-            ) from exc
-        raise ModelUnavailable(str(exc)) from exc
+        reasons = [
+            f"own model:       {native_error}" if native_error else "",
+            f"open weights:    {embedded_error}" if embedded_error else "",
+            f"running runtime: {exc}",
+        ]
+        if native_error is None and embedded_error is None:
+            raise ModelUnavailable(str(exc)) from exc
+        raise ModelUnavailable(
+            "no model available.\n\n"
+            + "\n\n".join(reason for reason in reasons if reason)
+        ) from exc
 
 
 def model_is_path(model: str | None) -> bool:
     """Whether ``--model`` names a weights file rather than a runtime's model."""
     if not model:
         return False
-    candidate = Path(model)
-    return candidate.suffix.lower() in MODEL_SUFFIXES
+    return Path(model).suffix.lower() in (*NATIVE_SUFFIXES, *MODEL_SUFFIXES)
 
 
 def model_from_environment(**overrides: Any) -> LocalModel:
@@ -116,18 +144,34 @@ def describe_model(engine: Any) -> str:
 
 def available_runtimes(workspace: Any = None) -> dict[str, Any]:
     """What this machine can currently offer, for reporting."""
-    report: dict[str, Any] = {"embedded": {"available": False}, "served": {"available": False}}
+    report: dict[str, Any] = {
+        "own": {"available": False},
+        "embedded": {"available": False},
+        "served": {"available": False},
+    }
 
     if workspace is not None:
+        own = discover_native(workspace)
+        if own:
+            report["own"] = {
+                "available": True,
+                "backend": backend_name(),
+                "models": [_describe_file(path) | _describe_native(path) for path in own],
+            }
+        else:
+            report["own"] = {
+                "available": False,
+                "reason": (
+                    f"no .cmw file in {Path(workspace) / MODELS_DIRNAME} — train one "
+                    "with `python3 training/pretrain.py --corpus ...`"
+                ),
+            }
+
         files = discover_models(workspace)
         if files:
             report["embedded"] = {
                 "available": True,
-                "models": [
-                    {"name": path.stem, "path": str(path),
-                     "size_mb": round(path.stat().st_size / (1 << 20))}
-                    for path in files
-                ],
+                "models": [_describe_file(path) for path in files],
             }
         else:
             report["embedded"] = {
@@ -142,8 +186,30 @@ def available_runtimes(workspace: Any = None) -> dict[str, Any]:
     except LocalRuntimeUnavailable as exc:
         report["served"] = {"available": False, "reason": str(exc)}
 
-    report["available"] = report["embedded"]["available"] or report["served"]["available"]
+    report["available"] = any(
+        report[kind]["available"] for kind in ("own", "embedded", "served")
+    )
     return report
+
+
+def _describe_file(path: Path) -> dict[str, Any]:
+    return {"name": path.stem, "path": str(path),
+            "size_mb": round(path.stat().st_size / (1 << 20))}
+
+
+def _describe_native(path: Path) -> dict[str, Any]:
+    """Read a ``.cmw`` header for the report, without loading the weights."""
+    try:
+        architecture, _tokenizer, _tensors, meta = load_weights(path)
+    except Exception as exc:                      # a corrupt file is worth naming
+        return {"error": str(exc)}
+    return {
+        "parameters": architecture.parameters,
+        "dim": architecture.dim,
+        "layers": architecture.layers,
+        "context": architecture.context,
+        "trained_from": meta.get("trained_from", "unknown"),
+    }
 
 
 def build_model_tool(model: Any = None, *, name: str = "ask") -> Tool:

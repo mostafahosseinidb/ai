@@ -1,14 +1,16 @@
 """Inference inside this process, with no separate program to run.
 
-The HTTP backend talks to a runtime someone else installed and keeps
-running -- Ollama, llama.cpp's server, and so on.  That is a runtime, not a
-provider: it holds no account and calls nobody.  But it is still a second
-program, and an agent whose thinking lives in another process is not quite
-the self-contained thing this project is after.
+The HTTP backend talks to an inference server someone installed and keeps
+running.  That is a runtime, not a provider: it holds no account and calls
+nobody.  But it is still a second program, and an agent whose thinking lives
+in another process is not quite the self-contained thing this project is
+after.
 
 This backend removes it.  The model is a GGUF file sitting in the workspace,
 loaded into this process by ``llama-cpp-python``, and the agent owns it the
-way it owns its ledger and its keys.  Nothing listens on a port, nothing has
+way it owns its ledger and its keys.  The weights themselves still came from
+somewhere else, which is the one thing :mod:`chainmind.native` fixes and
+this module cannot.  Nothing listens on a port, nothing has
 to be started first, and the file can be copied, fine-tuned, or handed to
 someone on a USB stick.
 
@@ -16,7 +18,7 @@ Two things get better as a side effect, and both matter here:
 
 *   **Exact token counts.**  The tokenizer is right there, so the estimate
     the chain authorises is the real number rather than a pessimistic guess.
-    Ollama's HTTP API offers no counting endpoint at all.
+    Some HTTP runtimes offer no counting endpoint at all.
 *   **Provenance of the weights.**  The file is hashed, and that hash goes
     into the evidence digest of every usage record.  An auditor can tell
     which model produced which answer -- which becomes the point once you

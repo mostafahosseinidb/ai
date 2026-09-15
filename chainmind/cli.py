@@ -893,9 +893,22 @@ def cmd_runtime(args: argparse.Namespace) -> int:
     found = available_runtimes(workspace.root)
 
     lines: list[str] = []
+    own = found["own"]
+    if own["available"]:
+        lines.append("own       yes — trained here; architecture, vocabulary and "
+                     "weights all from this project")
+        for entry in own["models"]:
+            detail = (f"{entry['parameters'] / 1e6:.1f}M parameters, "
+                      f"{entry['layers']}×{entry['dim']}, context {entry['context']}"
+                      if "parameters" in entry else entry.get("error", ""))
+            lines.append(f"          {entry['name']}  ({detail})")
+        lines.append(f"          arithmetic: {own['backend']}")
+    else:
+        lines.append(f"own       no — {own.get('reason', 'not checked')}")
+
     embedded = found["embedded"]
     if embedded["available"]:
-        lines.append("embedded  yes — loaded into this process, nothing else to run")
+        lines.append("embedded  yes — open weights, loaded into this process")
         for entry in embedded["models"]:
             lines.append(f"          {entry['name']}  ({entry['size_mb']} MB)")
     else:
@@ -904,13 +917,18 @@ def cmd_runtime(args: argparse.Namespace) -> int:
     served = found["served"]
     if served["available"]:
         lines.append(f"served    yes — {served['dialect']} at {served['url']}")
-        lines.append(f"          {', '.join(served['models']) or '(none pulled yet)'}")
+        lines.append(f"          {', '.join(served['models']) or '(none loaded yet)'}")
     else:
         lines.append(f"served    no — {served.get('reason', '').splitlines()[0]}")
 
     lines += ["", "no key, no account, no outbound request."]
     if not found["available"]:
-        lines += ["", f"put a .gguf file in {workspace.models_dir} and run this again."]
+        lines += [
+            "",
+            "two ways to get one, most self-contained first:",
+            "  python3 training/pretrain.py --corpus <your text>   # train its own",
+            f"  ...or put an open .gguf file in {workspace.models_dir}",
+        ]
     _emit(found, args.json, render=lines)
     return 0 if found["available"] else 1
 
@@ -1017,7 +1035,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--agent", default="agent", help="key name that pays for the run")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
     p.add_argument("--model",
-                   help="a .gguf file to load here, or a name the runtime serves")
+                   help="a .cmw or .gguf file to load here, or a name a running server offers")
     p.add_argument("--max-tokens", type=int, default=512)
     p.add_argument("--limit", type=int, help="stop after this many rows")
     p.add_argument("--validation-fraction", type=float, default=0.2)
@@ -1069,7 +1087,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--agent", default="agent", help="key name of the acting agent")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
     p.add_argument("--model",
-                   help="a .gguf file to load here, or a name the runtime serves")
+                   help="a .cmw or .gguf file to load here, or a name a running server offers")
     p.add_argument("--max-tokens", type=int, default=16_000,
                    help="ceiling on the answer, and what gets authorised up front")
     p.add_argument("--sandbox", action="store_true",
@@ -1101,7 +1119,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--agent", default="agent", help="key name that chat speaks as")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
     p.add_argument("--model",
-                   help="a .gguf file to load here, or a name the runtime serves")
+                   help="a .cmw or .gguf file to load here, or a name a running server offers")
     p.add_argument("--chat-max-tokens", type=int, default=4_000,
                    help="ceiling authorised for each answer")
     p.add_argument("--history-turns", type=int, default=20,

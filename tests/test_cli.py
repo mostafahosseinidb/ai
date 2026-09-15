@@ -182,13 +182,34 @@ class FlagPositionTests(CliTestCase):
 
 
 class RuntimeCommandTests(CliTestCase):
-    def test_it_reports_both_ways_of_running_a_model(self):
+    def test_it_reports_every_way_of_running_a_model(self):
         self.bootstrap()
-        report = self.run_cli("runtime", expect=1)   # neither available in a bare test env
+        report = self.run_cli("runtime", expect=1)   # none available in a bare test env
         self.assertFalse(report["available"])
+        self.assertFalse(report["own"]["available"])
+        self.assertIn(".cmw", report["own"]["reason"])
         self.assertFalse(report["embedded"]["available"])
         self.assertIn(".gguf", report["embedded"]["reason"])
-        self.assertIn("ollama serve", report["served"]["reason"])
+        self.assertIn("no inference server is listening", report["served"]["reason"])
+
+    def test_the_report_points_at_this_project_rather_than_a_product(self):
+        """The fix for "why am I being told to install something else".
+
+        Every route it suggests is one this repository can carry out: train
+        the model here, or drop in a file. No product names, because naming
+        one in the place a person looks when stuck is a recommendation.
+        """
+        self.bootstrap()
+        report = self.run_cli("runtime", expect=1)
+        # Everything up to "tried:", which is a factual list of the ports and
+        # protocols probed rather than a suggestion to go and install one.
+        advice = " ".join(
+            str(report[kind].get("reason", "")).split("tried:")[0]
+            for kind in ("own", "embedded", "served")
+        ).lower()
+        self.assertIn("training/pretrain.py", advice)
+        for product in ("ollama", "lm studio", "vllm"):
+            self.assertNotIn(product, advice)
 
     def test_init_makes_somewhere_to_put_the_weights(self):
         self.bootstrap()

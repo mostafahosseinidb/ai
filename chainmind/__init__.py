@@ -25,6 +25,9 @@ from .consensus import ConsensusError, ProofOfAuthority, ProofOfWork
 from .crypto import SigningKey, VerifyingKey, merkle_root, sha256_hex
 from .local import LocalModel, LocalRuntimeUnavailable, discover_runtime
 from .embedded import EmbeddedModel, EmbeddedUnavailable, discover_models, model_fingerprint
+from .nano import Architecture, NanoModel, WeightsError, load_weights, save_weights
+from .native import NativeModel, NativeUnavailable, discover_native
+from .tokenizer import Tokenizer, train_tokenizer
 from .evaluate import EvalReport, Evaluation, RowResult, rouge_l, split_dataset, token_f1
 from .executors import Executor, InProcessExecutor, SandboxExecutor
 from .memory import Feedback, FeedbackStore, Hit, MemoryStore, Note, build_training_dataset
@@ -46,13 +49,16 @@ from .transactions import (
     build_usage,
 )
 
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 
 __all__ = [
     "ActionOutcome", "Account", "AgentHalted", "AgentKernel", "Block", "BlockHeader",
     "ChatBusy", "ChatRejected", "ChatService", "Conversation", "LedgerBusy",
     "LocalModel", "LocalRuntimeUnavailable", "discover_runtime",
     "EmbeddedModel", "EmbeddedUnavailable", "discover_models", "model_fingerprint",
+    "Architecture", "NanoModel", "WeightsError", "load_weights", "save_weights",
+    "NativeModel", "NativeUnavailable", "discover_native",
+    "Tokenizer", "train_tokenizer",
     "Node", "NodeError", "PeerInfo", "join_network", "submit_to_node",
     "Feedback", "FeedbackStore", "Hit", "MemoryStore", "Note", "build_training_dataset",
     "EvalReport", "Evaluation", "RowResult", "rouge_l", "split_dataset", "token_f1",
