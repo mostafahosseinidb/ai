@@ -42,6 +42,7 @@ class Workspace:
         self.root = root
         self.keys_dir = root / "keys"
         self.ledger_path = root / "ledger.jsonl"
+        self.models_dir = root / "models"
         self.memory_path = root / "memory" / "notes.jsonl"
         self.feedback_path = root / "memory" / "feedback.jsonl"
 
@@ -131,6 +132,7 @@ def cmd_init(args: argparse.Namespace) -> int:
     if workspace.exists() and not args.force:
         raise SystemExit(f"{workspace.ledger_path} already exists; pass --force to replace it")
     workspace.ensure()
+    workspace.models_dir.mkdir(parents=True, exist_ok=True)
 
     authority = workspace.create_key("authority", overwrite=args.force)
     agent = workspace.create_key(args.agent_name, overwrite=args.force)
@@ -167,6 +169,8 @@ def cmd_init(args: argparse.Namespace) -> int:
             f"agent        {agent.public_hex()}  ({args.agent_name})",
             f"treasury     {format_credits(args.supply * CREDIT)}",
             f"genesis      {chain.tip.hash}",
+            "",
+            f"models       {workspace.models_dir}  (put a .gguf here)",
             "",
             f"next: chainmind grant {args.agent_name} 1 --workspace {workspace.root}",
         ],
@@ -447,7 +451,7 @@ def cmd_ask(args: argparse.Namespace) -> int:
         raise SystemExit("the prompt is empty")
 
     try:
-        model = build_model(args.model)
+        model = build_model(args.model, workspace=workspace.root)
     except ModelUnavailable as exc:
         raise SystemExit(str(exc)) from exc
 
@@ -572,7 +576,7 @@ def _build_chat_service(args: argparse.Namespace, workspace: "Workspace", chain)
     from .tools import ToolRegistry
 
     try:
-        model = build_model(args.model)
+        model = build_model(args.model, workspace=workspace.root)
     except ModelUnavailable as exc:
         raise SystemExit(f"--chat needs a model:\n{exc}") from exc
 
@@ -817,7 +821,7 @@ def cmd_eval(args: argparse.Namespace) -> int:
         raise SystemExit("the split left no validation rows; collect more feedback")
 
     try:
-        model = build_model(args.model)
+        model = build_model(args.model, workspace=workspace.root)
     except ModelUnavailable as exc:
         raise SystemExit(str(exc)) from exc
 
@@ -882,19 +886,31 @@ def cmd_eval(args: argparse.Namespace) -> int:
 
 
 def cmd_runtime(args: argparse.Namespace) -> int:
-    """Report the inference runtime this machine is offering, if any."""
+    """Report what this machine can think with, if anything."""
     from .models import available_runtimes
 
-    found = available_runtimes()
-    if found["available"]:
-        lines = [
-            f"runtime   {found['dialect']} at {found['url']}",
-            f"models    {', '.join(found['models']) or '(none pulled yet)'}",
-            "",
-            "no key, no account, no outbound request.",
-        ]
+    workspace = Workspace(args.workspace)
+    found = available_runtimes(workspace.root)
+
+    lines: list[str] = []
+    embedded = found["embedded"]
+    if embedded["available"]:
+        lines.append("embedded  yes — loaded into this process, nothing else to run")
+        for entry in embedded["models"]:
+            lines.append(f"          {entry['name']}  ({entry['size_mb']} MB)")
     else:
-        lines = ["runtime   none reachable", "", found["reason"]]
+        lines.append(f"embedded  no — {embedded.get('reason', 'not checked')}")
+
+    served = found["served"]
+    if served["available"]:
+        lines.append(f"served    yes — {served['dialect']} at {served['url']}")
+        lines.append(f"          {', '.join(served['models']) or '(none pulled yet)'}")
+    else:
+        lines.append(f"served    no — {served.get('reason', '').splitlines()[0]}")
+
+    lines += ["", "no key, no account, no outbound request."]
+    if not found["available"]:
+        lines += ["", f"put a .gguf file in {workspace.models_dir} and run this again."]
     _emit(found, args.json, render=lines)
     return 0 if found["available"] else 1
 
@@ -1000,7 +1016,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--dataset", help="a JSONL file; defaults to this workspace's feedback")
     p.add_argument("--agent", default="agent", help="key name that pays for the run")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
-    p.add_argument("--model", help="model name; defaults to what the runtime offers")
+    p.add_argument("--model",
+                   help="a .gguf file to load here, or a name the runtime serves")
     p.add_argument("--max-tokens", type=int, default=512)
     p.add_argument("--limit", type=int, help="stop after this many rows")
     p.add_argument("--validation-fraction", type=float, default=0.2)
@@ -1051,7 +1068,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("prompt", help="the prompt; use - to read it from stdin")
     p.add_argument("--agent", default="agent", help="key name of the acting agent")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
-    p.add_argument("--model", help="model name; defaults to what the runtime offers")
+    p.add_argument("--model",
+                   help="a .gguf file to load here, or a name the runtime serves")
     p.add_argument("--max-tokens", type=int, default=16_000,
                    help="ceiling on the answer, and what gets authorised up front")
     p.add_argument("--sandbox", action="store_true",
@@ -1082,7 +1100,8 @@ def build_parser() -> argparse.ArgumentParser:
                         "this process hold the agent's signing key")
     p.add_argument("--agent", default="agent", help="key name that chat speaks as")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
-    p.add_argument("--model", help="model name for chat")
+    p.add_argument("--model",
+                   help="a .gguf file to load here, or a name the runtime serves")
     p.add_argument("--chat-max-tokens", type=int, default=4_000,
                    help="ceiling authorised for each answer")
     p.add_argument("--history-turns", type=int, default=20,

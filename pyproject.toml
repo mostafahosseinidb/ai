@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chainmind"
-version = "0.7.0"
+version = "0.8.0"
 description = "An autonomous AI agent whose resource consumption is governed by a verifiable blockchain ledger"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,8 +12,12 @@ license = { text = "MIT" }
 dependencies = []
 
 [project.optional-dependencies]
-# Nothing here is needed to run the system. The ledger, the agent, the model
-# client and the dashboard are standard library only.
+# The ledger, the agent, the dashboard and the network are standard library
+# only. These are for choosing how the model runs.
+#
+#   embedded  -- load a .gguf into this process; no second program to run
+#   (no extra) -- talk to a runtime already listening on this machine
+embedded = ["llama-cpp-python>=0.3"]
 fast-crypto = ["cryptography>=41"]   # a faster Ed25519; a pure-Python one ships in-tree
 dev = ["pytest>=7"]
 

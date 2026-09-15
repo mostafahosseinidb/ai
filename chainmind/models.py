@@ -19,8 +19,16 @@ retire your model.
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
+from .embedded import (
+    MODELS_DIRNAME,
+    MODEL_SUFFIXES,
+    EmbeddedModel,
+    EmbeddedUnavailable,
+    discover_models,
+)
 from .local import LocalModel, LocalRuntimeUnavailable, discover_runtime
 from .meter import Meter
 from .tools import Tool, ToolError
@@ -33,6 +41,7 @@ __all__ = [
     "model_from_environment",
     "register_model_tool",
     "available_runtimes",
+    "model_is_path",
 ]
 
 
@@ -40,19 +49,54 @@ class ModelUnavailable(ToolError):
     """No inference runtime is reachable."""
 
 
-def build_model(model: str | None = None, **overrides: Any) -> LocalModel:
-    """Connect to a runtime already listening on this machine.
+def build_model(model: str | None = None, *, workspace: Any = None,
+                **overrides: Any) -> Any:
+    """Find something to think with, preferring the most self-contained option.
 
-    This starts nothing and downloads nothing: it finds what is running and
-    uses it, or says clearly that nothing is.
+    Order matters and is deliberate:
+
+    1.  A weights file in the workspace, loaded into this process.  Nothing
+        else to install, nothing else to keep running, and the file is the
+        agent's own.
+    2.  An inference runtime already listening on this machine.  Still local,
+        still no account -- but a second program.
+
+    Neither reaches the public internet.  Nothing here starts a server or
+    downloads weights: it uses what is there, or says clearly what is not.
     """
     params: dict[str, Any] = dict(overrides)
     if model:
         params["model"] = model
+
+    embedded_error: Exception | None = None
+    if workspace is not None or model_is_path(model):
+        try:
+            return EmbeddedModel(
+                path=Path(model) if model_is_path(model) else None,
+                workspace=workspace,
+                **{k: v for k, v in params.items() if k != "model"},
+            )
+        except EmbeddedUnavailable as exc:
+            embedded_error = exc
+
     try:
         return LocalModel(**params)
     except LocalRuntimeUnavailable as exc:
+        if embedded_error is not None:
+            raise ModelUnavailable(
+                f"no model available.\n\n"
+                f"in this workspace: {embedded_error}\n\n"
+                f"on this machine:   {exc}"
+            ) from exc
         raise ModelUnavailable(str(exc)) from exc
+
+
+def model_is_path(model: str | None) -> bool:
+    """Whether ``--model`` names a weights file rather than a runtime's model."""
+    if not model:
+        return False
+    candidate = Path(model)
+    return candidate.suffix.lower() in MODEL_SUFFIXES
 
 
 def model_from_environment(**overrides: Any) -> LocalModel:
@@ -70,16 +114,39 @@ def describe_model(engine: Any) -> str:
     return str(getattr(engine, "model", "unknown"))
 
 
-def available_runtimes() -> dict[str, Any]:
+def available_runtimes(workspace: Any = None) -> dict[str, Any]:
     """What this machine can currently offer, for reporting."""
+    report: dict[str, Any] = {"embedded": {"available": False}, "served": {"available": False}}
+
+    if workspace is not None:
+        files = discover_models(workspace)
+        if files:
+            report["embedded"] = {
+                "available": True,
+                "models": [
+                    {"name": path.stem, "path": str(path),
+                     "size_mb": round(path.stat().st_size / (1 << 20))}
+                    for path in files
+                ],
+            }
+        else:
+            report["embedded"] = {
+                "available": False,
+                "reason": f"no .gguf file in {Path(workspace) / MODELS_DIRNAME}",
+            }
+
     try:
         base, dialect, models = discover_runtime()
+        report["served"] = {"available": True, "url": base, "dialect": dialect,
+                            "models": models}
     except LocalRuntimeUnavailable as exc:
-        return {"available": False, "reason": str(exc)}
-    return {"available": True, "url": base, "dialect": dialect, "models": models}
+        report["served"] = {"available": False, "reason": str(exc)}
+
+    report["available"] = report["embedded"]["available"] or report["served"]["available"]
+    return report
 
 
-def build_model_tool(model: LocalModel | None = None, *, name: str = "ask") -> Tool:
+def build_model_tool(model: Any = None, *, name: str = "ask") -> Tool:
     """Wrap a model as a metered tool the kernel can authorise and bill."""
     engine = model or build_model()
 
@@ -104,5 +171,5 @@ def build_model_tool(model: LocalModel | None = None, *, name: str = "ask") -> T
     )
 
 
-def register_model_tool(registry, model: LocalModel | None = None, *, name: str = "ask") -> Tool:
+def register_model_tool(registry, model: Any = None, *, name: str = "ask") -> Tool:
     return registry.register(build_model_tool(model, name=name))

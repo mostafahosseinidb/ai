@@ -182,7 +182,14 @@ class FlagPositionTests(CliTestCase):
 
 
 class RuntimeCommandTests(CliTestCase):
-    def test_it_reports_when_nothing_is_running(self):
-        report = self.run_cli("runtime", expect=1)    # nothing listening in a bare test env
+    def test_it_reports_both_ways_of_running_a_model(self):
+        self.bootstrap()
+        report = self.run_cli("runtime", expect=1)   # neither available in a bare test env
         self.assertFalse(report["available"])
-        self.assertIn("ollama serve", report["reason"])
+        self.assertFalse(report["embedded"]["available"])
+        self.assertIn(".gguf", report["embedded"]["reason"])
+        self.assertIn("ollama serve", report["served"]["reason"])
+
+    def test_init_makes_somewhere_to_put_the_weights(self):
+        self.bootstrap()
+        self.assertTrue((self.workspace / "models").is_dir())

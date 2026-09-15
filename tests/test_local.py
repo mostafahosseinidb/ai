@@ -250,9 +250,14 @@ class DependencyPromiseTests(unittest.TestCase):
     a deployment.
     """
 
-    #: The single allowed exception: a faster Ed25519, imported behind a
-    #: guard, with a tested pure-Python fallback when it is absent or broken.
-    ALLOWED = {("crypto.py", "cryptography")}
+    #: The allowed exceptions, each optional, each imported inside a function
+    #: so that its absence is a clear message rather than an import error:
+    #:   cryptography -- a faster Ed25519; a tested pure-Python one ships here
+    #:   llama_cpp    -- in-process inference; the served backend needs none
+    #: Both are asserted below to be absent from module scope. Adding a third
+    #: should require the same argument, which is why this list is a test and
+    #: not a comment.
+    ALLOWED = {("crypto.py", "cryptography"), ("embedded.py", "llama_cpp")}
 
     def external_imports(self):
         import ast
@@ -280,37 +285,48 @@ class DependencyPromiseTests(unittest.TestCase):
     def test_the_package_imports_nothing_outside_the_standard_library(self):
         self.assertEqual(self.external_imports() - self.ALLOWED, set())
 
-    def test_the_optional_backend_really_is_optional(self):
-        """It must never be imported at module scope.
+    def test_every_optional_dependency_is_really_optional(self):
+        """None of them may be imported at module scope.
 
-        A top-level import is the difference between "faster when present"
-        and "broken when absent" -- and a distro ships this package broken
-        often enough that the fallback is load-bearing, not theoretical.
-        Checked against the syntax tree rather than the text, because the
-        module's own prose mentions it and should be allowed to.
+        A top-level import is the difference between "better when present"
+        and "broken when absent". Checked against the syntax tree rather
+        than the text, because these modules' own prose names them and
+        should be allowed to.
         """
         import ast
         import pathlib
 
         import chainmind
 
-        tree = ast.parse(
-            (pathlib.Path(chainmind.__file__).parent / "crypto.py").read_text(encoding="utf-8")
-        )
-        top_level = []
-        for node in tree.body:
-            if isinstance(node, ast.Import):
-                top_level += [alias.name.split(".")[0] for alias in node.names]
-            elif isinstance(node, ast.ImportFrom):
-                top_level.append((node.module or "").split(".")[0])
-        self.assertNotIn("cryptography", top_level)
+        for filename, package in sorted(self.ALLOWED):
+            with self.subTest(module=filename):
+                tree = ast.parse(
+                    (pathlib.Path(chainmind.__file__).parent / filename)
+                    .read_text(encoding="utf-8")
+                )
+                top_level = []
+                for node in tree.body:
+                    if isinstance(node, ast.Import):
+                        top_level += [alias.name.split(".")[0] for alias in node.names]
+                    elif isinstance(node, ast.ImportFrom):
+                        top_level.append((node.module or "").split(".")[0])
+                self.assertNotIn(package, top_level)
 
-        # And it must still be reachable, or the fast path is dead code.
-        nested = [
-            (node.module or "").split(".")[0]
-            for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)
-        ]
-        self.assertIn("cryptography", nested)
+                # And it must still be reachable, or the code path is dead.
+                nested = [
+                    (node.module or "").split(".")[0]
+                    for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)
+                ]
+                self.assertIn(package, nested)
+
+    def test_the_package_runs_with_every_optional_dependency_absent(self):
+        # The state this container is actually in, and the state a fresh
+        # install is in: neither extra present, everything still imports.
+        import importlib.util
+
+        self.assertIsNone(importlib.util.find_spec("llama_cpp"))
+        import chainmind  # noqa: F401
+        from chainmind import cli, embedded, local, models  # noqa: F401
 
     def test_training_lives_outside_the_package(self):
         # torch belongs to training, and training is not part of running.
