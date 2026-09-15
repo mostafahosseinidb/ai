@@ -1,13 +1,14 @@
 """Running the agent's own model, on the agent's own machine.
 
-The Claude backend made the project useful and made it dependent: no key, no
-network, no money -- no thought.  For a project whose premise is an agent
-that owns its resources, borrowing its mind from a company is a real hole.
+This is the only way the agent thinks.  There is no hosted backend, no SDK,
+no account and no key: the module talks to an inference runtime already
+running on the machine -- Ollama, llama.cpp's server, LM Studio, vLLM --
+over plain HTTP with nothing but the standard library.
 
-This module closes it.  It talks to an inference runtime already running on
-the machine -- Ollama, llama.cpp's server, LM Studio, vLLM -- over plain HTTP
-with nothing but the standard library.  The independent path therefore has
-*no* third-party dependency at all, while the hosted path needs an SDK.
+Nothing here reaches the public internet.  Every request goes to a loopback
+or operator-chosen address, and the proxy is deliberately bypassed so a
+machine-wide ``HTTPS_PROXY`` cannot quietly route the agent's thinking
+through somebody else.
 
 Two dialects cover essentially every local runtime:
 
@@ -146,8 +147,9 @@ def _model_names(payload: Any, dialect: str) -> list[str]:
 class LocalModel:
     """A model the agent runs itself.
 
-    The interface matches :class:`chainmind.models.ClaudeModel` exactly, so
-    the kernel, the chat panel and the CLI cannot tell them apart.
+    The kernel, the chat panel and the CLI only ever see this interface, so
+    the ledger has no idea which model produced an answer -- only what it
+    cost.
     """
 
     model: str = ""
@@ -161,7 +163,6 @@ class LocalModel:
         "of a finite budget."
     )
     temperature: float = 0.7
-    effort: str = ""              # accepted and ignored; local runtimes have no effort knob
     extra: Mapping[str, Any] = field(default_factory=dict)
     available_models: list[str] = field(default_factory=list)
 

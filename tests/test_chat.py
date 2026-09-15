@@ -10,17 +10,18 @@ from chainmind.agent import AgentKernel, LocalLedger
 from chainmind.chain import Chain
 from chainmind.chat import ChatBusy, ChatRejected, ChatService, MAX_PROMPT_BYTES
 from chainmind.consensus import ProofOfAuthority
-from chainmind.models import build_model_tool
+from chainmind.local import LocalModel
+from chainmind.models import build_model_tool, describe_model
 from chainmind.resources import CREDIT
 from chainmind.server import CHAT_HEADER, serve
 from chainmind.tools import ToolRegistry
 from chainmind.transactions import TxType, build_grant
 
+from fake_runtime import FakeRuntime
 from support import AGENT, AUTHORITY, make_genesis
-from test_models import model
 
 
-def build_service(path: Path, credits: int = 20, **kwargs):
+def build_service(path: Path, credits: int = 20, runtime: FakeRuntime | None = None, **kwargs):
     chain = Chain.create(make_genesis(), AUTHORITY, ProofOfAuthority([AUTHORITY.public_hex()]),
                          path=path, timestamp=1_700_000_000)
     ledger = LocalLedger(chain, AUTHORITY)
@@ -32,13 +33,13 @@ def build_service(path: Path, credits: int = 20, **kwargs):
             [build_grant(AUTHORITY, chain.state.get(AUTHORITY.public_hex()).nonce,
                          beneficiary=AGENT.public_hex(), amount=credits * CREDIT)],
         )
-    engine = model()
+    engine = LocalModel(base_url=runtime.url, dialect="ollama", model="qwen2.5:7b")
     registry = ToolRegistry()
     registry.register(build_model_tool(engine))
     kernel = AgentKernel(AGENT, ledger, tools=registry, label="atlas")
     kernel.register()
     ledger.flush()
-    service = ChatService(kernel, ledger, model_name="claude-opus-5", **kwargs)
+    service = ChatService(kernel, ledger, model_name=describe_model(engine), **kwargs)
     return service, chain, engine
 
 
@@ -46,8 +47,10 @@ class ConversationTests(unittest.TestCase):
     def setUp(self):
         self.dir = tempfile.TemporaryDirectory()
         self.addCleanup(self.dir.cleanup)
+        self.runtime = FakeRuntime("ollama", answer="the answer").__enter__()
+        self.addCleanup(self.runtime.__exit__, None, None, None)
         self.path = Path(self.dir.name) / "ledger.jsonl"
-        self.service, self.chain, self.engine = build_service(self.path)
+        self.service, self.chain, self.engine = build_service(self.path, runtime=self.runtime)
 
     def test_a_turn_returns_an_answer_and_a_receipt(self):
         result = self.service.send("سلام")
@@ -59,27 +62,27 @@ class ConversationTests(unittest.TestCase):
     def test_history_is_replayed_to_the_model(self):
         first = self.service.send("سؤال اول")
         self.service.send("سؤال دوم", conversation_id=first["conversation_id"])
-        sent = self.engine.client.messages.requests[-1]["messages"]
-        self.assertEqual([m["role"] for m in sent], ["user", "assistant", "user"])
-        self.assertEqual(sent[0]["content"], "سؤال اول")
+        sent = self.runtime.requests[-1]["messages"]
+        self.assertEqual([m["role"] for m in sent], ["system", "user", "assistant", "user"])
+        self.assertEqual(sent[1]["content"], "سؤال اول")
 
     def test_each_conversation_keeps_its_own_history(self):
         a = self.service.send("گفتگوی الف")
         b = self.service.send("گفتگوی ب")
         self.assertNotEqual(a["conversation_id"], b["conversation_id"])
-        sent = self.engine.client.messages.requests[-1]["messages"]
-        self.assertEqual(len(sent), 1)   # b started fresh
+        sent = self.runtime.requests[-1]["messages"]
+        self.assertEqual(len(sent), 2)   # system + the new prompt; b started fresh
 
     def test_history_is_bounded(self):
         service, _, engine = build_service(
-            Path(self.dir.name) / "bounded.jsonl", history_turns=2)
+            Path(self.dir.name) / "bounded.jsonl", runtime=self.runtime, history_turns=2)
         conversation = None
         for i in range(5):
             result = service.send(f"turn {i}", conversation_id=conversation)
             conversation = result["conversation_id"]
-        sent = engine.client.messages.requests[-1]["messages"]
-        # 2 turns of history (4 messages) plus the new prompt.
-        self.assertLessEqual(len(sent), 5)
+        sent = self.runtime.requests[-1]["messages"]
+        # system + 2 turns of history (4 messages) + the new prompt.
+        self.assertLessEqual(len(sent), 6)
 
     def test_the_conversation_digest_is_attested(self):
         self.service.send("چیزی بپرس")
@@ -88,10 +91,12 @@ class ConversationTests(unittest.TestCase):
         self.assertIn("chat", topics)
 
     def test_a_refused_turn_is_not_remembered(self):
-        service, _, engine = build_service(Path(self.dir.name) / "poor.jsonl", credits=0)
+        service, _, engine = build_service(Path(self.dir.name) / "poor.jsonl",
+                                           runtime=self.runtime, credits=0)
         with self.assertRaises(ChatRejected):
             service.send("این را نمی‌توانم بپردازم")
-        self.assertEqual(engine.client.messages.requests, [])
+        self.assertEqual(
+            [p for p in self.runtime.paths if "chat" in p or "completions" in p], [])
         self.assertEqual(service.listing()[0]["turns"], 0)
 
     def test_an_empty_prompt_is_refused(self):
@@ -122,8 +127,9 @@ class ReadOnlyByDefaultTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.dir = tempfile.TemporaryDirectory()
+        cls.runtime = FakeRuntime("ollama").__enter__()
         path = Path(cls.dir.name) / "ledger.jsonl"
-        build_service(path)
+        build_service(path, runtime=cls.runtime)
         cls.server = serve(path, host="127.0.0.1", port=0)          # no chat
         cls.port = cls.server.server_address[1]
         cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
@@ -132,7 +138,9 @@ class ReadOnlyByDefaultTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.server.shutdown(); cls.server.server_close()
-        cls.thread.join(timeout=5); cls.dir.cleanup()
+        cls.thread.join(timeout=5)
+        cls.runtime.__exit__(None, None, None)
+        cls.dir.cleanup()
 
     def post(self, path, body=b"{}", headers=None):
         request = urllib.request.Request(
@@ -156,8 +164,9 @@ class ChatEndpointTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.dir = tempfile.TemporaryDirectory()
+        cls.runtime = FakeRuntime("ollama", answer="the answer").__enter__()
         path = Path(cls.dir.name) / "ledger.jsonl"
-        cls.service, cls.chain, cls.engine = build_service(path)
+        cls.service, cls.chain, cls.engine = build_service(path, runtime=cls.runtime)
         cls.server = serve(path, host="127.0.0.1", port=0, chat=cls.service)
         cls.port = cls.server.server_address[1]
         cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
@@ -166,7 +175,9 @@ class ChatEndpointTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.server.shutdown(); cls.server.server_close()
-        cls.thread.join(timeout=5); cls.dir.cleanup()
+        cls.thread.join(timeout=5)
+        cls.runtime.__exit__(None, None, None)
+        cls.dir.cleanup()
 
     def url(self, path=""):
         return f"http://127.0.0.1:{self.port}{path}"
@@ -196,7 +207,7 @@ class ChatEndpointTests(unittest.TestCase):
         with urllib.request.urlopen(self.url("/api/chat"), timeout=10) as response:
             payload = json.loads(response.read())
         self.assertTrue(payload["enabled"])
-        self.assertEqual(payload["model"], "claude-opus-5")
+        self.assertIn("qwen2.5:7b", payload["model"])
         self.assertEqual(payload["label"], "atlas")
 
     def test_a_request_without_the_header_is_forbidden(self):

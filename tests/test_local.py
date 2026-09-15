@@ -4,7 +4,7 @@ import unittest
 from chainmind.agent import AgentKernel, LocalLedger
 from chainmind.local import LocalModel, LocalRuntimeUnavailable, discover_runtime
 from chainmind.meter import Meter
-from chainmind.models import BACKENDS, ModelUnavailable, build_model, build_model_tool, describe_model
+from chainmind.models import ModelUnavailable, build_model, build_model_tool, describe_model
 from chainmind.resources import CREDIT
 from chainmind.tools import ToolRegistry
 from chainmind.transactions import TxType, build_grant
@@ -124,46 +124,46 @@ class FailureTests(unittest.TestCase):
             engine._parse({"choices": []})
 
 
-class BackendSelectionTests(unittest.TestCase):
+class RuntimeSelectionTests(unittest.TestCase):
+    """There is one kind of backend, and it is the operator's own machine."""
+
     def setUp(self):
-        for name in ("CHAINMIND_BACKEND", "CHAINMIND_LOCAL_URL", "CHAINMIND_LOCAL_DIALECT"):
+        for name in ("CHAINMIND_LOCAL_URL", "CHAINMIND_LOCAL_DIALECT", "CHAINMIND_LOCAL_MODEL"):
             os.environ.pop(name, None)
             self.addCleanup(os.environ.pop, name, None)
 
-    def test_auto_prefers_a_local_runtime(self):
+    def test_a_running_runtime_is_picked_up(self):
         with FakeRuntime("ollama") as runtime:
             os.environ["CHAINMIND_LOCAL_URL"] = runtime.url
             os.environ["CHAINMIND_LOCAL_DIALECT"] = "ollama"
-            engine = build_model("auto")
+            engine = build_model()
         self.assertIsInstance(engine, LocalModel)
-        self.assertEqual(engine.model, "qwen2.5:7b")   # first one the runtime offers
+        self.assertEqual(engine.model, "qwen2.5:7b")   # the first one it offers
 
-    def test_local_is_refused_clearly_when_nothing_is_running(self):
+    def test_a_named_model_wins_over_the_default(self):
+        with FakeRuntime("ollama") as runtime:
+            os.environ["CHAINMIND_LOCAL_URL"] = runtime.url
+            os.environ["CHAINMIND_LOCAL_DIALECT"] = "ollama"
+            engine = build_model("llama3.1")
+        self.assertEqual(engine.model, "llama3.1")
+
+    def test_nothing_running_says_how_to_start_one(self):
         os.environ["CHAINMIND_LOCAL_URL"] = "http://127.0.0.1:1"
         os.environ["CHAINMIND_LOCAL_DIALECT"] = "ollama"
         with self.assertRaises(ModelUnavailable) as ctx:
-            build_model("local")
+            build_model()
         self.assertIn("ollama serve", str(ctx.exception))
 
-    def test_auto_with_nothing_available_names_both_paths(self):
-        os.environ["CHAINMIND_LOCAL_URL"] = "http://127.0.0.1:1"
-        os.environ["CHAINMIND_LOCAL_DIALECT"] = "ollama"
-        for key in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN"):
-            os.environ.pop(key, None)
-        os.environ["ANTHROPIC_CONFIG_DIR"] = "/nonexistent-for-tests"
-        self.addCleanup(os.environ.pop, "ANTHROPIC_CONFIG_DIR", None)
-        with self.assertRaises(ModelUnavailable) as ctx:
-            build_model("auto")
-        message = str(ctx.exception)
-        self.assertIn("ollama", message)
-        self.assertIn("ANTHROPIC_API_KEY", message)
-
-    def test_an_unknown_backend_is_refused(self):
-        with self.assertRaises(ValueError):
-            build_model("telepathy")
-
-    def test_every_backend_name_is_documented(self):
-        self.assertEqual(set(BACKENDS), {"auto", "local", "claude"})
+    def test_the_project_offers_no_hosted_path(self):
+        # Guards the promise rather than the implementation: nothing in the
+        # package may reach a third-party inference service.
+        import chainmind, pathlib as _p
+        root = _p.Path(chainmind.__file__).parent
+        offenders = [
+            path.name for path in root.glob("*.py")
+            if "anthropic" in path.read_text() or "api.openai.com" in path.read_text()
+        ]
+        self.assertEqual(offenders, [])
 
     def test_a_local_model_describes_where_it_runs(self):
         with FakeRuntime("ollama") as runtime:

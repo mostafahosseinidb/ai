@@ -181,9 +181,8 @@ class FlagPositionTests(CliTestCase):
         self.assertIn("chain_id", json.loads(out.getvalue()))
 
 
-class BackendsCommandTests(CliTestCase):
-    def test_it_reports_both_paths(self):
-        report = self.run_cli("backends", expect=1)   # nothing available in a bare test env
-        self.assertIn("local", report)
-        self.assertIn("claude", report)
-        self.assertIn("available", report["local"])
+class RuntimeCommandTests(CliTestCase):
+    def test_it_reports_when_nothing_is_running(self):
+        report = self.run_cli("runtime", expect=1)    # nothing listening in a bare test env
+        self.assertFalse(report["available"])
+        self.assertIn("ollama serve", report["reason"])

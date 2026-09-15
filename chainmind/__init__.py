@@ -26,6 +26,7 @@ from .crypto import SigningKey, VerifyingKey, merkle_root, sha256_hex
 from .local import LocalModel, LocalRuntimeUnavailable, discover_runtime
 from .executors import Executor, InProcessExecutor, SandboxExecutor
 from .mempool import Mempool
+from .p2p import Node, NodeError, PeerInfo, join_network, submit_to_node
 from .meter import Meter, UsageRecord
 from .sandbox import SUPPORTED as SANDBOX_SUPPORTED, SandboxLimits, SandboxResult, SandboxUnavailable
 from .resources import CREDIT, DEFAULT_PRICES, MICROCREDIT, PriceTable, ResourceKind, format_credits
@@ -42,12 +43,13 @@ from .transactions import (
     build_usage,
 )
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 __all__ = [
     "ActionOutcome", "Account", "AgentHalted", "AgentKernel", "Block", "BlockHeader",
     "ChatBusy", "ChatRejected", "ChatService", "Conversation", "LedgerBusy",
     "LocalModel", "LocalRuntimeUnavailable", "discover_runtime",
+    "Node", "NodeError", "PeerInfo", "join_network", "submit_to_node",
     "Executor", "InProcessExecutor", "SandboxExecutor", "SandboxLimits", "SandboxResult",
     "SandboxUnavailable", "SANDBOX_SUPPORTED",
     "BudgetAwarePlanner", "CREDIT", "Chain", "ChainError", "ConsensusError", "DEFAULT_PRICES",

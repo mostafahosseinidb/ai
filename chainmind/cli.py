@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import argparse
 import errno
-import importlib.util
+import threading
 import json
 import os
 import stat
@@ -180,6 +180,27 @@ def cmd_keygen(args: argparse.Namespace) -> int:
     return 0
 
 
+def _deliver(args: argparse.Namespace, workspace: "Workspace", chain, tx,
+             sealer) -> dict[str, Any]:
+    """Get a transaction into the chain, by whichever route is available.
+
+    With ``--node`` the transaction is handed to a running node and reaches
+    the chain through consensus.  Without it, this process seals a block
+    itself -- which only works when no node holds the ledger's write lock.
+    """
+    if args.node:
+        from .p2p import submit_to_node
+
+        host, port = _parse_peers([args.node])[0]
+        submit_to_node(host, port, tx, chain=chain)
+        return {"delivered": "node", "node": f"{host}:{port}", "sealed": False}
+
+    result = chain.seal_block(sealer, [tx])
+    if result.rejected:
+        raise SystemExit(f"rejected: {result.rejected[0][1]}")
+    return {"delivered": "local", "sealed": True, "height": chain.height}
+
+
 def cmd_grant(args: argparse.Namespace) -> int:
     workspace = Workspace(args.workspace)
     chain = workspace.load_chain()
@@ -195,20 +216,17 @@ def cmd_grant(args: argparse.Namespace) -> int:
 
     tx = build_grant(authority, account.nonce, beneficiary=beneficiary,
                      amount=amount, memo=args.memo)
-    result = chain.seal_block(authority, [tx])
-    if result.rejected:
-        raise SystemExit(f"grant rejected: {result.rejected[0][1]}")
+    delivery = _deliver(args, workspace, chain, tx, authority)
 
-    _emit(
-        {"txid": tx.txid, "beneficiary": beneficiary, "amount": amount,
-         "balance": chain.state.balance_of(beneficiary)},
-        args.json,
-        render=[
-            f"granted   {format_credits(amount)} -> {beneficiary[:16]}...",
-            f"balance   {format_credits(chain.state.balance_of(beneficiary))}",
-            f"tx        {tx.txid}",
-        ],
-    )
+    payload = {"txid": tx.txid, "beneficiary": beneficiary, "amount": amount,
+               "balance": chain.state.balance_of(beneficiary), **delivery}
+    lines = [f"granted   {format_credits(amount)} -> {beneficiary[:16]}..."]
+    if delivery["sealed"]:
+        lines.append(f"balance   {format_credits(chain.state.balance_of(beneficiary))}")
+    else:
+        lines.append(f"handed to {delivery['node']}; it settles when a validator seals it")
+    lines.append(f"tx        {tx.txid}")
+    _emit(payload, args.json, render=lines)
     return 0
 
 
@@ -226,15 +244,18 @@ def cmd_policy(args: argparse.Namespace) -> int:
         raise SystemExit("nothing to change: pass --price and/or --limit")
 
     tx = build_policy_update(authority, account.nonce, prices=prices, limits=limits, memo=args.memo)
-    result = chain.seal_block(authority, [tx])
-    if result.rejected:
-        raise SystemExit(f"policy update rejected: {result.rejected[0][1]}")
+    delivery = _deliver(args, workspace, chain, tx, authority)
 
-    _emit({"txid": tx.txid, "prices": chain.state.prices.to_dict(), "limits": chain.state.limits},
-          args.json,
-          render=[f"policy updated in {tx.txid[:16]}",
-                  f"prices  {chain.state.prices.to_dict()}",
-                  f"limits  {chain.state.limits or 'none'}"])
+    payload = {"txid": tx.txid, "prices": chain.state.prices.to_dict(),
+               "limits": chain.state.limits, **delivery}
+    lines = [
+        f"policy {'updated in' if delivery['sealed'] else 'submitted as'} {tx.txid[:16]}",
+        f"prices  {chain.state.prices.to_dict()}",
+        f"limits  {chain.state.limits or 'none'}",
+    ]
+    if not delivery["sealed"]:
+        lines.append(f"handed to {delivery['node']}; it settles when a validator seals it")
+    _emit(payload, args.json, render=lines)
     return 0
 
 
@@ -424,8 +445,8 @@ def cmd_ask(args: argparse.Namespace) -> int:
         raise SystemExit("the prompt is empty")
 
     try:
-        model = build_model(args.backend, model=args.model, effort=args.effort)
-    except (ModelUnavailable, ValueError) as exc:
+        model = build_model(args.model)
+    except ModelUnavailable as exc:
         raise SystemExit(str(exc)) from exc
 
     registry = ToolRegistry()
@@ -549,8 +570,8 @@ def _build_chat_service(args: argparse.Namespace, workspace: "Workspace", chain)
     from .tools import ToolRegistry
 
     try:
-        model = build_model(args.backend, model=args.model, effort=args.effort)
-    except (ModelUnavailable, ValueError) as exc:
+        model = build_model(args.model)
+    except ModelUnavailable as exc:
         raise SystemExit(f"--chat needs a model:\n{exc}") from exc
 
     registry = ToolRegistry()
@@ -574,41 +595,138 @@ def _build_chat_service(args: argparse.Namespace, workspace: "Workspace", chain)
                        max_tokens=args.chat_max_tokens, history_turns=args.history_turns)
 
 
-def cmd_backends(args: argparse.Namespace) -> int:
-    """Report where this machine could run the agent's thinking."""
-    from .local import LocalRuntimeUnavailable, discover_runtime
-    from .models import _claude_credentials_available
+def _parse_peers(values: Sequence[str] | None) -> list[tuple[str, int]]:
+    peers: list[tuple[str, int]] = []
+    for item in values or []:
+        host, _, port = item.rpartition(":")
+        if not host or not port.isdigit():
+            raise SystemExit(f"a peer must look like host:port, got {item!r}")
+        peers.append((host.strip("[]"), int(port)))
+    return peers
 
-    found: dict[str, Any] = {}
+
+def cmd_join(args: argparse.Namespace) -> int:
+    """Download an existing chain and become a node of it."""
+    from .p2p import join_network
+
+    workspace = Workspace(args.workspace)
+    if workspace.exists() and not args.force:
+        raise SystemExit(
+            f"{workspace.ledger_path} already exists; pass --force to replace it"
+        )
+    workspace.ensure()
+    host, port = _parse_peers([args.peer])[0]
+
+    chain = join_network(host, port, workspace.ledger_path,
+                         expected_genesis=args.genesis_hash,
+                         log=lambda message: print(f"  {message}"))
     try:
-        base, dialect, models = discover_runtime()
-        found["local"] = {"available": True, "url": base, "dialect": dialect, "models": models}
-    except LocalRuntimeUnavailable as exc:
-        found["local"] = {"available": False, "reason": str(exc).splitlines()[0]}
+        state = chain.verify()
+        if not args.genesis_hash:
+            print("\nwarning   you trusted this peer's genesis on first use.")
+            print("          publish the hash below and pass it as --genesis-hash next time.")
+        payload = {
+            "chain_id": chain.genesis_config.chain_id,
+            "genesis_hash": Chain.genesis_commitment(chain.genesis_config),
+            "height": chain.height,
+            "state_root": state.state_root(),
+            "ledger": str(workspace.ledger_path),
+        }
+        lines = [
+            "",
+            f"chain        {payload['chain_id']}",
+            f"genesis      {payload['genesis_hash']}",
+            f"height       {payload['height']}",
+            f"state root   {payload['state_root']}",
+            f"ledger       {payload['ledger']}",
+            "",
+            f"next: chainmind node --peer {host}:{port}",
+        ]
+        _emit(payload, args.json, render=lines)
+    finally:
+        chain.close()
 
-    has_key = _claude_credentials_available()
-    # find_spec asks whether the SDK could be imported without importing it,
-    # which keeps a broken install from taking this command down with it.
-    sdk = importlib.util.find_spec("anthropic") is not None
-    found["claude"] = {"available": bool(has_key and sdk), "sdk_installed": sdk,
-                       "credentials": has_key}
+    if not workspace.key_names():
+        key = workspace.create_key("agent")
+        print(f"agent key    {key.public_hex()}")
+        print("ask a network authority to grant it credits before it can act.")
+    return 0
 
-    lines = []
-    local = found["local"]
-    if local["available"]:
-        lines.append(f"local     yes — {local['dialect']} at {local['url']}")
-        lines.append(f"          models: {', '.join(local['models']) or '(none pulled yet)'}")
-    else:
-        lines.append(f"local     no — {local['reason']}")
-    claude = found["claude"]
-    lines.append(
-        "claude    " + ("yes" if claude["available"] else "no") +
-        f" — sdk {'installed' if sdk else 'missing'}, "
-        f"credentials {'found' if has_key else 'not found'}"
+
+def cmd_node(args: argparse.Namespace) -> int:
+    """Run as a node of the network."""
+    import signal as signal_module
+
+    from .p2p import DEFAULT_P2P_PORT, Node
+
+    workspace = Workspace(args.workspace)
+    chain = workspace.load_chain()
+    node_key = (
+        workspace.load_key(args.node_key) if args.node_key in workspace.key_names()
+        else workspace.create_key(args.node_key)
     )
-    lines += ["", "local needs no key, no account and no network."]
+
+    node = Node(chain, node_key=node_key, host=args.host, port=args.port,
+                label=args.label or workspace.root.name,
+                log=lambda message: print(f"  {message}", flush=True))
+    node.start()
+
+    print(f"node       {node.node_id}")
+    print(f"listening  {node.host}:{node.port}")
+    print(f"chain      {chain.genesis_config.chain_id} at height {chain.height}")
+    print(f"genesis    {Chain.genesis_commitment(chain.genesis_config)}")
+
+    peers = _parse_peers(args.peer)
+    if peers:
+        print(f"dialing    {', '.join(f'{h}:{p}' for h, p in peers)}")
+        node.connect_all(peers)
+
+    sealer = None
+    if args.seal:
+        sealer = workspace.load_key(args.seal)
+        if sealer.public_hex() not in getattr(chain.consensus, "validators", []):
+            raise SystemExit(
+                f"'{args.seal}' is not in this chain's validator set, so blocks it "
+                "sealed would be refused by every peer"
+            )
+        print(f"sealing    every {args.seal_interval}s as '{args.seal}'")
+
+    stopping = threading.Event()
+    for name in ("SIGINT", "SIGTERM"):
+        handler = getattr(signal_module, name, None)
+        if handler is not None:
+            signal_module.signal(handler, lambda *_: stopping.set())
+
+    print("\nCtrl-C to stop.")
+    try:
+        while not stopping.wait(args.seal_interval if sealer else 1.0):
+            if sealer is not None:
+                block = node.seal(sealer)
+                if block is not None:
+                    print(f"  sealed #{block.height} with "
+                          f"{len(block.transactions)} tx", flush=True)
+    finally:
+        print("\nstopping…")
+        node.stop()
+    return 0
+
+
+def cmd_runtime(args: argparse.Namespace) -> int:
+    """Report the inference runtime this machine is offering, if any."""
+    from .models import available_runtimes
+
+    found = available_runtimes()
+    if found["available"]:
+        lines = [
+            f"runtime   {found['dialect']} at {found['url']}",
+            f"models    {', '.join(found['models']) or '(none pulled yet)'}",
+            "",
+            "no key, no account, no outbound request.",
+        ]
+    else:
+        lines = ["runtime   none reachable", "", found["reason"]]
     _emit(found, args.json, render=lines)
-    return 0 if (found["local"]["available"] or found["claude"]["available"]) else 1
+    return 0 if found["available"] else 1
 
 
 def cmd_keys(args: argparse.Namespace) -> int:
@@ -665,8 +783,32 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--force", action="store_true")
     p.set_defaults(func=cmd_keygen)
 
-    p = sub.add_parser("backends", parents=[shared], help="show where this machine can run the agent's thinking")
-    p.set_defaults(func=cmd_backends)
+    p = sub.add_parser("join", parents=[shared],
+                       help="download an existing chain from a peer and become a node of it")
+    p.add_argument("peer", help="a node of the network, as host:port")
+    p.add_argument("--genesis-hash",
+                   help="the genesis commitment you expect; without it this is "
+                        "trust-on-first-use")
+    p.add_argument("--force", action="store_true", help="replace an existing workspace")
+    p.set_defaults(func=cmd_join)
+
+    p = sub.add_parser("node", parents=[shared], help="run as a node of the network")
+    p.add_argument("--host", default="0.0.0.0",
+                   help="interface to listen on (default: every interface)")
+    p.add_argument("--port", type=int, default=8877)
+    p.add_argument("--peer", action="append", metavar="HOST:PORT",
+                   help="a node to dial on start, repeatable")
+    p.add_argument("--node-key", default="node", help="key name identifying this node")
+    p.add_argument("--label", default="", help="a human name for this node")
+    p.add_argument("--seal", metavar="KEY",
+                   help="also produce blocks with this key (validators only)")
+    p.add_argument("--seal-interval", type=float, default=5.0,
+                   help="seconds between block attempts when sealing")
+    p.set_defaults(func=cmd_node)
+
+    p = sub.add_parser("runtime", parents=[shared],
+                       help="show the inference runtime this machine offers")
+    p.set_defaults(func=cmd_runtime)
 
     p = sub.add_parser("keys", parents=[shared], help="list the keys in the workspace")
     p.set_defaults(func=cmd_keys)
@@ -676,6 +818,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("amount", type=float, help="credits to grant (fractions allowed)")
     p.add_argument("--from-key", default="authority")
     p.add_argument("--memo", default="")
+    p.add_argument("--node", metavar="HOST:PORT",
+                   help="hand the transaction to a running node instead of sealing "
+                        "it here; required while a node holds the ledger")
     p.set_defaults(func=cmd_grant)
 
     p = sub.add_parser("policy", parents=[shared], help="change prices or quotas (authority only)")
@@ -683,6 +828,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--limit", action="append", metavar="RESOURCE=UNITS")
     p.add_argument("--from-key", default="authority")
     p.add_argument("--memo", default="")
+    p.add_argument("--node", metavar="HOST:PORT",
+                   help="hand the transaction to a running node instead of sealing "
+                        "it here; required while a node holds the ledger")
     p.set_defaults(func=cmd_policy)
 
     p = sub.add_parser("run", parents=[shared], help="give the agent a goal and let it spend within its means")
@@ -700,11 +848,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("prompt", help="the prompt; use - to read it from stdin")
     p.add_argument("--agent", default="agent", help="key name of the acting agent")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
-    p.add_argument("--backend", choices=["auto", "local", "claude"], default="auto",
-                   help='where the agent thinks: "local" runs on this machine and needs no key, "claude" is a hosted API, "auto" tries local first')
     p.add_argument("--model", help="model name; defaults to what the runtime offers")
-    p.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"],
-                   help="how hard the model should think (hosted backends only)")
     p.add_argument("--max-tokens", type=int, default=16_000,
                    help="ceiling on the answer, and what gets authorised up front")
     p.add_argument("--sandbox", action="store_true",
@@ -735,10 +879,7 @@ def build_parser() -> argparse.ArgumentParser:
                         "this process hold the agent's signing key")
     p.add_argument("--agent", default="agent", help="key name that chat speaks as")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
-    p.add_argument("--backend", choices=["auto", "local", "claude"], default="auto",
-                   help='where the agent thinks: "local" runs on this machine and needs no key, "claude" is a hosted API, "auto" tries local first')
     p.add_argument("--model", help="model name for chat")
-    p.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"])
     p.add_argument("--chat-max-tokens", type=int, default=4_000,
                    help="ceiling authorised for each answer")
     p.add_argument("--history-turns", type=int, default=20,
