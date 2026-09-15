@@ -22,6 +22,7 @@ from support import AGENT, AUTHORITY, make_genesis
 
 
 def build_service(path: Path, credits: int = 20, runtime: FakeRuntime | None = None, **kwargs):
+    """A chat service wired to a fake runtime, optionally with memory."""
     chain = Chain.create(make_genesis(), AUTHORITY, ProofOfAuthority([AUTHORITY.public_hex()]),
                          path=path, timestamp=1_700_000_000)
     ledger = LocalLedger(chain, AUTHORITY)
@@ -262,3 +263,158 @@ class ChatEndpointTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MemoryTests(unittest.TestCase):
+    """A conversation that builds on earlier ones, and pays for doing so."""
+
+    def setUp(self):
+        from chainmind.memory import FeedbackStore, MemoryStore
+
+        self.dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.dir.cleanup)
+        self.runtime = FakeRuntime("ollama", answer="the answer").__enter__()
+        self.addCleanup(self.runtime.__exit__, None, None, None)
+        self.memory = MemoryStore(Path(self.dir.name) / "notes.jsonl")
+        self.feedback = FeedbackStore(Path(self.dir.name) / "feedback.jsonl")
+        self.service, self.chain, _ = build_service(
+            Path(self.dir.name) / "ledger.jsonl", runtime=self.runtime,
+            memory=self.memory, feedback=self.feedback,
+        )
+
+    def system_sent(self) -> str:
+        return self.runtime.requests[-1]["messages"][0]["content"]
+
+    def test_a_relevant_note_reaches_the_model(self):
+        self.memory.remember("رمز عبور پایگاه داده در Vault نگهداری می‌شود", kind="fact")
+        result = self.service.send("رمز عبور پایگاه داده کجاست؟")
+        self.assertIn("Vault", self.system_sent())
+        self.assertTrue(result["recalled"])
+
+    def test_an_irrelevant_note_is_left_out(self):
+        self.memory.remember("قهوه را با شیر دوست دارم", kind="preference")
+        result = self.service.send("پروتکل شبکه چگونه کار می‌کند؟")
+        self.assertNotIn("قهوه", self.system_sent())
+        self.assertEqual(result["recalled"], [])
+
+    def test_a_turn_is_remembered_for_the_next_one(self):
+        self.service.send("پایتخت فرانسه کجاست؟")
+        turns = [note for note in self.memory.notes() if note.kind == "turn"]
+        self.assertEqual(len(turns), 1)
+        self.assertIn("فرانسه", turns[0].text)
+
+    def test_what_was_recalled_is_reported_back(self):
+        note = self.memory.remember("شمارهٔ پرواز ۷۷۴ است", kind="fact")
+        result = self.service.send("شمارهٔ پرواز چند بود؟")
+        self.assertEqual([hit["id"] for hit in result["recalled"]], [note.id])
+
+    def test_recall_is_paid_for_rather_than_smuggled_in(self):
+        # A recalled note lengthens the system prompt, so the authorised
+        # estimate has to grow with it.
+        plain = self.service.kernel.tools.get("ask").estimated_cost(prompt="سؤال")
+        self.memory.remember("حقیقت " * 200, kind="fact")
+        context, _ = self.memory.recall_context("حقیقت")
+        with_memory = self.service.kernel.tools.get("ask").estimated_cost(
+            prompt="سؤال", system=context
+        )
+        self.assertGreater(with_memory["llm_input_tokens"], plain["llm_input_tokens"])
+
+    def test_memory_can_be_turned_off_entirely(self):
+        plain, _, _ = build_service(Path(self.dir.name) / "plain.jsonl",
+                                    runtime=self.runtime)
+        result = plain.send("سؤالی بپرس")
+        self.assertEqual(result["recalled"], [])
+        self.assertIsNone(plain.status()["memory"])
+
+
+class FeedbackTests(unittest.TestCase):
+    def setUp(self):
+        from chainmind.memory import FeedbackStore, MemoryStore
+
+        self.dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.dir.cleanup)
+        self.runtime = FakeRuntime("ollama", answer="the answer").__enter__()
+        self.addCleanup(self.runtime.__exit__, None, None, None)
+        self.feedback = FeedbackStore(Path(self.dir.name) / "feedback.jsonl")
+        self.service, self.chain, _ = build_service(
+            Path(self.dir.name) / "ledger.jsonl", runtime=self.runtime,
+            memory=MemoryStore(Path(self.dir.name) / "notes.jsonl"),
+            feedback=self.feedback,
+        )
+
+    def test_an_answer_can_be_rated(self):
+        sent = self.service.send("سؤال")
+        result = self.service.rate(sent["conversation_id"], sent["turn"], "good")
+        self.assertEqual(result["good"], 1)
+        entry = self.feedback.get(sent["conversation_id"], sent["turn"])
+        self.assertEqual(entry.prompt, "سؤال")
+        self.assertEqual(entry.answer, "the answer")
+
+    def test_a_rating_is_committed_to_the_chain(self):
+        sent = self.service.send("سؤال")
+        self.service.rate(sent["conversation_id"], sent["turn"], "bad")
+        topics = [tx.body["topic"] for _, tx in self.chain.transactions()
+                  if tx.type is TxType.ATTEST]
+        self.assertIn("feedback", topics)
+
+    def test_a_question_cannot_be_rated_only_an_answer(self):
+        sent = self.service.send("سؤال")
+        with self.assertRaises(ValueError):
+            self.service.rate(sent["conversation_id"], sent["turn"] - 1, "good")
+
+    def test_an_unknown_rating_is_refused(self):
+        sent = self.service.send("سؤال")
+        with self.assertRaises(ValueError):
+            self.service.rate(sent["conversation_id"], sent["turn"], "brilliant")
+
+    def test_an_unknown_conversation_is_refused(self):
+        with self.assertRaises(ValueError):
+            self.service.rate("nope", 0, "good")
+
+    def test_ratings_accumulate_into_a_dataset(self):
+        from chainmind.memory import build_training_dataset
+
+        for prompt in ("سؤال اول", "سؤال دوم"):
+            sent = self.service.send(prompt)
+            self.service.rate(sent["conversation_id"], sent["turn"], "good")
+        rows = build_training_dataset(self.feedback)
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0]["messages"][1]["content"], "the answer")
+
+
+class ReloadFidelityTests(unittest.TestCase):
+    """A reloaded conversation must show what the live one showed."""
+
+    def setUp(self):
+        from chainmind.memory import FeedbackStore, MemoryStore
+
+        self.dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.dir.cleanup)
+        self.runtime = FakeRuntime("ollama", answer="the answer").__enter__()
+        self.addCleanup(self.runtime.__exit__, None, None, None)
+        self.memory = MemoryStore(Path(self.dir.name) / "notes.jsonl")
+        self.service, _, _ = build_service(
+            Path(self.dir.name) / "ledger.jsonl", runtime=self.runtime,
+            memory=self.memory,
+            feedback=FeedbackStore(Path(self.dir.name) / "feedback.jsonl"),
+        )
+
+    def test_a_stored_turn_keeps_the_text_it_was_given(self):
+        self.memory.remember("پورت پیش‌فرض شبکه ۸۸۷۷ است", kind="fact")
+        sent = self.service.send("پورت پیش‌فرض چند است؟")
+        stored = self.service.get(sent["conversation_id"]).to_dict()["turns"][sent["turn"]]
+        self.assertTrue(stored["recalled"])
+        self.assertIn("۸۸۷۷", stored["recalled"][0]["text"])
+
+    def test_a_recorded_rating_comes_back_with_the_conversation(self):
+        sent = self.service.send("سؤال")
+        self.service.rate(sent["conversation_id"], sent["turn"], "good")
+        turns = self.service.get(sent["conversation_id"]).to_dict()["turns"]
+        self.assertEqual(turns[sent["turn"]]["rating"], "good")
+        self.assertIsNone(turns[sent["turn"] - 1]["rating"])
+
+    def test_every_turn_reports_its_own_index(self):
+        first = self.service.send("یک")
+        self.service.send("دو", conversation_id=first["conversation_id"])
+        turns = self.service.get(first["conversation_id"]).to_dict()["turns"]
+        self.assertEqual([turn["turn"] for turn in turns], [0, 1, 2, 3])

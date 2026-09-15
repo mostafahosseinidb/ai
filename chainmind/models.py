@@ -19,8 +19,7 @@ retire your model.
 
 from __future__ import annotations
 
-import os
-from typing import Any, Mapping
+from typing import Any
 
 from .local import LocalModel, LocalRuntimeUnavailable, discover_runtime
 from .meter import Meter
@@ -95,8 +94,12 @@ def build_model_tool(model: LocalModel | None = None, *, name: str = "ask") -> T
         name=name,
         description=f"Answer a prompt with {describe_model(engine)}.",
         run=run,
+        # The estimate is handed the same system prompt the call will use,
+        # so anything added to it -- recalled memory, for instance -- is paid
+        # for rather than smuggled past the budget check.
         estimate=lambda kw: engine.estimate(
-            str(kw.get("prompt", "")), kw.get("max_tokens"), kw.get("history")
+            str(kw.get("prompt", "")), kw.get("max_tokens"),
+            kw.get("history"), kw.get("system"),
         ),
     )
 

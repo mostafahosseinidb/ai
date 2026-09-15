@@ -358,6 +358,22 @@ def build_application(view: LedgerView, *, quiet: bool = True,
                 self._send(HTTPStatus.OK, body, content_type)
                 return
 
+            if path == "/api/memory":
+                if chat is None or chat.memory is None:
+                    self._error(HTTPStatus.NOT_FOUND, "this server keeps no memory")
+                    return
+                query = parse_qs(parsed.query)
+                wanted = (query.get("q", [""])[0] or "").strip()
+                if wanted:
+                    hits = chat.memory.search(wanted, limit=_int(query, "limit", 10))
+                    self._json({"query": wanted, "hits": [hit.to_dict() for hit in hits]})
+                else:
+                    self._json({
+                        **chat.memory.stats(),
+                        "recent": [note.to_dict() for note in chat.memory.notes()[:20]],
+                    })
+                return
+
             if path == "/api/chat":
                 if chat is None:
                     self._error(HTTPStatus.NOT_FOUND, "chat is not enabled on this server")
@@ -416,13 +432,17 @@ def build_application(view: LedgerView, *, quiet: bool = True,
             parsed = urlparse(self.path)
             path = parsed.path.rstrip("/") or "/"
 
+            if chat is not None and path == "/api/feedback":
+                self._handle_feedback(chat)
+                return
+
             if chat is None or path != "/api/chat":
                 # Everything else that changes the ledger needs a signing key,
                 # and those stay on the command line.
                 self._error(
                     HTTPStatus.METHOD_NOT_ALLOWED,
                     "this server is read-only" if chat is None
-                    else "the only write route is /api/chat",
+                    else "the only write routes are /api/chat and /api/feedback",
                 )
                 return
 
@@ -433,22 +453,8 @@ def build_application(view: LedgerView, *, quiet: bool = True,
                 self._error(HTTPStatus.FORBIDDEN, "this request did not come from the dashboard")
                 return
 
-            try:
-                length = int(self.headers.get("Content-Length", "0"))
-            except ValueError:
-                self._error(HTTPStatus.BAD_REQUEST, "malformed Content-Length")
-                return
-            if length > MAX_BODY_BYTES:
-                self._error(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, "the request body is too large")
-                return
-
-            try:
-                body = json.loads(self.rfile.read(length) or b"{}")
-            except (json.JSONDecodeError, UnicodeDecodeError):
-                self._error(HTTPStatus.BAD_REQUEST, "the request body is not JSON")
-                return
-            if not isinstance(body, dict):
-                self._error(HTTPStatus.BAD_REQUEST, "the request body must be an object")
+            body = self._read_json_body()
+            if body is None:
                 return
 
             try:
@@ -478,6 +484,49 @@ def build_application(view: LedgerView, *, quiet: bool = True,
 
             view.invalidate()      # the ledger just grew; re-read it next time
             self._json(result)
+
+        def _handle_feedback(self, chat: ChatService) -> None:
+            """Record a verdict on an answer.  Same guards as the chat route."""
+            if self.headers.get(CHAT_HEADER) is None:
+                self._error(HTTPStatus.FORBIDDEN, f"missing {CHAT_HEADER} header")
+                return
+            if not self._origin_is_acceptable():
+                self._error(HTTPStatus.FORBIDDEN, "this request did not come from the dashboard")
+                return
+            body = self._read_json_body()
+            if body is None:
+                return
+            try:
+                result = chat.rate(
+                    str(body.get("conversation_id", "")),
+                    int(body.get("turn", -1)),
+                    str(body.get("rating", "")),
+                    str(body.get("note", "")),
+                )
+            except (ValueError, TypeError) as exc:
+                self._error(HTTPStatus.BAD_REQUEST, str(exc))
+                return
+            view.invalidate()
+            self._json(result)
+
+        def _read_json_body(self) -> dict[str, Any] | None:
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+            except ValueError:
+                self._error(HTTPStatus.BAD_REQUEST, "malformed Content-Length")
+                return None
+            if length > MAX_BODY_BYTES:
+                self._error(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, "the request body is too large")
+                return None
+            try:
+                body = json.loads(self.rfile.read(length) or b"{}")
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._error(HTTPStatus.BAD_REQUEST, "the request body is not JSON")
+                return None
+            if not isinstance(body, dict):
+                self._error(HTTPStatus.BAD_REQUEST, "the request body must be an object")
+                return None
+            return body
 
         do_PUT = do_DELETE = do_PATCH = do_POST  # noqa: N815
 

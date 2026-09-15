@@ -196,16 +196,22 @@ class LocalModel:
         return max(1, len(text) // 3)
 
     def count_input_tokens(self, prompt: str,
-                           history: Sequence[Mapping[str, str]] | None = None) -> int:
+                           history: Sequence[Mapping[str, str]] | None = None,
+                           system: str | None = None) -> int:
         """Count the turn's input tokens, exactly where the runtime allows it.
+
+        ``system`` must be whatever the call will actually send.  Counting the
+        default while sending an augmented one -- recalled memory, say --
+        under-estimates the turn, and an under-estimate is precisely how an
+        action slips past the budget check this project exists to enforce.
 
         llama.cpp exposes ``/tokenize``; Ollama has no counting endpoint at
         all.  Where an exact count is not available this over-estimates on
-        purpose -- an under-estimate would let the agent slip past its own
-        budget check.
+        purpose.
         """
         messages = self.conversation(prompt, history)
-        text = self.system + "\n" + "\n".join(m["content"] for m in messages)
+        instructions = self.system if system is None else system
+        text = instructions + "\n" + "\n".join(m["content"] for m in messages)
         if self.dialect == "openai":
             try:
                 payload = _request(
@@ -219,9 +225,12 @@ class LocalModel:
         return self.approximate_tokens(text)
 
     def estimate(self, prompt: str, max_tokens: int | None = None,
-                 history: Sequence[Mapping[str, str]] | None = None) -> dict[str, int]:
+                 history: Sequence[Mapping[str, str]] | None = None,
+                 system: str | None = None) -> dict[str, int]:
         return {
-            ResourceKind.LLM_INPUT_TOKENS.value: self.count_input_tokens(prompt, history),
+            ResourceKind.LLM_INPUT_TOKENS.value: self.count_input_tokens(
+                prompt, history, system
+            ),
             ResourceKind.LLM_OUTPUT_TOKENS.value: int(max_tokens or self.max_tokens),
         }
 

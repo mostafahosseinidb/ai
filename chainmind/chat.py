@@ -27,6 +27,7 @@ from typing import Any, Mapping
 
 from .agent import AgentKernel, LocalLedger
 from .crypto import canonical_bytes, sha256_hex
+from .memory import RATINGS, FeedbackStore, MemoryStore
 from .resources import format_credits
 
 __all__ = ["ChatService", "Conversation", "ChatBusy", "ChatRejected", "MAX_PROMPT_BYTES"]
@@ -38,6 +39,11 @@ MAX_PROMPT_BYTES = 32 * 1024
 #: How much of a conversation is replayed to the model.  Every turn resends
 #: the history, so an unbounded one grows the per-turn bill without limit.
 DEFAULT_HISTORY_TURNS = 20
+
+
+def _looks_persian(text: str) -> bool:
+    """Whether to write a remembered turn in Persian or English."""
+    return any("\u0600" <= character <= "\u06ff" for character in text)
 
 
 class ChatBusy(RuntimeError):
@@ -64,9 +70,14 @@ class Turn:
     txids: list[str] = field(default_factory=list)
     height: int | None = None
     note: str = ""
+    #: What the answer was given from memory, as ``{id, text}``. Stored on the
+    #: turn rather than looked up later: memory changes, and the record of why
+    #: an answer said what it said should not change with it.
+    recalled: list[Mapping[str, str]] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return {
+            "recalled": [dict(entry) for entry in self.recalled],
             "role": self.role,
             "content": self.content,
             "at": self.at,
@@ -84,6 +95,9 @@ class Conversation:
     id: str
     turns: list[Turn] = field(default_factory=list)
     started_at: int = field(default_factory=lambda: int(time.time()))
+    #: turn index -> rating, filled in by the service so a reloaded page
+    #: shows the verdicts already given.
+    ratings: dict[int, str] = field(default_factory=dict)
 
     def history(self, limit: int = DEFAULT_HISTORY_TURNS) -> list[dict[str, str]]:
         """What gets replayed to the model, oldest first, bounded."""
@@ -109,7 +123,10 @@ class Conversation:
             "id": self.id,
             "started_at": self.started_at,
             "title": self.title(),
-            "turns": [turn.to_dict() for turn in self.turns],
+            "turns": [
+                {**turn.to_dict(), "turn": index, "rating": self.ratings.get(index)}
+                for index, turn in enumerate(self.turns)
+            ],
             "spent": sum(turn.cost for turn in self.turns),
         }
 
@@ -120,13 +137,23 @@ class ChatService:
     def __init__(self, kernel: AgentKernel, ledger: LocalLedger, *,
                  model_name: str = "", max_tokens: int = 4_000,
                  history_turns: int = DEFAULT_HISTORY_TURNS,
-                 attest: bool = True) -> None:
+                 attest: bool = True, memory: MemoryStore | None = None,
+                 feedback: FeedbackStore | None = None,
+                 recall_limit: int = 4, recall_characters: int = 1_500,
+                 base_system: str = "") -> None:
         self.kernel = kernel
         self.ledger = ledger
         self.model_name = model_name
         self.max_tokens = max_tokens
         self.history_turns = history_turns
         self.attest = attest
+        #: Optional, because a chat with no memory is still a working chat --
+        #: it just starts from nothing every time.
+        self.memory = memory
+        self.feedback = feedback
+        self.recall_limit = recall_limit
+        self.recall_characters = recall_characters
+        self.base_system = base_system
         self.conversations: dict[str, Conversation] = {}
         # One turn at a time. The budget already bounds total spend, but
         # serialising keeps a stuck tab from opening ten model calls at once.
@@ -135,7 +162,13 @@ class ChatService:
     # -- accessors ---------------------------------------------------------
 
     def get(self, conversation_id: str) -> Conversation | None:
-        return self.conversations.get(conversation_id)
+        conversation = self.conversations.get(conversation_id)
+        if conversation is not None and self.feedback is not None:
+            for index in range(len(conversation.turns)):
+                entry = self.feedback.get(conversation_id, index)
+                if entry is not None:
+                    conversation.ratings[index] = entry.rating
+        return conversation
 
     def open(self, conversation_id: str | None = None) -> Conversation:
         if conversation_id and conversation_id in self.conversations:
@@ -170,6 +203,8 @@ class ChatService:
             "halt_reason": self.kernel.halt_reason(),
             "max_tokens": self.max_tokens,
             "history_turns": self.history_turns,
+            "memory": self.memory.stats() if self.memory is not None else None,
+            "feedback": self.feedback.stats() if self.feedback is not None else None,
             "model": self.model_name,
             "affordable_output_tokens": state.affordable_units(
                 self.kernel.address, "llm_output_tokens"
@@ -192,12 +227,14 @@ class ChatService:
         try:
             conversation = self.open(conversation_id)
             history = conversation.history(self.history_turns)
+            system, recalled = self._recall(prompt, conversation)
 
             before = self.kernel.balance
             outcome = self.kernel.perform(
                 "ask",
                 prompt=prompt,
                 history=history,
+                system=system,
                 max_tokens=int(max_tokens or self.max_tokens),
             )
             self.ledger.flush()
@@ -228,13 +265,24 @@ class ChatService:
             conversation.turns.append(Turn(
                 role="assistant", content=answer, cost=spent, usage=usage,
                 sources=sources, txids=list(outcome.txids), height=height, note=note,
+                recalled=[
+                    {"id": hit.note.id, "text": " ".join(hit.note.text.split())[:160]}
+                    for hit in recalled
+                ],
             ))
+            turn_index = len(conversation.turns) - 1
 
+            self._remember(conversation, prompt, answer)
             if self.attest:
                 self._attest(conversation)
 
             return {
                 "conversation_id": conversation.id,
+                "turn": turn_index,
+                "recalled": [
+                    {"id": hit.note.id, "text": hit.note.text[:160], "score": round(hit.score, 3)}
+                    for hit in recalled
+                ],
                 "answer": answer,
                 "note": note,
                 "ok": outcome.ok,
@@ -250,6 +298,93 @@ class ChatService:
             }
         finally:
             self._lock.release()
+
+    # -- memory ------------------------------------------------------------
+
+    def _recall(self, prompt: str, conversation: Conversation) -> tuple[str | None, list]:
+        """Build the system prompt for this turn, including what is relevant.
+
+        Recalled text becomes input tokens, so it is bounded and it is paid
+        for: the same system prompt goes to the estimator that asks the chain
+        for authorisation, which is why a big recall can make a turn
+        unaffordable rather than silently expensive.
+        """
+        base = self.base_system or ""
+        if self.memory is None:
+            return (base or None), []
+
+        context, hits = self.memory.recall_context(
+            prompt, limit=self.recall_limit, max_characters=self.recall_characters
+        )
+        if not context:
+            return (base or None), []
+
+        preamble = (
+            "You have remembered the following from earlier work. Use it when it "
+            "is relevant and ignore it when it is not; do not mention that you "
+            "were given notes.\n"
+            f"{context}"
+        )
+        return ((base + "\n\n" + preamble) if base else preamble), hits
+
+    def _remember(self, conversation: Conversation, prompt: str, answer: str) -> None:
+        """Write the turn back, so the next one can build on it."""
+        if self.memory is None or not answer.strip():
+            return
+        try:
+            self.memory.remember(
+                f"پرسش: {prompt}\nپاسخ: {answer}" if _looks_persian(prompt)
+                else f"Q: {prompt}\nA: {answer}",
+                kind="turn",
+                metadata={"conversation": conversation.id,
+                          "turn": len(conversation.turns) - 1},
+            )
+        except ValueError:
+            pass
+
+    # -- feedback ----------------------------------------------------------
+
+    def rate(self, conversation_id: str, turn: int, rating: str,
+             note: str = "") -> dict[str, Any]:
+        """Record what a person thought of an answer.
+
+        The verdict itself changes nothing today.  It accumulates into the
+        dataset a later fine-tune trains on, and its digest goes on chain so
+        the training signal is as auditable as the spending was.
+        """
+        if self.feedback is None:
+            raise ValueError("this chat is not collecting feedback")
+        if rating not in RATINGS:
+            raise ValueError(f"rating must be one of {', '.join(RATINGS)}")
+
+        conversation = self.get(conversation_id)
+        if conversation is None:
+            raise ValueError("no such conversation")
+        if not 0 <= turn < len(conversation.turns):
+            raise ValueError("no such turn")
+        if conversation.turns[turn].role != "assistant":
+            raise ValueError("only an answer can be rated")
+
+        answer = conversation.turns[turn].content
+        question = conversation.turns[turn - 1].content if turn else ""
+        entry = self.feedback.rate(conversation_id, turn, rating,
+                                   prompt=question, answer=answer, note=note)
+        conversation.ratings[turn] = rating
+
+        if self.attest:
+            try:
+                self.kernel.attest(
+                    "feedback",
+                    {"conversation": conversation_id, "turn": turn,
+                     "rating": rating, "digest": entry.digest},
+                    summary=f"{rating} on {conversation_id}:{turn}",
+                )
+                self.ledger.flush()
+            except Exception:
+                pass          # the verdict is recorded; the commitment is a bonus
+
+        return {"ok": True, "rating": rating, "digest": entry.digest,
+                **self.feedback.stats()}
 
     def _attest(self, conversation: Conversation) -> None:
         """Commit the conversation's digest, so its content is provable later.

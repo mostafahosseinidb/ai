@@ -42,6 +42,8 @@ class Workspace:
         self.root = root
         self.keys_dir = root / "keys"
         self.ledger_path = root / "ledger.jsonl"
+        self.memory_path = root / "memory" / "notes.jsonl"
+        self.feedback_path = root / "memory" / "feedback.jsonl"
 
     def exists(self) -> bool:
         return self.ledger_path.exists()
@@ -591,8 +593,14 @@ def _build_chat_service(args: argparse.Namespace, workspace: "Workspace", chain)
             f"run: chainmind grant {args.agent} 1"
         )
 
+    from .memory import FeedbackStore, MemoryStore
+
+    memory = None if args.no_memory else MemoryStore(workspace.memory_path)
+    feedback = None if args.no_memory else FeedbackStore(workspace.feedback_path)
     return ChatService(kernel, ledger, model_name=describe_model(model),
-                       max_tokens=args.chat_max_tokens, history_turns=args.history_turns)
+                       max_tokens=args.chat_max_tokens, history_turns=args.history_turns,
+                       memory=memory, feedback=feedback,
+                       recall_limit=args.recall)
 
 
 def _parse_peers(values: Sequence[str] | None) -> list[tuple[str, int]]:
@@ -657,7 +665,7 @@ def cmd_node(args: argparse.Namespace) -> int:
     """Run as a node of the network."""
     import signal as signal_module
 
-    from .p2p import DEFAULT_P2P_PORT, Node
+    from .p2p import Node
 
     workspace = Workspace(args.workspace)
     chain = workspace.load_chain()
@@ -708,6 +716,77 @@ def cmd_node(args: argparse.Namespace) -> int:
     finally:
         print("\nstopping…")
         node.stop()
+    return 0
+
+
+def cmd_remember(args: argparse.Namespace) -> int:
+    """Put something into memory by hand."""
+    from .memory import MemoryStore
+
+    workspace = Workspace(args.workspace)
+    text = sys.stdin.read() if args.text == "-" else args.text
+    memory = MemoryStore(workspace.memory_path)
+    note = memory.remember(text, kind=args.kind)
+    _emit({"id": note.id, "kind": note.kind, "digest": note.digest}, args.json,
+          render=[f"remembered {note.id}", f"kind       {note.kind}",
+                  f"digest     {note.digest}"])
+    return 0
+
+
+def cmd_recall(args: argparse.Namespace) -> int:
+    """Search memory the way the agent does before answering."""
+    from .memory import MemoryStore
+
+    workspace = Workspace(args.workspace)
+    memory = MemoryStore(workspace.memory_path)
+    hits = memory.search(args.query, limit=args.limit, kinds=args.kind or None)
+
+    payload = {"query": args.query, "hits": [hit.to_dict() for hit in hits],
+               **memory.stats()}
+    if not hits:
+        lines = ["nothing relevant in memory",
+                 f"({memory.stats()['notes']} notes indexed)"]
+    else:
+        lines = []
+        for hit in hits:
+            text = " ".join(hit.note.text.split())
+            lines.append(f"{hit.score:6.2f}  [{hit.note.kind}] {text[:110]}")
+    _emit(payload, args.json, render=lines)
+    return 0
+
+
+def cmd_learning(args: argparse.Namespace) -> int:
+    """What the system has collected to learn from."""
+    from .memory import FeedbackStore, MemoryStore, build_training_dataset
+
+    workspace = Workspace(args.workspace)
+    memory = MemoryStore(workspace.memory_path)
+    feedback = FeedbackStore(workspace.feedback_path)
+    dataset = build_training_dataset(feedback, rating=args.rating)
+
+    if args.export:
+        target = Path(args.export)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with target.open("w", encoding="utf-8") as handle:
+            for row in dataset:
+                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+    stats = feedback.stats()
+    payload = {"memory": memory.stats(), "feedback": stats,
+               "dataset_rows": len(dataset),
+               "exported": str(args.export) if args.export else None}
+    approval = stats["approval"]
+    lines = [
+        f"notes      {memory.stats()['notes']}  ({', '.join(f'{k}: {v}' for k, v in memory.stats()['kinds'].items()) or 'empty'})",
+        f"rated      {stats['total']}  (good {stats['good']}, bad {stats['bad']})",
+        f"approval   {f'{approval:.0%}' if approval is not None else 'nothing rated yet'}",
+        f"dataset    {len(dataset)} rows rated '{args.rating}'",
+    ]
+    if args.export:
+        lines.append(f"written    {args.export}")
+    lines += ["", "nothing here trains anything by itself; that is a separate,",
+              "deliberate step on hardware of your choosing."]
+    _emit(payload, args.json, render=lines)
     return 0
 
 
@@ -806,6 +885,25 @@ def build_parser() -> argparse.ArgumentParser:
                    help="seconds between block attempts when sealing")
     p.set_defaults(func=cmd_node)
 
+    p = sub.add_parser("remember", parents=[shared], help="add something to memory")
+    p.add_argument("text", help="what to remember; use - to read it from stdin")
+    p.add_argument("--kind", default="note", help="a label, e.g. fact or preference")
+    p.set_defaults(func=cmd_remember)
+
+    p = sub.add_parser("recall", parents=[shared],
+                       help="search memory the way the agent does")
+    p.add_argument("query")
+    p.add_argument("--limit", type=int, default=5)
+    p.add_argument("--kind", action="append", help="restrict to a kind, repeatable")
+    p.set_defaults(func=cmd_recall)
+
+    p = sub.add_parser("learning", parents=[shared],
+                       help="what has been collected to learn from")
+    p.add_argument("--rating", choices=["good", "bad"], default="good")
+    p.add_argument("--export", metavar="PATH",
+                   help="write the dataset as JSONL for a later fine-tune")
+    p.set_defaults(func=cmd_learning)
+
     p = sub.add_parser("runtime", parents=[shared],
                        help="show the inference runtime this machine offers")
     p.set_defaults(func=cmd_runtime)
@@ -884,6 +982,10 @@ def build_parser() -> argparse.ArgumentParser:
                    help="ceiling authorised for each answer")
     p.add_argument("--history-turns", type=int, default=20,
                    help="how many past turns are replayed to the model")
+    p.add_argument("--recall", type=int, default=4,
+                   help="how many remembered notes may be pulled into a turn")
+    p.add_argument("--no-memory", action="store_true",
+                   help="answer each turn from nothing; remember and rate nothing")
     p.set_defaults(func=cmd_serve)
 
     return parser

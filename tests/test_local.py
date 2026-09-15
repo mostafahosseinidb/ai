@@ -220,3 +220,22 @@ class KernelIntegrationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class EstimateCoversEverythingTests(unittest.TestCase):
+    """An estimate that misses part of the prompt is a budget bypass."""
+
+    def test_a_longer_system_prompt_costs_more(self):
+        with FakeRuntime("openai", prompt_tokens=50, tokenize=False) as runtime:
+            engine = LocalModel(base_url=runtime.url, dialect="openai", model="m")
+            plain = engine.estimate("سؤال")
+            augmented = engine.estimate("سؤال", system=engine.system + "\n" + "خ" * 900)
+        self.assertGreater(augmented["llm_input_tokens"], plain["llm_input_tokens"])
+
+    def test_the_tool_passes_the_system_prompt_into_the_estimate(self):
+        with FakeRuntime("openai", tokenize=False) as runtime:
+            engine = LocalModel(base_url=runtime.url, dialect="openai", model="m")
+            tool = build_model_tool(engine)
+            plain = tool.estimated_cost(prompt="سؤال")
+            augmented = tool.estimated_cost(prompt="سؤال", system="ی" * 1200)
+        self.assertGreater(augmented["llm_input_tokens"], plain["llm_input_tokens"])

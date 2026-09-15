@@ -215,6 +215,15 @@
                           padding: 11px 18px; border-radius: 10px; font-weight: 600; }
   .composer button.send:disabled { opacity: .45; cursor: not-allowed; }
   .hint { font-size: 11.5px; color: var(--muted); margin-top: 8px; }
+  .recalled { font-size: 11.5px; color: var(--muted); margin-bottom: 8px;
+              display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+  .recalled .chip { border: 1px dashed var(--border); border-radius: 999px;
+                    padding: 1px 8px; color: var(--ink-2); max-width: 320px;
+                    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rate { display: inline-flex; gap: 4px; margin-inline-start: auto; }
+  .rate button { font-size: 12px; padding: 2px 9px; border-radius: 7px; line-height: 1.4; }
+  .rate button[aria-pressed="true"].good { background: var(--good); border-color: var(--good); color: #fff; }
+  .rate button[aria-pressed="true"].bad { background: var(--warning); border-color: var(--warning); color: #1a1a19; }
   .chat-off { padding: 26px 4px; text-align: center; color: var(--muted); font-size: 13px; line-height: 2; }
   .chat-off code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; direction: ltr;
                    background: var(--plane); border: 1px solid var(--border);
@@ -696,7 +705,7 @@ function renderBlocks() {
 
 /* ---------- chat ---------- */
 const chat = {
-  enabled: false, conversationId: null, sending: false,
+  enabled: false, feedbackEnabled: false, conversationId: null, sending: false,
   status: {}, messages: [],
 };
 
@@ -749,9 +758,14 @@ function renderChatMeta() {
   const parts = [
     ["مدل", s.model || "—"],
     ["موجودی", s.balance_text || "—"],
-    ["توکن خروجی قابل خرید", s.affordable_output_tokens >= 0 ? num(s.affordable_output_tokens) : "بی‌حد"],
     ["عامل", s.label || short(s.agent || "", 10)],
   ];
+  if (s.memory) parts.push(["حافظه", `${num(s.memory.notes)} یادداشت`]);
+  if (s.feedback && s.feedback.total) {
+    const approval = s.feedback.approval == null ? "—"
+      : Math.round(s.feedback.approval * 100) + "٪";
+    parts.push(["رضایت", `${approval} از ${num(s.feedback.total)}`]);
+  }
   host.replaceChildren(...parts.map(([label, value]) => {
     const span = el("span");
     span.append(document.createTextNode(label + " "));
@@ -790,6 +804,17 @@ function renderThread() {
       message.refused ? "زنجیره اجازه نداد" : message.role === "user" ? "شما" : "عامل"));
     node.append(who);
 
+    if (message.recalled && message.recalled.length) {
+      const recalled = el("div", { class: "recalled" });
+      recalled.append(document.createTextNode("از حافظه:"));
+      message.recalled.forEach((hit) => {
+        const chip = el("span", { class: "chip", title: hit.text || "" },
+          (hit.text || "").slice(0, 60));
+        recalled.append(chip);
+      });
+      node.append(recalled);
+    }
+
     const text = el("div", { class: "text" });
     if (message.pending) {
       text.append(el("span", { class: "dots" }, "در حال فکر کردن"));
@@ -817,6 +842,19 @@ function renderThread() {
       });
       if (r.height != null) receipt.append(el("span", {}, `بلاک #${r.height}`));
       if (r.note) receipt.append(el("span", { style: "color:var(--warning)" }, r.note));
+
+      if (chat.feedbackEnabled && message.turn != null) {
+        const rate = el("div", { class: "rate" });
+        [["good", "خوب بود", "✓"], ["bad", "بد بود", "✗"]].forEach(([value, label, mark]) => {
+          const button = el("button", {
+            type: "button", class: value, title: label,
+            "aria-pressed": String(message.rating === value),
+          }, `${mark} ${label}`);
+          button.addEventListener("click", () => rateAnswer(message, value));
+          rate.append(button);
+        });
+        receipt.append(rate);
+      }
       node.append(receipt);
     }
     return node;
@@ -861,6 +899,31 @@ function updateComposerState() {
   box.disabled = chat.sending;
 }
 
+/** Record a verdict on an answer.
+ *  It changes nothing today; it accumulates into the dataset a later
+ *  fine-tune trains on, and its digest goes on chain. */
+async function rateAnswer(message, rating) {
+  if (!chat.conversationId || message.turn == null) return;
+  const previous = message.rating;
+  message.rating = rating;          // optimistic; reverted if the server says no
+  renderThread();
+  try {
+    const response = await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-ChainMind-Chat": "1" },
+      body: JSON.stringify({
+        conversation_id: chat.conversationId, turn: message.turn, rating,
+      }),
+    });
+    if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || "");
+    chat.status.feedback = await response.json();
+    renderChatMeta();
+  } catch (error) {
+    message.rating = previous;
+    renderThread();
+  }
+}
+
 async function submitPrompt() {
   const box = document.getElementById("prompt-box");
   if (!box || chat.sending) return;
@@ -901,6 +964,8 @@ async function submitPrompt() {
       chat.messages.push({
         role: "assistant",
         content: payload.answer || "(پاسخ خالی بود)",
+        turn: payload.turn,
+        recalled: payload.recalled || [],
         receipt: {
           cost_text: payload.cost_text, usage: payload.usage,
           sources: payload.sources, height: payload.height, note: payload.note,
@@ -926,9 +991,12 @@ async function submitPrompt() {
  *  the model and what the on-chain digest commits to. */
 function adoptConversation(conversation) {
   chat.conversationId = conversation.id;
-  chat.messages = conversation.turns.map((turn) => ({
+  chat.messages = conversation.turns.map((turn, index) => ({
     role: turn.role,
     content: turn.content,
+    turn: turn.role === "assistant" ? index : null,
+    rating: turn.rating || null,
+    recalled: turn.recalled || [],
     receipt: turn.role === "assistant"
       ? {
           cost_text: turn.cost ? (turn.cost / CREDIT).toFixed(6) + " cr" : "",
@@ -944,6 +1012,7 @@ async function loadChat() {
     const payload = await fetchJson("/api/chat");
     chat.enabled = Boolean(payload.enabled);
     chat.status = payload;
+    chat.feedbackEnabled = Boolean(payload.feedback);
 
     // Reloading the page should not lose the conversation: pick up the most
     // recent one rather than silently starting a second history the agent

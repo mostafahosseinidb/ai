@@ -9,7 +9,7 @@ from chainmind.crypto import SigningKey, sha256_hex
 from chainmind.p2p import Node, NodeError, join_network
 from chainmind.resources import CREDIT
 from chainmind.state import GenesisConfig
-from chainmind.transactions import build_grant, build_registration, build_usage
+from chainmind.transactions import build_grant, build_registration
 
 from support import AGENT, AUTHORITY, OUTSIDER, make_genesis
 
