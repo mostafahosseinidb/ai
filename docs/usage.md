@@ -8,7 +8,7 @@
 
 ```bash
 git clone <repo> && cd ai
-python3 -m unittest discover -s tests      # ۱۵۷ آزمون، باید همه سبز باشند
+python3 -m unittest discover -s tests      # ۱۷۸ آزمون، باید همه سبز باشند
 ```
 
 برای داشتن فرمان `chainmind` در مسیر سیستم (اختیاری):
@@ -99,6 +99,40 @@ chainmind run "کار سنگین انجام بده" --agent atlas --sandbox --ma
 
 ---
 
+## ۳٫۵ پرامپت بده، جواب بگیر
+
+این رایج‌ترین شکل استفاده است.
+
+```bash
+pip install 'chainmind[model]'
+export ANTHROPIC_API_KEY=...        # یا: ant auth login
+
+chainmind ask "خلاصهٔ این معماری را در سه جمله بنویس"
+chainmind ask - < prompt.txt                     # پرامپت از ورودی استاندارد
+chainmind ask "..." --quiet > answer.txt         # فقط جواب
+chainmind ask "..." --effort low --max-tokens 500
+chainmind ask "..." --sandbox                    # زمان CPU هم اندازه‌گیری شود
+```
+
+جواب روی `stdout` می‌رود و حسابداری روی `stderr`، پس تغییر مسیر خروجی فقط جواب را نگه می‌دارد.
+
+| کد خروج | یعنی |
+|---|---|
+| `0` | جواب گرفته شد |
+| `1` | تماس شکست خورد، یا خودِ مدل درخواست را رد کرد |
+| `2` | **زنجیره اجازه نداد** — هیچ درخواستی فرستاده نشد |
+
+ترتیب کار همان ترتیب همیشگی است، ولی این بار برآورد دقیق است نه تخمینی:
+
+1. `messages.count_tokens` تعداد **واقعی** توکن ورودی را می‌گیرد.
+2. زنجیره همان عدد به‌علاوهٔ سقف خروجی (`--max-tokens`) را تأیید یا رد می‌کند.
+3. اگر تأیید شد، تماس زده می‌شود.
+4. `response.usage` — یعنی شمارش خودِ ارائه‌دهنده — به‌عنوان `measured=provider` ثبت می‌شود.
+
+متغیرهای محیطی: `CHAINMIND_MODEL` و `CHAINMIND_EFFORT` پیش‌فرض‌ها را عوض می‌کنند.
+
+> `--max-tokens` فقط سقف جواب نیست؛ **همان چیزی است که از پیش تأیید می‌شود**. عدد بزرگ یعنی رزرو بزرگ، حتی اگر جواب کوتاه باشد. اگر عامل بی‌دلیل رد می‌شود، اول این را کم کنید.
+
 ## ۴. حکمرانی: تغییر قیمت و سهمیه
 
 ```bash
@@ -179,9 +213,10 @@ chain.state.check_invariants()
 from chainmind import Meter, ResourceKind, Tool, default_registry
 
 def summarise(meter: Meter, text: str) -> dict:
-    # اینجا مدل واقعی را صدا بزنید و توکن‌های گزارش‌شدهٔ ارائه‌دهنده را ثبت کنید
-    meter.record(ResourceKind.LLM_INPUT_TOKENS, len(text) // 4)
-    meter.record(ResourceKind.LLM_OUTPUT_TOKENS, 120)
+    # اگر عدد را از خود سرویس می‌گیرید، با source="provider" ثبتش کنید تا
+    # حسابرس بداند این رقم اظهارِ شما نیست.
+    meter.record(ResourceKind.LLM_INPUT_TOKENS, len(text) // 4, source="provider")
+    meter.record(ResourceKind.LLM_OUTPUT_TOKENS, 120, source="provider")
     return {"summary": text[:200]}          # برای جعبهٔ شنی باید JSON-پذیر باشد
 
 registry = default_registry()
@@ -211,7 +246,7 @@ registry.register(Tool(
 | عامل ۲۴ ساعته کار کند | یک VPS کوچک: ۱ vCPU، ۱GB رم، ۱۰GB دیسک |
 | داشبورد از بیرون قابل دسترس باشد | همان، به‌علاوهٔ HTTPS و احراز هویت جلوی آن |
 | چند گره، اجماع واقعی | ۳ گره یا بیشتر، هرکدام ۲ vCPU / ۲GB — ولی **لایهٔ شبکه هنوز پیاده نشده** |
-| مدل واقعی به‌جای `think` آفلاین | فقط دسترسی شبکه به ارائه‌دهنده؛ GPU لازم نیست |
+| مدل واقعی (`chainmind ask`) | فقط دسترسی شبکه به ارائه‌دهنده و یک کلید API؛ GPU لازم نیست |
 
 نکته‌ها اگر روی سرور بردید:
 

@@ -21,6 +21,7 @@ from .chain import Chain, ChainError
 from .consensus import ProofOfAuthority, ProofOfWork
 from .crypto import SigningKey
 from .executors import InProcessExecutor, SandboxExecutor
+from .models import register_model_tool
 from .sandbox import SUPPORTED as SANDBOX_SUPPORTED
 from .resources import CREDIT, DEFAULT_PRICES, ResourceKind, format_credits
 from .state import GenesisConfig, StateError
@@ -325,6 +326,7 @@ def cmd_audit(args: argparse.Namespace) -> int:
 
     totals: dict[str, int] = {}
     spend: dict[str, int] = {}
+    by_source: dict[str, int] = {}
     rows: list[dict[str, Any]] = []
     for block, tx in chain.transactions():
         if address and tx.sender != address:
@@ -339,20 +341,26 @@ def cmd_audit(args: argparse.Namespace) -> int:
         cost = chain.state.prices.cost(resource, amount)
         totals[resource] = totals.get(resource, 0) + amount
         spend[resource] = spend.get(resource, 0) + cost
+        measured = tx.body.get("measured", "declared")
+        by_source[measured] = by_source.get(measured, 0) + cost
         rows.append({
             "height": block.height, "type": "usage", "txid": tx.txid, "sender": tx.sender,
             "resource": resource, "amount": amount, "cost": cost,
-            "tool": tx.body.get("tool", ""), "evidence": tx.body["evidence"],
+            "tool": tx.body.get("tool", ""), "measured": measured,
+            "evidence": tx.body["evidence"],
         })
 
-    lines = [f"{'height':>6} {'resource':<20} {'amount':>12} {'cost':>16}  tool"]
+    lines = [
+        f"{'height':>6} {'resource':<20} {'amount':>12} {'cost':>16} "
+        f"{'measured':<9} tool"
+    ]
     for row in rows[-args.limit:]:
         if row["type"] != "usage":
             lines.append(f"{row['height']:>6} {row['detail']}")
             continue
         lines.append(
             f"{row['height']:>6} {row['resource']:<20} {row['amount']:>12} "
-            f"{format_credits(row['cost']):>16}  {row['tool']}"
+            f"{format_credits(row['cost']):>16} {row['measured']:<9} {row['tool']}"
         )
     lines += ["", "totals by resource:"]
     for resource in sorted(totals):
@@ -360,11 +368,20 @@ def cmd_audit(args: argparse.Namespace) -> int:
             f"  {resource:<20} {totals[resource]:>12} units  {format_credits(spend[resource]):>16}"
         )
     lines.append(f"  {'TOTAL':<20} {'':>12}        {format_credits(sum(spend.values())):>16}")
+    if by_source:
+        total = sum(by_source.values())
+        verified = by_source.get("kernel", 0) + by_source.get("provider", 0)
+        lines += ["", "how those figures were obtained:"]
+        for source in sorted(by_source):
+            lines.append(f"  {source:<20} {format_credits(by_source[source]):>16}")
+        share = round(verified * 100 / total) if total else 0
+        lines.append(f"  {'independently verified':<20} {share:>15}%")
     if not rows:
         lines = ["no usage recorded yet"]
 
     _emit({"address": address, "rows": rows, "totals": totals, "spend": spend,
-           "total_spend": sum(spend.values())}, args.json, render=lines)
+           "by_source": by_source, "total_spend": sum(spend.values())},
+          args.json, render=lines)
     return 0
 
 
@@ -385,6 +402,100 @@ def cmd_verify(args: argparse.Namespace) -> int:
         f"state root  {state.state_root()}",
         f"burned      {format_credits(state.burned_total)}",
     ])
+    return 0
+
+
+def cmd_ask(args: argparse.Namespace) -> int:
+    """Prompt in, answer out -- with every token paid for on chain."""
+    from .models import ModelUnavailable, model_from_environment
+    from .tools import ToolRegistry
+
+    workspace = Workspace(args.workspace)
+    chain = workspace.load_chain()
+    sealer = workspace.load_key(args.sealer)
+    agent_key = workspace.load_key(args.agent)
+
+    prompt = args.prompt
+    if prompt == "-":
+        prompt = sys.stdin.read()
+    prompt = prompt.strip()
+    if not prompt:
+        raise SystemExit("the prompt is empty")
+
+    try:
+        model = model_from_environment(model=args.model) if args.model else model_from_environment()
+        if args.effort:
+            model.effort = args.effort
+    except ModelUnavailable as exc:
+        raise SystemExit(str(exc)) from exc
+
+    registry = ToolRegistry()
+    register_model_tool(registry, model)
+
+    executor = (
+        SandboxExecutor(max_compute_ms=args.max_compute_ms) if args.sandbox
+        else InProcessExecutor()
+    )
+    ledger = LocalLedger(chain, sealer)
+    kernel = AgentKernel(agent_key, ledger, tools=registry, label=args.agent,
+                         executor=executor,
+                         memory_path=workspace.root / "memory" / f"{args.agent}.json")
+    kernel.register()
+
+    before = kernel.balance
+    outcome = kernel.perform("ask", prompt=prompt, max_tokens=args.max_tokens)
+    ledger.flush()
+    spent = before - kernel.balance
+
+    answer = ""
+    refused_by_model = False
+    if isinstance(outcome.value, dict):
+        answer = outcome.value.get("text", "")
+        refused_by_model = bool(outcome.value.get("refused"))
+
+    payload = {
+        "prompt": prompt,
+        "answer": answer,
+        "authorised": outcome.authorised,
+        "ok": outcome.ok,
+        "reason": outcome.reason or outcome.error,
+        "model": model.model,
+        "spent": spent,
+        "balance": kernel.balance,
+        "estimated_cost": outcome.estimated_cost,
+        "usage": dict(outcome.usage.items()) if outcome.usage else {},
+        "sources": dict(outcome.usage.sources) if outcome.usage else {},
+        "txids": outcome.txids,
+        "height": chain.height,
+    }
+
+    if args.json:
+        _emit(payload, True)
+    elif outcome.refused:
+        # The chain said no. Nothing was sent to the model.
+        print(f"REFUSED   {outcome.reason}", file=sys.stderr)
+        print(f"estimate  {format_credits(outcome.estimated_cost)}", file=sys.stderr)
+        print(f"balance   {format_credits(kernel.balance)}", file=sys.stderr)
+    elif not outcome.ok:
+        print(f"FAILED    {outcome.error}", file=sys.stderr)
+    else:
+        print(answer)
+        if not args.quiet:
+            used = ", ".join(
+                f"{amount} {resource} ({outcome.usage.source_of(resource)})"
+                for resource, amount in outcome.usage.items()
+            )
+            print(f"\n---\n{used}", file=sys.stderr)
+            print(
+                f"cost {format_credits(spent)} · balance {format_credits(kernel.balance)} "
+                f"· block #{chain.height}",
+                file=sys.stderr,
+            )
+
+    if outcome.refused:
+        return 2
+    if not outcome.ok or refused_by_model:
+        return 1
     return 0
 
 
@@ -491,6 +602,21 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--max-compute-ms", type=int, default=30_000,
                    help="ceiling on the CPU limit handed to a sandboxed tool")
     p.set_defaults(func=cmd_run)
+
+    p = sub.add_parser("ask", help="send a prompt to a real model, paid for on chain")
+    p.add_argument("prompt", help="the prompt; use - to read it from stdin")
+    p.add_argument("--agent", default="agent", help="key name of the acting agent")
+    p.add_argument("--sealer", default="authority", help="key name that seals blocks")
+    p.add_argument("--model", help=f"model id (default: {{}} or $CHAINMIND_MODEL)".format("claude-opus-5"))
+    p.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"],
+                   help="how hard the model should think; higher costs more")
+    p.add_argument("--max-tokens", type=int, default=16_000,
+                   help="ceiling on the answer, and what gets authorised up front")
+    p.add_argument("--sandbox", action="store_true",
+                   help="run the call in a child process and bill kernel-measured CPU too")
+    p.add_argument("--max-compute-ms", type=int, default=30_000)
+    p.add_argument("--quiet", action="store_true", help="print only the answer")
+    p.set_defaults(func=cmd_ask)
 
     p = sub.add_parser("status", help="show accounts, prices and quotas")
     p.set_defaults(func=cmd_status)

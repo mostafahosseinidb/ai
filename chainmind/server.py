@@ -35,7 +35,7 @@ from urllib.parse import parse_qs, urlparse
 from .chain import Chain, ChainError
 from .resources import ResourceKind
 from .state import StateError
-from .transactions import TxType
+from .transactions import MEASUREMENT_SOURCES, TxType
 
 __all__ = ["LedgerView", "serve", "build_application"]
 
@@ -152,17 +152,23 @@ def build_overview(chain: Chain) -> dict[str, Any]:
 def build_usage(chain: Chain) -> dict[str, Any]:
     rows = _usage_rows(chain)
 
-    by_resource: dict[str, dict[str, int]] = {}
+    by_resource: dict[str, dict[str, Any]] = {}
     by_agent: dict[str, int] = {}
-    by_measurement = {"kernel": 0, "declared": 0}
+    # Every source is seeded, so a consumer can total the dict without having
+    # to know which ones happen to appear in this particular chain.
+    by_measurement = {source: 0 for source in sorted(MEASUREMENT_SOURCES)}
     per_block: dict[int, int] = {}
 
     for row in rows:
-        bucket = by_resource.setdefault(row["resource"], {"amount": 0, "cost": 0, "kernel": 0})
+        bucket = by_resource.setdefault(
+            row["resource"],
+            {"amount": 0, "cost": 0, "by_source": {s: 0 for s in sorted(MEASUREMENT_SOURCES)}},
+        )
         bucket["amount"] += row["amount"]
         bucket["cost"] += row["cost"]
-        if row["measured"] == "kernel":
-            bucket["kernel"] += row["cost"]
+        bucket["by_source"][row["measured"]] = (
+            bucket["by_source"].get(row["measured"], 0) + row["cost"]
+        )
         by_agent[row["agent"]] = by_agent.get(row["agent"], 0) + row["cost"]
         by_measurement[row["measured"]] = by_measurement.get(row["measured"], 0) + row["cost"]
         per_block[row["height"]] = per_block.get(row["height"], 0) + row["cost"]
@@ -180,6 +186,7 @@ def build_usage(chain: Chain) -> dict[str, Any]:
         "by_resource": by_resource,
         "by_agent": by_agent,
         "by_measurement": by_measurement,
+        "measurement_sources": sorted(MEASUREMENT_SOURCES),
         "series": series,
         "total_cost": sum(row["cost"] for row in rows),
     }

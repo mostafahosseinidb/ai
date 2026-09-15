@@ -103,6 +103,7 @@ class SandboxExecutor:
             started_at=record.started_at,
             finished_at=record.finished_at,
             context={**record.context, "args": describe_arguments(kwargs)},
+            sources=record.sources,
         )
         return ToolResult(
             tool=tool.name, value=outcome.value, usage=record,

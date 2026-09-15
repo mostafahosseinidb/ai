@@ -16,7 +16,27 @@ from typing import Any, Iterator, Mapping
 from .crypto import canonical_bytes, sha256_hex
 from .resources import PriceTable, ResourceKind
 
-__all__ = ["Meter", "UsageRecord"]
+__all__ = ["Meter", "UsageRecord", "MeasurementSource", "TRUST_ORDER", "least_trusted"]
+
+
+#: How a number was obtained, from least to most independently verified.
+#:
+#: ``declared`` is the tool's own word.  ``provider`` is the counterparty's
+#: count -- a model API reporting the tokens it billed -- which the tool cannot
+#: quietly shrink but which is not cryptographically proven either.  ``kernel``
+#: is an operating system measuring the work from outside it.
+TRUST_ORDER: Mapping[str, int] = {"declared": 0, "provider": 1, "kernel": 2}
+MeasurementSource = str
+
+
+def least_trusted(left: str, right: str) -> str:
+    """The weaker of two provenances.
+
+    A resource whose total mixes a provider-reported figure with a
+    self-declared one is only as trustworthy as the self-declared part, so
+    the pair collapses downward rather than upward.
+    """
+    return left if TRUST_ORDER.get(left, 0) <= TRUST_ORDER.get(right, 0) else right
 
 
 @dataclass(frozen=True)
@@ -28,6 +48,8 @@ class UsageRecord:
     started_at: int
     finished_at: int
     context: Mapping[str, Any] = field(default_factory=dict)
+    #: resource -> how that total was obtained; absent means ``declared``.
+    sources: Mapping[str, str] = field(default_factory=dict)
 
     @property
     def digest(self) -> str:
@@ -41,7 +63,12 @@ class UsageRecord:
             "started_at": self.started_at,
             "finished_at": self.finished_at,
             "context": dict(self.context),
+            "sources": {k: v for k, v in sorted(self.sources.items())},
         }
+
+    def source_of(self, kind: ResourceKind | str) -> str:
+        resolved = ResourceKind.parse(kind.value if isinstance(kind, ResourceKind) else kind)
+        return self.sources.get(resolved.value, "declared")
 
     def cost(self, prices: PriceTable) -> int:
         return sum(prices.cost(kind, amount) for kind, amount in self.totals.items())
@@ -71,6 +98,7 @@ class Meter:
         self.context = dict(context or {})
         self.charge_compute = charge_compute
         self._totals: dict[str, int] = {}
+        self._sources: dict[str, str] = {}
         self._started_wall = 0
         self._started_cpu = 0.0
         self._finished_wall = 0
@@ -101,6 +129,7 @@ class Meter:
             started_at=self._started_wall,
             finished_at=self._finished_wall,
             context=dict(self.context),
+            sources=dict(self._sources),
         )
 
     def finish(self) -> UsageRecord:
@@ -111,16 +140,29 @@ class Meter:
 
     # -- recording ---------------------------------------------------------
 
-    def record(self, kind: ResourceKind | str, amount: int) -> "Meter":
+    def record(self, kind: ResourceKind | str, amount: int, *,
+               source: str = "declared") -> "Meter":
+        """Add ``amount`` units of ``kind``, noting where the number came from.
+
+        ``source`` defaults to ``declared`` because that is what a plain
+        measurement in the tool's own code is.  A tool that gets its numbers
+        from the service it called should say ``source="provider"``.
+        """
         if self._record is not None:
             raise RuntimeError("this meter is already closed")
         resolved = ResourceKind.parse(kind.value if isinstance(kind, ResourceKind) else kind)
+        if source not in TRUST_ORDER:
+            raise ValueError(f"unknown measurement source {source!r}")
         if not isinstance(amount, int) or isinstance(amount, bool):
             raise TypeError("metered amounts must be integers")
         if amount < 0:
             raise ValueError("metered amounts must not be negative")
         if amount:
             self._totals[resolved.value] = self._totals.get(resolved.value, 0) + amount
+            previous = self._sources.get(resolved.value)
+            self._sources[resolved.value] = (
+                source if previous is None else least_trusted(previous, source)
+            )
         return self
 
     def note(self, key: str, value: Any) -> "Meter":
@@ -133,3 +175,7 @@ class Meter:
     @property
     def totals(self) -> dict[str, int]:
         return dict(self._totals)
+
+    @property
+    def sources(self) -> dict[str, str]:
+        return dict(self._sources)

@@ -37,6 +37,7 @@
     --border:       rgba(11,11,11,0.10);
     --kernel:       #2a78d6;
     --declared:     #eb6834;
+    --provider:     #1baf7a;
     --good:         #0ca30c;
     --warning:      #fab219;
     --critical:     #d03b3b;
@@ -55,6 +56,7 @@
       --border:   rgba(255,255,255,0.10);
       --kernel:   #3987e5;
       --declared: #d95926;
+      --provider: #199e70;
     }
   }
   :root[data-theme="dark"] {
@@ -69,6 +71,7 @@
     --border:   rgba(255,255,255,0.10);
     --kernel:   #3987e5;
     --declared: #d95926;
+    --provider: #199e70;
   }
 
   * { box-sizing: border-box; }
@@ -138,6 +141,7 @@
   .pill { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border); color: var(--ink-2); }
   .pill.kernel { color: var(--kernel); border-color: color-mix(in srgb, var(--kernel) 40%, transparent); }
   .pill.declared { color: var(--declared); border-color: color-mix(in srgb, var(--declared) 40%, transparent); }
+  .pill.provider { color: var(--provider); border-color: color-mix(in srgb, var(--provider) 40%, transparent); }
 
   .event { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--grid); align-items: baseline; }
   .event .icon { flex: none; font-size: 13px; width: 16px; text-align: center; }
@@ -185,10 +189,11 @@
 
   <section class="card">
     <h2>تفکیک مصرف بر حسب منبع</h2>
-    <p class="sub">هر میله، اعتبار سوخته‌شده برای آن منبع است. رنگ می‌گوید عدد از کجا آمده.</p>
+    <p class="sub">هر میله، اعتبار سوخته‌شده برای آن منبع است. رنگ می‌گوید عدد از کجا آمده — از هسته، از خودِ ارائه‌دهنده، یا از اظهار ابزار.</p>
     <div class="legend">
-      <span><i class="swatch" style="background:var(--kernel)"></i> اندازه‌گیری هسته (قابل اتکا)</span>
-      <span><i class="swatch" style="background:var(--declared)"></i> اظهار ابزار (مورد اعتماد)</span>
+      <span><i class="swatch" style="background:var(--kernel)"></i> اندازه‌گیری هسته</span>
+      <span><i class="swatch" style="background:var(--provider)"></i> گزارش ارائه‌دهنده</span>
+      <span><i class="swatch" style="background:var(--declared)"></i> اظهار ابزار</span>
     </div>
     <div class="chart" id="chart-resources"></div>
     <div id="table-resources" hidden></div>
@@ -244,6 +249,14 @@ const RESOURCE_FA = {
   network_bytes:     "بایت شبکه",
   tool_call:         "فراخوانی ابزار",
 };
+// Ordered from most to least independently verified; the bars stack in this
+// order so the trustworthy part of every bill starts at the same edge.
+const SOURCES = [
+  { key: "kernel",   fa: "هسته",       color: "var(--kernel)" },
+  { key: "provider", fa: "ارائه‌دهنده", color: "var(--provider)" },
+  { key: "declared", fa: "اظهاری",     color: "var(--declared)" },
+];
+const SOURCE_FA = Object.fromEntries(SOURCES.map((s) => [s.key, s.fa]));
 const state = { overview: null, usage: null, events: null, blocks: null, tables: false, auto: true };
 
 /* ---------- helpers ---------- */
@@ -296,10 +309,13 @@ const hideTip = () => { tooltip.style.opacity = "0"; };
 function renderKpis() {
   const o = state.overview, u = state.usage, e = state.events;
   if (!o || !u) return;
-  const kernel = u.by_measurement.kernel || 0;
-  const declared = u.by_measurement.declared || 0;
-  const total = kernel + declared;
-  const ratio = total ? Math.round((kernel / total) * 100) : 0;
+  // Summing every source, not just the two that used to exist: leaving
+  // provider-reported spend out of the denominator would quietly overstate
+  // how much of the bill is independently verified.
+  const spendBySource = u.by_measurement || {};
+  const total = Object.values(spendBySource).reduce((sum, value) => sum + value, 0);
+  const verified = (spendBySource.kernel || 0) + (spendBySource.provider || 0);
+  const ratio = total ? Math.round((verified / total) * 100) : 0;
 
   const tiles = [
     { label: "اعتبار سوخته‌شده", value: shortCredits(o.burned_total), hero: true,
@@ -308,8 +324,10 @@ function renderKpis() {
       note: `${o.accounts.length} حساب` },
     { label: "ارتفاع زنجیره", value: num(o.height),
       note: `دورهٔ ${o.epoch} · هر ${num(o.epoch_length)} بلاک` },
-    { label: "سهم اندازه‌گیری هسته", value: ratio + "٪",
-      note: total ? `${shortCredits(kernel)} از ${shortCredits(total)} اعتبار` : "هنوز مصرفی نیست" },
+    { label: "سهم تأییدشده", value: ratio + "٪",
+      note: total
+        ? `هسته ${shortCredits(spendBySource.kernel || 0)} · ارائه‌دهنده ${shortCredits(spendBySource.provider || 0)} · اظهاری ${shortCredits(spendBySource.declared || 0)}`
+        : "هنوز مصرفی نیست" },
     { label: "امتناع‌های ثبت‌شده", value: num(e ? e.refusals : 0),
       note: "اقدام‌هایی که بودجه یا سهمیه اجازه نداد" },
   ];
@@ -351,34 +369,36 @@ function renderResources() {
     svg.append(name);
 
     const full = Math.max(2, (value.cost / max) * plotW);
-    const kernelW = value.cost ? (value.kernel / value.cost) * full : 0;
-    const declaredW = full - kernelW;
-
-    // Declared segment sits at the far end; a 2px gap keeps the two readable.
-    if (declaredW > 0.5) {
+    const bySource = value.by_source || {};
+    // Segments run right to left, most-verified first, each separated by a
+    // 2px gap of surface so adjacent fills stay tellable apart.
+    let cursor = originX;
+    SOURCES.forEach((source) => {
+      const share = value.cost ? (bySource[source.key] || 0) / value.cost : 0;
+      const width = share * full;
+      if (width <= 0.5) return;
       svg.append(svgEl("rect", {
-        x: originX - full, y: barY, width: Math.max(1, declaredW - (kernelW > 0.5 ? 2 : 0)),
-        height: barH, rx: 4, fill: "var(--declared)",
+        x: cursor - width, y: barY, width: Math.max(1, width - 2), height: barH,
+        rx: 4, fill: source.color,
       }));
-    }
-    if (kernelW > 0.5) {
-      svg.append(svgEl("rect", {
-        x: originX - kernelW, y: barY, width: Math.max(1, kernelW), height: barH,
-        rx: 4, fill: "var(--kernel)",
-      }));
-    }
+      cursor -= width;
+    });
 
     const val = svgEl("text", { x: originX - full - 8, y: barY + 12, "text-anchor": "end", class: "val" });
     val.textContent = shortCredits(value.cost);
     svg.append(val);
 
     const hit = svgEl("rect", { x: 0, y, width, height: rowH, fill: "transparent", style: "cursor:crosshair" });
-    hit.addEventListener("mousemove", (ev) => showTip(ev,
-      `<b>${resourceName(key)}</b><br>` +
-      `مقدار: <span class="n">${num(value.amount)}</span> ${state.overview.resources[key] || ""}<br>` +
-      `هزینه: <span class="n">${credits(value.cost)}</span> اعتبار<br>` +
-      `اندازه‌گیری هسته: <span class="n">${credits(value.kernel)}</span> · ` +
-      `اظهاری: <span class="n">${credits(value.cost - value.kernel)}</span>`));
+    hit.addEventListener("mousemove", (ev) => {
+      const lines = SOURCES
+        .filter((source) => (bySource[source.key] || 0) > 0)
+        .map((source) => `${source.fa}: <span class="n">${credits(bySource[source.key])}</span>`);
+      showTip(ev,
+        `<b>${resourceName(key)}</b><br>` +
+        `مقدار: <span class="n">${num(value.amount)}</span> ${state.overview.resources[key] || ""}<br>` +
+        `هزینه: <span class="n">${credits(value.cost)}</span> اعتبار<br>` +
+        lines.join(" · "));
+    });
     hit.addEventListener("mouseleave", hideTip);
     svg.append(hit);
   });
@@ -386,9 +406,14 @@ function renderResources() {
   host.replaceChildren(svg);
 
   const table = el("table");
-  table.append(rowOf("th", ["منبع", "مقدار", "هزینه (اعتبار)", "اندازه‌گیری هسته"]));
-  entries.forEach(([key, v]) => table.append(rowOf("td",
-    [resourceName(key), num(v.amount), credits(v.cost), credits(v.kernel)], [false, true, true, true])));
+  table.append(rowOf("th", ["منبع", "مقدار", "هزینه", "هسته", "ارائه‌دهنده", "اظهاری"]));
+  entries.forEach(([key, v]) => {
+    const by = v.by_source || {};
+    table.append(rowOf("td",
+      [resourceName(key), num(v.amount), credits(v.cost),
+       credits(by.kernel || 0), credits(by.provider || 0), credits(by.declared || 0)],
+      [false, true, true, true, true, true]));
+  });
   document.getElementById("table-resources").replaceChildren(table);
 }
 
@@ -573,7 +598,7 @@ function renderUsageRows() {
     tr.append(el("td", {}, row.tool || "—"));
     const badge = el("td");
     badge.append(el("span", { class: "pill " + row.measured },
-      row.measured === "kernel" ? "هسته" : "اظهاری"));
+      SOURCE_FA[row.measured] || row.measured));
     tr.append(badge);
     tr.append(el("td", { class: "mono" }, short(row.txid, 12)));
     table.append(tr);

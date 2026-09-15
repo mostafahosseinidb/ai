@@ -136,6 +136,7 @@ class SandboxResult:
     wall_ms: int = 0
     max_rss_kb: int = 0
     declared: Mapping[str, int] = field(default_factory=dict)
+    declared_sources: Mapping[str, str] = field(default_factory=dict)
     context: Mapping[str, Any] = field(default_factory=dict)
     killed_by: str | None = None
     exit_status: int = 0
@@ -156,6 +157,23 @@ class SandboxResult:
             merged[ResourceKind.COMPUTE_MS.value] = self.cpu_ms
         return merged
 
+    @property
+    def sources(self) -> dict[str, str]:
+        """Provenance per resource, with the kernel's own claim stamped in.
+
+        Whatever the child said about a kernel-measured resource is replaced,
+        not merged: the point of measuring from outside is that the inside
+        does not get a vote.
+        """
+        merged = {
+            kind: source
+            for kind, source in self.declared_sources.items()
+            if ResourceKind.parse(kind) not in KERNEL_MEASURED
+        }
+        if self.cpu_ms > 0:
+            merged[ResourceKind.COMPUTE_MS.value] = "kernel"
+        return merged
+
     def to_usage_record(self, label: str, started_at: int, finished_at: int) -> UsageRecord:
         context = dict(self.context)
         context["measurement"] = "out-of-process"
@@ -168,6 +186,7 @@ class SandboxResult:
             started_at=started_at,
             finished_at=finished_at,
             context=context,
+            sources=self.sources,
         )
 
 
@@ -192,6 +211,7 @@ def _child(fn: Callable[..., Any], kwargs: Mapping[str, Any], limits: SandboxLim
                 payload = {"ok": False, "value": None, "error": f"{type(exc).__name__}: {exc}"}
         record = meter.finish()
         payload["declared"] = dict(record.totals)
+        payload["declared_sources"] = dict(record.sources)
         payload["context"] = dict(record.context)
 
         try:
@@ -205,6 +225,7 @@ def _child(fn: Callable[..., Any], kwargs: Mapping[str, Any], limits: SandboxLim
                     "value": None,
                     "error": f"result is not JSON-serialisable: {exc}",
                     "declared": dict(record.totals),
+                    "declared_sources": dict(record.sources),
                     "context": dict(record.context),
                 },
                 ensure_ascii=False,
@@ -338,6 +359,9 @@ def run_sandboxed(fn: Callable[..., Any], kwargs: Mapping[str, Any] | None = Non
         wall_ms=wall_ms,
         max_rss_kb=int(usage.ru_maxrss),
         declared={k: int(v) for k, v in dict(payload.get("declared", {})).items()},
+        declared_sources={
+            k: str(v) for k, v in dict(payload.get("declared_sources", {})).items()
+        },
         context=dict(payload.get("context", {})),
         killed_by=killed_by,
         exit_status=status,

@@ -393,9 +393,11 @@ class AgentKernel:
     def _settle(self, outcome: ActionOutcome, result: ToolResult) -> None:
         """Write the measured usage to the chain, one transaction per resource."""
         evidence = result.usage.digest
-        # The executor says how it measured; only resources the kernel can
-        # actually observe are recorded as kernel-measured, so a sandboxed run
-        # does not launder a tool's self-reported token counts into "verified".
+        # Provenance comes from the meter, one entry per resource, but it is
+        # clamped here: only a genuinely out-of-process run may claim "kernel",
+        # and only for resources the kernel can actually observe.  A sandboxed
+        # run must not launder a tool's self-reported token count into
+        # something an auditor will read as verified.
         out_of_process = result.usage.context.get("measurement") == "out-of-process"
         submitted: list[Transaction] = []
         with _batched(self.ledger):
@@ -410,11 +412,7 @@ class AgentKernel:
                     evidence=evidence,
                     tool=result.tool,
                     note=result.error[:256] if not result.ok else "",
-                    measured=(
-                        "kernel"
-                        if out_of_process and ResourceKind.parse(kind) in KERNEL_MEASURED
-                        else "declared"
-                    ),
+                    measured=self._provenance_of(result, kind, out_of_process),
                 )
                 try:
                     self.ledger.submit(tx)
@@ -439,6 +437,15 @@ class AgentKernel:
                 "The agent consumed resources it could not pay for and will not act again "
                 "until an authority settles the difference."
             )
+
+    @staticmethod
+    def _provenance_of(result: ToolResult, kind: str, out_of_process: bool) -> str:
+        claimed = result.usage.source_of(kind)
+        if claimed == "kernel" and not (
+            out_of_process and ResourceKind.parse(kind) in KERNEL_MEASURED
+        ):
+            return "declared"
+        return claimed
 
     def _charged_for(self, transactions: Sequence[Transaction]) -> int:
         prices = self.ledger.state.prices

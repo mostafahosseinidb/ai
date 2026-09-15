@@ -40,7 +40,7 @@ from .transactions import (
     build_usage,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "ActionOutcome", "Account", "AgentHalted", "AgentKernel", "Block", "BlockHeader",

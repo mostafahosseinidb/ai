@@ -220,10 +220,12 @@ def _validate_grant(body: dict[str, Any]) -> None:
 
 
 #: How a usage figure was obtained.  ``kernel`` means an operating system
-#: measured it from outside the code being billed; ``declared`` means the tool
-#: reported its own consumption and is believed.  An auditor reading the chain
-#: should be able to tell these apart without trusting a side channel.
-MEASUREMENT_SOURCES = frozenset({"declared", "kernel"})
+#: measured it from outside the code being billed; ``provider`` means the
+#: counterparty reported it (a model API stating the tokens it billed);
+#: ``declared`` means the tool reported its own consumption and is believed.
+#: An auditor reading the chain should be able to tell these apart without
+#: trusting a side channel.
+MEASUREMENT_SOURCES = frozenset({"declared", "provider", "kernel"})
 
 
 def _validate_usage(body: dict[str, Any]) -> None:
