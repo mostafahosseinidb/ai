@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chainmind"
+version = "0.1.0"
+description = "An autonomous AI agent whose resource consumption is governed by a verifiable blockchain ledger"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = []
+
+[project.optional-dependencies]
+fast-crypto = ["cryptography>=41"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+chainmind = "chainmind.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["chainmind*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
