@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chainmind"
-version = "0.6.0"
+version = "0.7.0"
 description = "An autonomous AI agent whose resource consumption is governed by a verifiable blockchain ledger"
 readme = "README.md"
 requires-python = ">=3.10"

@@ -24,6 +24,7 @@ from .chat import ChatBusy, ChatRejected, ChatService, Conversation
 from .consensus import ConsensusError, ProofOfAuthority, ProofOfWork
 from .crypto import SigningKey, VerifyingKey, merkle_root, sha256_hex
 from .local import LocalModel, LocalRuntimeUnavailable, discover_runtime
+from .evaluate import EvalReport, Evaluation, RowResult, rouge_l, split_dataset, token_f1
 from .executors import Executor, InProcessExecutor, SandboxExecutor
 from .memory import Feedback, FeedbackStore, Hit, MemoryStore, Note, build_training_dataset
 from .mempool import Mempool
@@ -44,7 +45,7 @@ from .transactions import (
     build_usage,
 )
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 __all__ = [
     "ActionOutcome", "Account", "AgentHalted", "AgentKernel", "Block", "BlockHeader",
@@ -52,6 +53,7 @@ __all__ = [
     "LocalModel", "LocalRuntimeUnavailable", "discover_runtime",
     "Node", "NodeError", "PeerInfo", "join_network", "submit_to_node",
     "Feedback", "FeedbackStore", "Hit", "MemoryStore", "Note", "build_training_dataset",
+    "EvalReport", "Evaluation", "RowResult", "rouge_l", "split_dataset", "token_f1",
     "Executor", "InProcessExecutor", "SandboxExecutor", "SandboxLimits", "SandboxResult",
     "SandboxUnavailable", "SANDBOX_SUPPORTED",
     "BudgetAwarePlanner", "CREDIT", "Chain", "ChainError", "ConsensusError", "DEFAULT_PRICES",

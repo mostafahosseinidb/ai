@@ -8,7 +8,7 @@
 
 ```bash
 git clone <repo> && cd ai
-python3 -m unittest discover -s tests      # ۲۸۹ آزمون، باید همه سبز باشند
+python3 -m unittest discover -s tests      # ۳۱۹ آزمون، باید همه سبز باشند
 ```
 
 برای داشتن فرمان `chainmind` در مسیر سیستم (اختیاری):
@@ -273,10 +273,35 @@ chainmind learning --export dataset.jsonl --rating good
 ### از رأی تا مدل بهتر
 
 ```bash
-chainmind learning --export dataset.jsonl
+chainmind learning --export dataset.jsonl     # ۱. آنچه جمع شده
+chainmind eval --save before.json             # ۲. الان چقدر خوب است
+training/.venv/bin/python training/train_lora.py \
+    --dataset dataset.jsonl --base Qwen/Qwen2.5-7B-Instruct --out adapters/v1
+chainmind eval --compare before.json          # ۴. واقعاً بهتر شد؟
 ```
 
-خروجی JSONL با قالب معمول گفت‌وگوست. مرحلهٔ بعد — آموزش LoRA روی همان دیتاست و بارگذاری مدل تازه در runtime محلی — **عمداً خودکار نیست**. آموزش خودکارِ نادیده، مدل را به‌جای بهتر کردن خراب می‌کند و شما تازه دو هفته بعد می‌فهمید.
+قدم ۴ را رد نکنید؛ همان است که به بقیه معنا می‌دهد. اگر اختلاف مثبت نبود، آداپتور بهبود نیست — مدل پایه را نگه دارید.
+
+آموزش و سنجش دیتاست را **به یک شیوهٔ قطعی** تقسیم می‌کنند، پس ردیف‌هایی که در قدم ۴ نمره می‌گیرند همان‌هایی‌اند که قدم ۳ هرگز ندیده. این یک قرارداد نیست که یادتان بماند: `train_lora.py` همان تقسیم‌کننده را از `chainmind.evaluate` وارد می‌کند، پس نمی‌توانند از هم فاصله بگیرند.
+
+## ۶٫۴٫۵ سنجش
+
+```bash
+chainmind eval                                # روی بازخورد همین workspace
+chainmind eval --dataset d.jsonl --limit 20
+chainmind eval --save baseline.json
+chainmind eval --compare baseline.json
+```
+
+| ستون | یعنی |
+|---|---|
+| `mean F1` | هم‌پوشانی واژگانی با پاسخ تأییدشده، بدون توجه به ترتیب |
+| `mean ROUGE` | همان، ولی حساس به ترتیب |
+| `refused` | ردیف‌هایی که بودجه اجازه نداد — **اندازه‌گیریِ نبوده، نه نمرهٔ صفر** |
+
+آن تمایز آخر مهم است: ردیفی که پولش نبوده، پاسخ بدی نداده؛ اصلاً پاسخی نداده. شمردنش به‌عنوان صفر، نمره را بی‌معنی می‌کند.
+
+سنجش هم از بودجه خرج می‌کند و روی زنجیره می‌نشیند — مثل هر کار دیگر عامل.
 
 ## ۶٫۵ پنل گفت‌وگو
 

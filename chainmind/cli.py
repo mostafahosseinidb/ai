@@ -790,6 +790,97 @@ def cmd_learning(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_eval(args: argparse.Namespace) -> int:
+    """Score the model against answers a person already approved."""
+    from .agent import AgentKernel, LocalLedger
+    from .evaluate import EvalReport, Evaluation, load_dataset, split_dataset
+    from .models import ModelUnavailable, build_model, describe_model
+    from .tools import ToolRegistry
+
+    workspace = Workspace(args.workspace)
+    chain = workspace.load_chain()
+
+    if args.dataset:
+        rows = load_dataset(args.dataset)
+    else:
+        from .memory import FeedbackStore, build_training_dataset
+
+        rows = build_training_dataset(FeedbackStore(workspace.feedback_path))
+    if not rows:
+        raise SystemExit(
+            "there is nothing to evaluate. Rate some answers in the chat panel "
+            "first, or pass --dataset."
+        )
+
+    _, validation = split_dataset(rows, validation_fraction=args.validation_fraction)
+    if not validation:
+        raise SystemExit("the split left no validation rows; collect more feedback")
+
+    try:
+        model = build_model(args.model)
+    except ModelUnavailable as exc:
+        raise SystemExit(str(exc)) from exc
+
+    registry = ToolRegistry()
+    register_model_tool(registry, model)
+    ledger = LocalLedger(chain, workspace.load_key(args.sealer))
+    kernel = AgentKernel(workspace.load_key(args.agent), ledger, tools=registry,
+                         label=args.agent)
+    kernel.register()
+    ledger.flush()
+
+    evaluation = Evaluation(kernel, validation, max_tokens=args.max_tokens)
+    printed = [0]
+
+    def progress(result) -> None:
+        printed[0] += 1
+        if not args.json:
+            mark = {"scored": f"{result.f1:5.2f}", "refused": "  ref", "failed": "  err"}
+            print(f"  {printed[0]:>3}/{len(validation)}  {mark[result.status]}  "
+                  f"{' '.join(result.prompt.split())[:60]}", file=sys.stderr)
+
+    report = evaluation.run(model=describe_model(model), label=args.label,
+                            limit=args.limit, on_row=progress)
+    ledger.flush()
+
+    payload = report.to_dict()
+    if args.save:
+        report.save(args.save)
+        payload["saved"] = str(args.save)
+
+    comparison = None
+    if args.compare:
+        comparison = report.compare(EvalReport.load(args.compare))
+        payload["comparison"] = comparison
+
+    lines = [
+        "",
+        f"model      {report.model}",
+        f"rows       {len(report.results)} ({len(report.scored)} scored, "
+        f"{report.refused} refused, {report.failed} failed)",
+        f"mean F1    {report.mean_f1:.4f}",
+        f"mean ROUGE {report.mean_rouge:.4f}",
+        f"cost       {format_credits(report.spent)}",
+    ]
+    if args.save:
+        lines.append(f"saved      {args.save}")
+    if comparison is not None:
+        lines += ["", "against the baseline:"]
+        if not comparison["comparable"]:
+            lines.append(f"  {comparison['reason']}")
+        else:
+            lines += [
+                f"  baseline   {comparison['baseline_f1']:.4f}",
+                f"  now        {comparison['current_f1']:.4f}",
+                f"  delta      {comparison['f1_delta']:+.4f}",
+                f"  verdict    {comparison['verdict']}",
+            ]
+    lines += ["", "the score measures overlap with an approved answer, not quality:",
+              "a differently worded but better answer scores lower."]
+    _emit(payload, args.json, render=lines)
+    return 0
+
+
 def cmd_runtime(args: argparse.Namespace) -> int:
     """Report the inference runtime this machine is offering, if any."""
     from .models import available_runtimes
@@ -903,6 +994,20 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--export", metavar="PATH",
                    help="write the dataset as JSONL for a later fine-tune")
     p.set_defaults(func=cmd_learning)
+
+    p = sub.add_parser("eval", parents=[shared],
+                       help="score the model against answers you approved")
+    p.add_argument("--dataset", help="a JSONL file; defaults to this workspace's feedback")
+    p.add_argument("--agent", default="agent", help="key name that pays for the run")
+    p.add_argument("--sealer", default="authority", help="key name that seals blocks")
+    p.add_argument("--model", help="model name; defaults to what the runtime offers")
+    p.add_argument("--max-tokens", type=int, default=512)
+    p.add_argument("--limit", type=int, help="stop after this many rows")
+    p.add_argument("--validation-fraction", type=float, default=0.2)
+    p.add_argument("--label", default="", help="a name for this run")
+    p.add_argument("--save", metavar="PATH", help="write the report, to compare against later")
+    p.add_argument("--compare", metavar="PATH", help="an earlier report to compare against")
+    p.set_defaults(func=cmd_eval)
 
     p = sub.add_parser("runtime", parents=[shared],
                        help="show the inference runtime this machine offers")

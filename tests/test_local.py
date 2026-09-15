@@ -239,3 +239,85 @@ class EstimateCoversEverythingTests(unittest.TestCase):
             plain = tool.estimated_cost(prompt="سؤال")
             augmented = tool.estimated_cost(prompt="سؤال", system="ی" * 1200)
         self.assertGreater(augmented["llm_input_tokens"], plain["llm_input_tokens"])
+
+
+class DependencyPromiseTests(unittest.TestCase):
+    """Guards the promise, not the implementation.
+
+    "Install and become a node" is only true if a node needs nothing but
+    Python. A dependency added casually breaks that for every small machine
+    the network is supposed to run on, so it has to fail a test rather than
+    a deployment.
+    """
+
+    #: The single allowed exception: a faster Ed25519, imported behind a
+    #: guard, with a tested pure-Python fallback when it is absent or broken.
+    ALLOWED = {("crypto.py", "cryptography")}
+
+    def external_imports(self):
+        import ast
+        import pathlib
+        import sys
+
+        stdlib = set(sys.stdlib_module_names)
+        import chainmind
+
+        found = set()
+        for path in sorted(pathlib.Path(chainmind.__file__).parent.glob("*.py")):
+            tree = ast.parse(path.read_text(encoding="utf-8"), str(path))
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Import):
+                    for alias in node.names:
+                        top = alias.name.split(".")[0]
+                        if top not in stdlib:
+                            found.add((path.name, top))
+                elif isinstance(node, ast.ImportFrom) and not node.level:
+                    top = (node.module or "").split(".")[0]
+                    if top and top not in stdlib:
+                        found.add((path.name, top))
+        return found
+
+    def test_the_package_imports_nothing_outside_the_standard_library(self):
+        self.assertEqual(self.external_imports() - self.ALLOWED, set())
+
+    def test_the_optional_backend_really_is_optional(self):
+        """It must never be imported at module scope.
+
+        A top-level import is the difference between "faster when present"
+        and "broken when absent" -- and a distro ships this package broken
+        often enough that the fallback is load-bearing, not theoretical.
+        Checked against the syntax tree rather than the text, because the
+        module's own prose mentions it and should be allowed to.
+        """
+        import ast
+        import pathlib
+
+        import chainmind
+
+        tree = ast.parse(
+            (pathlib.Path(chainmind.__file__).parent / "crypto.py").read_text(encoding="utf-8")
+        )
+        top_level = []
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                top_level += [alias.name.split(".")[0] for alias in node.names]
+            elif isinstance(node, ast.ImportFrom):
+                top_level.append((node.module or "").split(".")[0])
+        self.assertNotIn("cryptography", top_level)
+
+        # And it must still be reachable, or the fast path is dead code.
+        nested = [
+            (node.module or "").split(".")[0]
+            for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)
+        ]
+        self.assertIn("cryptography", nested)
+
+    def test_training_lives_outside_the_package(self):
+        # torch belongs to training, and training is not part of running.
+        import pathlib
+
+        import chainmind
+
+        package = pathlib.Path(chainmind.__file__).parent
+        self.assertFalse((package / "train_lora.py").exists())
+        self.assertTrue((package.parent / "training" / "train_lora.py").exists())

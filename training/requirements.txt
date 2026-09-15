@@ -1,0 +1,12 @@
+# Only needed to TRAIN. Nothing in chainmind/ imports any of this, and a node
+# runs the finished adapter without any of it installed.
+#
+#   python3 -m venv training/.venv
+#   training/.venv/bin/pip install -r training/requirements.txt
+#
+# Pick the torch build that matches your hardware first; see pytorch.org.
+torch>=2.2
+transformers>=4.44
+peft>=0.12
+datasets>=2.20
+accelerate>=0.33
