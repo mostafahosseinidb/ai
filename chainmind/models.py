@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from .meter import Meter
@@ -33,9 +34,19 @@ __all__ = [
     "ClaudeModel",
     "ModelUnavailable",
     "DEFAULT_MODEL",
+    "BACKENDS",
+    "build_model",
     "build_model_tool",
+    "describe_model",
     "register_model_tool",
 ]
+
+#: Where an agent's thinking can come from.  ``local`` runs on the operator's
+#: own hardware and needs no key, no network and no account; ``claude`` is a
+#: hosted API.  ``auto`` prefers local, because an agent that cannot think
+#: without someone else's permission is not the independent thing this
+#: project claims to build.
+BACKENDS = ("auto", "local", "claude")
 
 #: Anthropic's current flagship.  Changing this changes what agents cost, so
 #: it is a deliberate choice rather than a floating "latest".
@@ -244,11 +255,86 @@ def register_model_tool(registry, model: ClaudeModel | None = None, *, name: str
     return registry.register(build_model_tool(model, name=name))
 
 
-def model_from_environment(**overrides: Any) -> ClaudeModel:
-    """Build a model from ``CHAINMIND_MODEL`` / ``CHAINMIND_EFFORT`` if set."""
-    params: dict[str, Any] = {
-        "model": os.environ.get("CHAINMIND_MODEL", DEFAULT_MODEL),
-        "effort": os.environ.get("CHAINMIND_EFFORT", "high"),
-    }
-    params.update(overrides)
-    return ClaudeModel(**params)
+def _claude_credentials_available() -> bool:
+    """Whether a hosted call could even be attempted.
+
+    Checked explicitly rather than by constructing a client, because the SDK
+    builds happily with no credentials and only fails at call time -- which
+    would turn "you have no key" into a confusing error halfway through a
+    prompt.
+    """
+    if os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN"):
+        return True
+    profile = os.environ.get("ANTHROPIC_CONFIG_DIR")
+    candidates = [Path(profile)] if profile else [
+        Path.home() / ".config" / "anthropic",
+        Path.home() / ".anthropic",
+    ]
+    return any(path.is_dir() and any(path.iterdir()) for path in candidates)
+
+
+def build_model(backend: str = "auto", *, model: str | None = None,
+                effort: str | None = None, **overrides: Any) -> Any:
+    """Pick and build a model backend.
+
+    ``auto`` looks for a runtime on this machine first and only then falls
+    back to the hosted API.  That ordering is the point: the default should
+    be the one that keeps working when the network, the account or the
+    provider goes away.
+    """
+    from .local import LocalModel, LocalRuntimeUnavailable
+
+    backend = (backend or os.environ.get("CHAINMIND_BACKEND") or "auto").lower()
+    if backend not in BACKENDS:
+        raise ValueError(f"unknown backend {backend!r}; choose from {', '.join(BACKENDS)}")
+
+    def local() -> Any:
+        params: dict[str, Any] = dict(overrides)
+        if model:
+            params["model"] = model
+        return LocalModel(**params)
+
+    def claude() -> Any:
+        params: dict[str, Any] = {
+            "model": model or os.environ.get("CHAINMIND_MODEL", DEFAULT_MODEL),
+            "effort": effort or os.environ.get("CHAINMIND_EFFORT", "high"),
+        }
+        params.update(overrides)
+        return ClaudeModel(**params)
+
+    if backend == "local":
+        try:
+            return local()
+        except LocalRuntimeUnavailable as exc:
+            raise ModelUnavailable(str(exc)) from exc
+    if backend == "claude":
+        return claude()
+
+    try:
+        return local()
+    except LocalRuntimeUnavailable as local_error:
+        if _claude_credentials_available():
+            return claude()
+        raise ModelUnavailable(
+            "no model is available. Two ways forward:\n\n"
+            "  1. Run one yourself (no key, no account, no network):\n"
+            "       ollama serve && ollama pull llama3.1\n\n"
+            "  2. Use a hosted model:\n"
+            "       pip install 'chainmind[model]' && export ANTHROPIC_API_KEY=...\n"
+            "       chainmind ask '...' --backend claude\n\n"
+            f"{local_error}"
+        ) from local_error
+
+
+def describe_model(engine: Any) -> str:
+    """One line naming the model and where it runs."""
+    described = getattr(engine, "describe", None)
+    if callable(described):
+        return described()
+    return f"{getattr(engine, 'model', 'unknown')} (hosted)"
+
+
+def model_from_environment(**overrides: Any) -> Any:
+    """Build a model from the environment, preferring a local runtime."""
+    backend = overrides.pop("backend", None) or os.environ.get("CHAINMIND_BACKEND", "auto")
+    return build_model(backend, **overrides)

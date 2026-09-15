@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import errno
+import importlib.util
 import json
 import os
 import stat
@@ -407,7 +408,7 @@ def cmd_verify(args: argparse.Namespace) -> int:
 
 def cmd_ask(args: argparse.Namespace) -> int:
     """Prompt in, answer out -- with every token paid for on chain."""
-    from .models import ModelUnavailable, model_from_environment
+    from .models import ModelUnavailable, build_model, describe_model
     from .tools import ToolRegistry
 
     workspace = Workspace(args.workspace)
@@ -423,10 +424,8 @@ def cmd_ask(args: argparse.Namespace) -> int:
         raise SystemExit("the prompt is empty")
 
     try:
-        model = model_from_environment(model=args.model) if args.model else model_from_environment()
-        if args.effort:
-            model.effort = args.effort
-    except ModelUnavailable as exc:
+        model = build_model(args.backend, model=args.model, effort=args.effort)
+    except (ModelUnavailable, ValueError) as exc:
         raise SystemExit(str(exc)) from exc
 
     registry = ToolRegistry()
@@ -459,7 +458,7 @@ def cmd_ask(args: argparse.Namespace) -> int:
         "authorised": outcome.authorised,
         "ok": outcome.ok,
         "reason": outcome.reason or outcome.error,
-        "model": model.model,
+        "model": describe_model(model),
         "spent": spent,
         "balance": kernel.balance,
         "estimated_cost": outcome.estimated_cost,
@@ -546,15 +545,13 @@ def cmd_serve(args: argparse.Namespace) -> int:
 def _build_chat_service(args: argparse.Namespace, workspace: "Workspace", chain):
     """Assemble the chat service, or explain clearly why it cannot be built."""
     from .chat import ChatService
-    from .models import ModelUnavailable, model_from_environment
+    from .models import ModelUnavailable, build_model, describe_model
     from .tools import ToolRegistry
 
     try:
-        model = model_from_environment(**({"model": args.model} if args.model else {}))
-        if args.effort:
-            model.effort = args.effort
-    except ModelUnavailable as exc:
-        raise SystemExit(f"--chat needs a model: {exc}") from exc
+        model = build_model(args.backend, model=args.model, effort=args.effort)
+    except (ModelUnavailable, ValueError) as exc:
+        raise SystemExit(f"--chat needs a model:\n{exc}") from exc
 
     registry = ToolRegistry()
     register_model_tool(registry, model)
@@ -573,8 +570,45 @@ def _build_chat_service(args: argparse.Namespace, workspace: "Workspace", chain)
             f"run: chainmind grant {args.agent} 1"
         )
 
-    return ChatService(kernel, ledger, model_name=model.model,
+    return ChatService(kernel, ledger, model_name=describe_model(model),
                        max_tokens=args.chat_max_tokens, history_turns=args.history_turns)
+
+
+def cmd_backends(args: argparse.Namespace) -> int:
+    """Report where this machine could run the agent's thinking."""
+    from .local import LocalRuntimeUnavailable, discover_runtime
+    from .models import _claude_credentials_available
+
+    found: dict[str, Any] = {}
+    try:
+        base, dialect, models = discover_runtime()
+        found["local"] = {"available": True, "url": base, "dialect": dialect, "models": models}
+    except LocalRuntimeUnavailable as exc:
+        found["local"] = {"available": False, "reason": str(exc).splitlines()[0]}
+
+    has_key = _claude_credentials_available()
+    # find_spec asks whether the SDK could be imported without importing it,
+    # which keeps a broken install from taking this command down with it.
+    sdk = importlib.util.find_spec("anthropic") is not None
+    found["claude"] = {"available": bool(has_key and sdk), "sdk_installed": sdk,
+                       "credentials": has_key}
+
+    lines = []
+    local = found["local"]
+    if local["available"]:
+        lines.append(f"local     yes — {local['dialect']} at {local['url']}")
+        lines.append(f"          models: {', '.join(local['models']) or '(none pulled yet)'}")
+    else:
+        lines.append(f"local     no — {local['reason']}")
+    claude = found["claude"]
+    lines.append(
+        "claude    " + ("yes" if claude["available"] else "no") +
+        f" — sdk {'installed' if sdk else 'missing'}, "
+        f"credentials {'found' if has_key else 'not found'}"
+    )
+    lines += ["", "local needs no key, no account and no network."]
+    _emit(found, args.json, render=lines)
+    return 0 if (found["local"]["available"] or found["claude"]["available"]) else 1
 
 
 def cmd_keys(args: argparse.Namespace) -> int:
@@ -598,9 +632,20 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--workspace", type=Path, default=DEFAULT_WORKSPACE,
                         help="directory holding the ledger and keys (default: .chainmind)")
     parser.add_argument("--json", action="store_true", help="emit machine-readable output")
+
+    # The same flags again on every subcommand, because `chainmind backends
+    # --json` is what people type and argparse would otherwise reject it.
+    # SUPPRESS is the point: without it the subparser's own default would
+    # overwrite a value given before the subcommand.
+    shared = argparse.ArgumentParser(add_help=False)
+    shared.add_argument("--json", action="store_true", default=argparse.SUPPRESS,
+                        help="emit machine-readable output")
+    shared.add_argument("--workspace", type=Path, default=argparse.SUPPRESS,
+                        help="directory holding the ledger and keys")
+
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p = sub.add_parser("init", help="create a network, its authority key and a first agent")
+    p = sub.add_parser("init", parents=[shared], help="create a network, its authority key and a first agent")
     p.add_argument("--chain-id", default="chainmind-dev")
     p.add_argument("--supply", type=int, default=1000, help="initial treasury in credits")
     p.add_argument("--agent-name", default="agent")
@@ -615,29 +660,32 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--force", action="store_true", help="replace an existing workspace")
     p.set_defaults(func=cmd_init)
 
-    p = sub.add_parser("keygen", help="create a new key in the workspace")
+    p = sub.add_parser("keygen", parents=[shared], help="create a new key in the workspace")
     p.add_argument("name")
     p.add_argument("--force", action="store_true")
     p.set_defaults(func=cmd_keygen)
 
-    p = sub.add_parser("keys", help="list the keys in the workspace")
+    p = sub.add_parser("backends", parents=[shared], help="show where this machine can run the agent's thinking")
+    p.set_defaults(func=cmd_backends)
+
+    p = sub.add_parser("keys", parents=[shared], help="list the keys in the workspace")
     p.set_defaults(func=cmd_keys)
 
-    p = sub.add_parser("grant", help="move credits from the treasury to an agent")
+    p = sub.add_parser("grant", parents=[shared], help="move credits from the treasury to an agent")
     p.add_argument("beneficiary", help="a key name in the workspace, or a hex address")
     p.add_argument("amount", type=float, help="credits to grant (fractions allowed)")
     p.add_argument("--from-key", default="authority")
     p.add_argument("--memo", default="")
     p.set_defaults(func=cmd_grant)
 
-    p = sub.add_parser("policy", help="change prices or quotas (authority only)")
+    p = sub.add_parser("policy", parents=[shared], help="change prices or quotas (authority only)")
     p.add_argument("--price", action="append", metavar="RESOURCE=MICROCREDITS")
     p.add_argument("--limit", action="append", metavar="RESOURCE=UNITS")
     p.add_argument("--from-key", default="authority")
     p.add_argument("--memo", default="")
     p.set_defaults(func=cmd_policy)
 
-    p = sub.add_parser("run", help="give the agent a goal and let it spend within its means")
+    p = sub.add_parser("run", parents=[shared], help="give the agent a goal and let it spend within its means")
     p.add_argument("goal")
     p.add_argument("--agent", default="agent", help="key name of the acting agent")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
@@ -648,13 +696,15 @@ def build_parser() -> argparse.ArgumentParser:
                    help="ceiling on the CPU limit handed to a sandboxed tool")
     p.set_defaults(func=cmd_run)
 
-    p = sub.add_parser("ask", help="send a prompt to a real model, paid for on chain")
+    p = sub.add_parser("ask", parents=[shared], help="send a prompt to a real model, paid for on chain")
     p.add_argument("prompt", help="the prompt; use - to read it from stdin")
     p.add_argument("--agent", default="agent", help="key name of the acting agent")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
-    p.add_argument("--model", help=f"model id (default: {{}} or $CHAINMIND_MODEL)".format("claude-opus-5"))
+    p.add_argument("--backend", choices=["auto", "local", "claude"], default="auto",
+                   help='where the agent thinks: "local" runs on this machine and needs no key, "claude" is a hosted API, "auto" tries local first')
+    p.add_argument("--model", help="model name; defaults to what the runtime offers")
     p.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"],
-                   help="how hard the model should think; higher costs more")
+                   help="how hard the model should think (hosted backends only)")
     p.add_argument("--max-tokens", type=int, default=16_000,
                    help="ceiling on the answer, and what gets authorised up front")
     p.add_argument("--sandbox", action="store_true",
@@ -663,19 +713,19 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--quiet", action="store_true", help="print only the answer")
     p.set_defaults(func=cmd_ask)
 
-    p = sub.add_parser("status", help="show accounts, prices and quotas")
+    p = sub.add_parser("status", parents=[shared], help="show accounts, prices and quotas")
     p.set_defaults(func=cmd_status)
 
-    p = sub.add_parser("audit", help="report metered usage recorded on chain")
+    p = sub.add_parser("audit", parents=[shared], help="report metered usage recorded on chain")
     p.add_argument("--address", help="restrict to one agent (key name or hex address)")
     p.add_argument("--limit", type=int, default=25, help="rows to show")
     p.add_argument("--all-types", action="store_true", help="include non-usage transactions")
     p.set_defaults(func=cmd_audit)
 
-    p = sub.add_parser("verify", help="replay the whole chain and check every invariant")
+    p = sub.add_parser("verify", parents=[shared], help="replay the whole chain and check every invariant")
     p.set_defaults(func=cmd_verify)
 
-    p = sub.add_parser("serve", help="open a dashboard over the ledger")
+    p = sub.add_parser("serve", parents=[shared], help="open a dashboard over the ledger")
     p.add_argument("--host", default="127.0.0.1",
                    help="interface to bind (default: loopback only)")
     p.add_argument("--port", type=int, default=8787)
@@ -685,7 +735,9 @@ def build_parser() -> argparse.ArgumentParser:
                         "this process hold the agent's signing key")
     p.add_argument("--agent", default="agent", help="key name that chat speaks as")
     p.add_argument("--sealer", default="authority", help="key name that seals blocks")
-    p.add_argument("--model", help="model id for chat (default: $CHAINMIND_MODEL)")
+    p.add_argument("--backend", choices=["auto", "local", "claude"], default="auto",
+                   help='where the agent thinks: "local" runs on this machine and needs no key, "claude" is a hosted API, "auto" tries local first')
+    p.add_argument("--model", help="model name for chat")
     p.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"])
     p.add_argument("--chat-max-tokens", type=int, default=4_000,
                    help="ceiling authorised for each answer")

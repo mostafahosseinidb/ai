@@ -23,6 +23,7 @@ from .chain import Chain, ChainError, LedgerBusy, ProposalResult
 from .chat import ChatBusy, ChatRejected, ChatService, Conversation
 from .consensus import ConsensusError, ProofOfAuthority, ProofOfWork
 from .crypto import SigningKey, VerifyingKey, merkle_root, sha256_hex
+from .local import LocalModel, LocalRuntimeUnavailable, discover_runtime
 from .executors import Executor, InProcessExecutor, SandboxExecutor
 from .mempool import Mempool
 from .meter import Meter, UsageRecord
@@ -41,11 +42,12 @@ from .transactions import (
     build_usage,
 )
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 __all__ = [
     "ActionOutcome", "Account", "AgentHalted", "AgentKernel", "Block", "BlockHeader",
     "ChatBusy", "ChatRejected", "ChatService", "Conversation", "LedgerBusy",
+    "LocalModel", "LocalRuntimeUnavailable", "discover_runtime",
     "Executor", "InProcessExecutor", "SandboxExecutor", "SandboxLimits", "SandboxResult",
     "SandboxUnavailable", "SANDBOX_SUPPORTED",
     "BudgetAwarePlanner", "CREDIT", "Chain", "ChainError", "ConsensusError", "DEFAULT_PRICES",

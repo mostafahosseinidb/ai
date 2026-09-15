@@ -8,7 +8,7 @@
 
 ```bash
 git clone <repo> && cd ai
-python3 -m unittest discover -s tests      # ۲۰۵ آزمون، باید همه سبز باشند
+python3 -m unittest discover -s tests      # ۲۲۶ آزمون، باید همه سبز باشند
 ```
 
 برای داشتن فرمان `chainmind` در مسیر سیستم (اختیاری):
@@ -99,14 +99,64 @@ chainmind run "کار سنگین انجام بده" --agent atlas --sandbox --ma
 
 ---
 
-## ۳٫۵ پرامپت بده، جواب بگیر
-
-این رایج‌ترین شکل استفاده است.
+## ۳٫۴ انتخاب اینکه عامل کجا فکر کند
 
 ```bash
-pip install 'chainmind[model]'
-export ANTHROPIC_API_KEY=...        # یا: ant auth login
+chainmind backends
+```
 
+```
+local     yes — ollama at http://127.0.0.1:11434
+          models: qwen2.5:7b, llama3.1
+claude    no — sdk installed, credentials not found
+
+local needs no key, no account and no network.
+```
+
+### مسیر محلی (پیش‌فرض)
+
+هر runtime ای که از قبل روی ماشین در حال اجراست کافی است. ChainMind هیچ سروری بالا نمی‌آورد و هیچ وزنی دانلود نمی‌کند — فقط به آنچه هست وصل می‌شود.
+
+```bash
+# گزینهٔ ساده
+ollama serve
+ollama pull qwen2.5:7b
+
+# یا هر سرور سازگار با OpenAI
+llama-server -m model.gguf --port 8080
+```
+
+این آدرس‌ها خودکار آزموده می‌شوند: `11434` (Ollama)، `8080` (llama.cpp)، `1234` (LM Studio)، `8000` (vLLM). برای جای دیگر:
+
+```bash
+export CHAINMIND_LOCAL_URL=http://192.168.1.10:8080
+export CHAINMIND_LOCAL_DIALECT=openai        # یا ollama
+export CHAINMIND_LOCAL_MODEL=qwen2.5:7b
+```
+
+نکتهٔ اندازه‌گیری: llama.cpp نقطهٔ `/tokenize` دارد، پس برآورد توکن ورودی **دقیق** است. Ollama چنین چیزی ندارد، پس تقریبِ بدبینانه استفاده می‌شود — جهت خطا عمدی است.
+
+### مسیر میزبانی‌شده
+
+```bash
+pip install 'chainmind[claude]'
+export ANTHROPIC_API_KEY=...        # یا: ant auth login
+chainmind ask "..." --backend claude
+```
+
+### کدام انتخاب می‌شود؟
+
+| `--backend` | رفتار |
+|---|---|
+| `auto` (پیش‌فرض) | اول محلی؛ اگر نبود و کلید وجود داشت، میزبانی‌شده |
+| `local` | فقط محلی؛ اگر runtime نباشد، خطای روشن |
+| `claude` | فقط میزبانی‌شده |
+
+با `CHAINMIND_BACKEND` هم می‌شود تنظیمش کرد.
+
+## ۳٫۵ پرامپت بده، جواب بگیر
+
+```bash
 chainmind ask "خلاصهٔ این معماری را در سه جمله بنویس"
 chainmind ask - < prompt.txt                     # پرامپت از ورودی استاندارد
 chainmind ask "..." --quiet > answer.txt         # فقط جواب
@@ -163,7 +213,7 @@ chainmind verify                       # بازپخش کامل از جنسیس
 
 ```bash
 chainmind serve                        # http://127.0.0.1:8787 — فقط-خواندنی
-chainmind serve --chat --agent atlas   # با پنل گفت‌وگو
+chainmind serve --chat --agent atlas   # با پنل گفت‌وگو (مدل محلی، اگر در دسترس باشد)
 chainmind serve --port 9000
 ```
 
@@ -284,7 +334,8 @@ registry.register(Tool(
 | عامل ۲۴ ساعته کار کند | یک VPS کوچک: ۱ vCPU، ۱GB رم، ۱۰GB دیسک |
 | داشبورد از بیرون قابل دسترس باشد | همان، به‌علاوهٔ HTTPS و احراز هویت جلوی آن |
 | چند گره، اجماع واقعی | ۳ گره یا بیشتر، هرکدام ۲ vCPU / ۲GB — ولی **لایهٔ شبکه هنوز پیاده نشده** |
-| مدل واقعی (`chainmind ask`) | فقط دسترسی شبکه به ارائه‌دهنده و یک کلید API؛ GPU لازم نیست |
+| مدل میزبانی‌شده | دسترسی شبکه و یک کلید API؛ GPU لازم نیست |
+| مدل محلی | رم کافی برای وزن‌ها (۷B حدود ۵GB کوانتیزه‌شده)؛ GPU خوب است ولی الزامی نیست |
 
 نکته‌ها اگر روی سرور بردید:
 

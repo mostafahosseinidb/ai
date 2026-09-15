@@ -153,3 +153,37 @@ class WorkspaceTests(CliTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FlagPositionTests(CliTestCase):
+    """`chainmind backends --json` is what people type; it has to work."""
+
+    def test_json_is_accepted_after_the_subcommand(self):
+        self.bootstrap()
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = main(["--workspace", str(self.workspace), "status", "--json"])
+        self.assertEqual(code, 0)
+        self.assertIn("chain_id", json.loads(out.getvalue()))
+
+    def test_json_before_the_subcommand_is_not_overwritten(self):
+        self.bootstrap()
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            main(["--workspace", str(self.workspace), "--json", "status"])
+        self.assertIn("chain_id", json.loads(out.getvalue()))
+
+    def test_the_workspace_can_also_come_after(self):
+        self.bootstrap()
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            main(["status", "--workspace", str(self.workspace), "--json"])
+        self.assertIn("chain_id", json.loads(out.getvalue()))
+
+
+class BackendsCommandTests(CliTestCase):
+    def test_it_reports_both_paths(self):
+        report = self.run_cli("backends", expect=1)   # nothing available in a bare test env
+        self.assertIn("local", report)
+        self.assertIn("claude", report)
+        self.assertIn("available", report["local"])

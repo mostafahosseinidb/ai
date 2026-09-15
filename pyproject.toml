@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "chainmind"
-version = "0.3.0"
+version = "0.4.0"
 description = "An autonomous AI agent whose resource consumption is governed by a verifiable blockchain ledger"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,8 +12,11 @@ license = { text = "MIT" }
 dependencies = []
 
 [project.optional-dependencies]
-# The ledger core needs nothing. These are for the parts that reach outside it.
-model = ["anthropic>=1"]
+# The ledger core needs nothing, and neither does the local model backend --
+# it speaks HTTP to a runtime on your own machine with the standard library.
+# Only the hosted backend pulls in a third-party SDK.
+claude = ["anthropic>=1"]
+model = ["anthropic>=1"]   # kept as an alias for the name used before 0.4
 fast-crypto = ["cryptography>=41"]
 dev = ["pytest>=7"]
 
