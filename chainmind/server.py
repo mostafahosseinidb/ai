@@ -33,6 +33,7 @@ from typing import Any, Callable
 from urllib.parse import parse_qs, urlparse
 
 from .chain import Chain, ChainError
+from .chat import ChatBusy, ChatRejected, ChatService
 from .resources import ResourceKind
 from .state import StateError
 from .transactions import MEASUREMENT_SOURCES, TxType
@@ -273,8 +274,26 @@ def _int(query: dict[str, list[str]], name: str, default: int) -> int:
         return default
 
 
-def build_application(view: LedgerView, *, quiet: bool = True) -> type[BaseHTTPRequestHandler]:
-    """Create a handler class bound to one ledger view."""
+#: A request to the one write route must carry this header.  A cross-origin
+#: page cannot set a custom header without a CORS preflight, which this server
+#: never answers -- so a random site in another tab cannot spend the agent's
+#: budget just because the dashboard is listening on localhost.
+CHAT_HEADER = "X-ChainMind-Chat"
+
+#: Cap on the request body, so a single POST cannot be used to push an
+#: enormous prompt through the model.
+MAX_BODY_BYTES = 64 * 1024
+
+
+def build_application(view: LedgerView, *, quiet: bool = True,
+                      chat: ChatService | None = None,
+                      allowed_hosts: frozenset[str] | None = None,
+                      ) -> type[BaseHTTPRequestHandler]:
+    """Create a handler class bound to one ledger view.
+
+    ``chat`` is ``None`` by default, which leaves the server strictly
+    read-only.  Passing one mounts a single write route and nothing else.
+    """
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "ChainMind"
@@ -339,6 +358,22 @@ def build_application(view: LedgerView, *, quiet: bool = True) -> type[BaseHTTPR
                 self._send(HTTPStatus.OK, body, content_type)
                 return
 
+            if path == "/api/chat":
+                if chat is None:
+                    self._error(HTTPStatus.NOT_FOUND, "chat is not enabled on this server")
+                    return
+                query = parse_qs(parsed.query)
+                wanted = query.get("conversation", [None])[0]
+                if wanted:
+                    conversation = chat.get(wanted)
+                    if conversation is None:
+                        self._error(HTTPStatus.NOT_FOUND, "no such conversation")
+                        return
+                    self._json(conversation.to_dict())
+                else:
+                    self._json({"conversations": chat.listing(), **chat.status()})
+                return
+
             route = ROUTES.get(path)
             if route is None:
                 self._error(HTTPStatus.NOT_FOUND, f"no route for {path}")
@@ -357,10 +392,92 @@ def build_application(view: LedgerView, *, quiet: bool = True) -> type[BaseHTTPR
 
         do_HEAD = do_GET  # noqa: N815
 
+        # -- the one write route -------------------------------------------
+
+        def _origin_is_acceptable(self) -> bool:
+            """Refuse a request that another site sent on the user's behalf.
+
+            Binding to loopback is not by itself protection: any page the
+            user opens can POST to 127.0.0.1, and a DNS-rebinding trick can
+            make a remote name resolve here.  So the Host header must name an
+            address we actually serve, and an Origin, if present, must match.
+            """
+            host = (self.headers.get("Host") or "").split(":")[0].strip("[]")
+            if allowed_hosts is not None and host not in allowed_hosts:
+                return False
+            origin = self.headers.get("Origin")
+            if origin:
+                origin_host = urlparse(origin).hostname or ""
+                if origin_host != (urlparse(f"//{self.headers.get('Host', '')}").hostname or ""):
+                    return False
+            return True
+
         def do_POST(self) -> None:  # noqa: N802
-            # There is no write path on purpose: everything that changes the
-            # ledger needs a signing key, and those stay on the command line.
-            self._error(HTTPStatus.METHOD_NOT_ALLOWED, "this server is read-only")
+            parsed = urlparse(self.path)
+            path = parsed.path.rstrip("/") or "/"
+
+            if chat is None or path != "/api/chat":
+                # Everything else that changes the ledger needs a signing key,
+                # and those stay on the command line.
+                self._error(
+                    HTTPStatus.METHOD_NOT_ALLOWED,
+                    "this server is read-only" if chat is None
+                    else "the only write route is /api/chat",
+                )
+                return
+
+            if self.headers.get(CHAT_HEADER) is None:
+                self._error(HTTPStatus.FORBIDDEN, f"missing {CHAT_HEADER} header")
+                return
+            if not self._origin_is_acceptable():
+                self._error(HTTPStatus.FORBIDDEN, "this request did not come from the dashboard")
+                return
+
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+            except ValueError:
+                self._error(HTTPStatus.BAD_REQUEST, "malformed Content-Length")
+                return
+            if length > MAX_BODY_BYTES:
+                self._error(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, "the request body is too large")
+                return
+
+            try:
+                body = json.loads(self.rfile.read(length) or b"{}")
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                self._error(HTTPStatus.BAD_REQUEST, "the request body is not JSON")
+                return
+            if not isinstance(body, dict):
+                self._error(HTTPStatus.BAD_REQUEST, "the request body must be an object")
+                return
+
+            try:
+                result = chat.send(
+                    prompt=str(body.get("prompt", "")),
+                    conversation_id=body.get("conversation_id") or None,
+                    max_tokens=body.get("max_tokens"),
+                )
+            except ChatRejected as exc:
+                # Not an error in the server: the chain did its job.
+                self._json(
+                    {"refused": True, "reason": exc.reason,
+                     "estimated_cost": exc.estimated_cost,
+                     "balance": chat.kernel.balance},
+                    HTTPStatus.PAYMENT_REQUIRED,
+                )
+                return
+            except ChatBusy as exc:
+                self._error(HTTPStatus.CONFLICT, str(exc))
+                return
+            except ValueError as exc:
+                self._error(HTTPStatus.BAD_REQUEST, str(exc))
+                return
+            except Exception as exc:
+                self._error(HTTPStatus.BAD_GATEWAY, f"{type(exc).__name__}: {exc}")
+                return
+
+            view.invalidate()      # the ledger just grew; re-read it next time
+            self._json(result)
 
         do_PUT = do_DELETE = do_PATCH = do_POST  # noqa: N815
 
@@ -368,9 +485,16 @@ def build_application(view: LedgerView, *, quiet: bool = True) -> type[BaseHTTPR
 
 
 def serve(ledger_path: Path | str, *, host: str = "127.0.0.1", port: int = DEFAULT_PORT,
-          quiet: bool = True) -> ThreadingHTTPServer:
-    """Start a dashboard server.  Returns it without blocking."""
+          quiet: bool = True, chat: ChatService | None = None) -> ThreadingHTTPServer:
+    """Start a dashboard server.  Returns it without blocking.
+
+    Without ``chat`` the server has no write route at all.
+    """
     view = LedgerView(ledger_path)
-    server = ThreadingHTTPServer((host, port), build_application(view, quiet=quiet))
+    allowed = frozenset({host, "localhost", "127.0.0.1", "::1"})
+    server = ThreadingHTTPServer(
+        (host, port),
+        build_application(view, quiet=quiet, chat=chat, allowed_hosts=allowed),
+    )
     server.daemon_threads = True
     return server

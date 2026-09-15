@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any, Iterable, Sequence
 
 from .agent import AgentKernel, LocalLedger
-from .chain import Chain, ChainError
+from .chain import Chain, ChainError, LedgerBusy
 from .consensus import ProofOfAuthority, ProofOfWork
 from .crypto import SigningKey
 from .executors import InProcessExecutor, SandboxExecutor
@@ -505,11 +505,13 @@ def cmd_serve(args: argparse.Namespace) -> int:
     workspace = Workspace(args.workspace)
     if not workspace.exists():
         raise SystemExit(f"no ledger at {workspace.ledger_path}; run 'chainmind init' first")
-    workspace.load_chain()   # fail loudly here rather than on the first request
+    chain = workspace.load_chain()   # fail loudly here rather than on the first request
+
+    chat = _build_chat_service(args, workspace, chain) if args.chat else None
 
     try:
         server = serve(workspace.ledger_path, host=args.host, port=args.port,
-                       quiet=not args.verbose)
+                       quiet=not args.verbose, chat=chat)
     except OSError as exc:
         if exc.errno == errno.EADDRINUSE:
             raise SystemExit(
@@ -519,9 +521,18 @@ def cmd_serve(args: argparse.Namespace) -> int:
     where = f"http://{args.host}:{args.port}/"
     print(f"dashboard  {where}")
     print(f"ledger     {workspace.ledger_path}")
-    print("read-only  no route on this server can change the ledger or read your keys")
+    if chat is None:
+        print("read-only  no route on this server can change the ledger or read your keys")
+    else:
+        print(f"chat       on, as '{args.agent}' ({chat.kernel.address[:16]}...)")
+        print(f"model      {chat.model_name}")
+        print(f"budget     {format_credits(chat.kernel.balance)} — the wallet is the rate limit")
+        print("writes     /api/chat only; nothing else on this server can change the ledger")
+        print(f"key        this process now holds the '{args.agent}' signing key in memory")
     if args.host not in ("127.0.0.1", "localhost", "::1"):
         print(f"warning    bound to {args.host}: balances and addresses are reachable from the network")
+        if chat is not None:
+            print("warning    with --chat that also exposes an endpoint that spends the agent's budget")
     print("\nCtrl-C to stop.")
     try:
         server.serve_forever()
@@ -530,6 +541,40 @@ def cmd_serve(args: argparse.Namespace) -> int:
     finally:
         server.server_close()
     return 0
+
+
+def _build_chat_service(args: argparse.Namespace, workspace: "Workspace", chain):
+    """Assemble the chat service, or explain clearly why it cannot be built."""
+    from .chat import ChatService
+    from .models import ModelUnavailable, model_from_environment
+    from .tools import ToolRegistry
+
+    try:
+        model = model_from_environment(**({"model": args.model} if args.model else {}))
+        if args.effort:
+            model.effort = args.effort
+    except ModelUnavailable as exc:
+        raise SystemExit(f"--chat needs a model: {exc}") from exc
+
+    registry = ToolRegistry()
+    register_model_tool(registry, model)
+
+    sealer = workspace.load_key(args.sealer)
+    agent_key = workspace.load_key(args.agent)
+    ledger = LocalLedger(chain, sealer)
+    kernel = AgentKernel(agent_key, ledger, tools=registry, label=args.agent,
+                         memory_path=workspace.root / "memory" / f"{args.agent}.json")
+    kernel.register()
+    ledger.flush()
+
+    if kernel.balance <= 0:
+        raise SystemExit(
+            f"'{args.agent}' has no credits, so every turn would be refused; "
+            f"run: chainmind grant {args.agent} 1"
+        )
+
+    return ChatService(kernel, ledger, model_name=model.model,
+                       max_tokens=args.chat_max_tokens, history_turns=args.history_turns)
 
 
 def cmd_keys(args: argparse.Namespace) -> int:
@@ -630,11 +675,22 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("verify", help="replay the whole chain and check every invariant")
     p.set_defaults(func=cmd_verify)
 
-    p = sub.add_parser("serve", help="open a read-only dashboard over the ledger")
+    p = sub.add_parser("serve", help="open a dashboard over the ledger")
     p.add_argument("--host", default="127.0.0.1",
                    help="interface to bind (default: loopback only)")
     p.add_argument("--port", type=int, default=8787)
     p.add_argument("--verbose", action="store_true", help="log every request")
+    p.add_argument("--chat", action="store_true",
+                   help="enable the chat panel; adds the only write route and makes "
+                        "this process hold the agent's signing key")
+    p.add_argument("--agent", default="agent", help="key name that chat speaks as")
+    p.add_argument("--sealer", default="authority", help="key name that seals blocks")
+    p.add_argument("--model", help="model id for chat (default: $CHAINMIND_MODEL)")
+    p.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"])
+    p.add_argument("--chat-max-tokens", type=int, default=4_000,
+                   help="ceiling authorised for each answer")
+    p.add_argument("--history-turns", type=int, default=20,
+                   help="how many past turns are replayed to the model")
     p.set_defaults(func=cmd_serve)
 
     return parser
@@ -647,6 +703,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         return args.func(args)
     except SystemExit:
         raise
+    except LedgerBusy as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 3
     except (ChainError, StateError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

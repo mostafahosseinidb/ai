@@ -163,6 +163,63 @@
   .tooltip b { font-weight: 600; }
   .tooltip .n { font-variant-numeric: tabular-nums; direction: ltr; display: inline-block; }
 
+  /* ---- chat ---- */
+  .chat { display: flex; flex-direction: column; gap: 0; }
+  .chat-head { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline;
+               justify-content: space-between; margin-bottom: 12px; }
+  .chat-meta { font-size: 11.5px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+  .chat-meta b { color: var(--ink-2); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .thread { display: flex; flex-direction: column; gap: 2px;
+            max-height: 62vh; overflow-y: auto; scroll-behavior: smooth;
+            margin: 0 -18px; padding: 0 18px; }
+  .msg { padding: 14px 0; border-bottom: 1px solid var(--grid); }
+  .msg:last-child { border-bottom: none; }
+  .msg .who { font-size: 11.5px; font-weight: 600; color: var(--muted); margin-bottom: 6px;
+              display: flex; align-items: center; gap: 7px; }
+  .msg .who .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+  .msg.user .who .dot { background: var(--ink-2); }
+  .msg.assistant .who .dot { background: var(--kernel); }
+  .msg.refused .who .dot { background: var(--warning); }
+  .msg .text { font-size: 14px; line-height: 1.85; color: var(--ink); overflow-wrap: anywhere; }
+  .msg .text p { margin: 0 0 10px; }
+  .msg .text p:last-child { margin-bottom: 0; }
+  .msg .text ul, .msg .text ol { margin: 0 0 10px; padding-inline-start: 22px; }
+  .msg .text li { margin-bottom: 4px; }
+  /* No forced direction on inline code: Latin code is laid out left-to-right
+     by bidi anyway, and forcing it breaks Persian that happens to be quoted. */
+  .msg .text code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+                    font-size: 12.5px; background: var(--plane); border: 1px solid var(--border);
+                    border-radius: 4px; padding: 1px 5px; }
+  .msg .text pre { background: var(--plane); border: 1px solid var(--border); border-radius: 8px;
+                   padding: 11px 13px; overflow-x: auto; direction: ltr; text-align: left;
+                   margin: 0 0 10px; }
+  .msg .text pre code { background: none; border: none; padding: 0; font-size: 12.5px; }
+  .msg .receipt { margin-top: 9px; font-size: 11px; color: var(--muted);
+                  display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+  .msg .receipt .n { font-variant-numeric: tabular-nums; direction: ltr; }
+  .msg.refused .text { color: var(--ink-2); }
+  .msg.pending .text { color: var(--muted); }
+  .dots::after { content: "…"; animation: blink 1.2s steps(4, end) infinite; }
+  @keyframes blink { 0%, 20% { opacity: .3 } 50% { opacity: 1 } 100% { opacity: .3 } }
+
+  .composer { display: flex; gap: 8px; align-items: flex-end; margin-top: 14px;
+              border-top: 1px solid var(--grid); padding-top: 14px; }
+  .composer textarea {
+    flex: 1; font: inherit; font-size: 14px; line-height: 1.7; color: var(--ink);
+    background: var(--plane); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; resize: none; min-height: 46px; max-height: 200px;
+  }
+  .composer textarea:focus { outline: none; border-color: var(--kernel); }
+  .composer button.send { background: var(--kernel); border-color: var(--kernel); color: #fff;
+                          padding: 11px 18px; border-radius: 10px; font-weight: 600; }
+  .composer button.send:disabled { opacity: .45; cursor: not-allowed; }
+  .hint { font-size: 11.5px; color: var(--muted); margin-top: 8px; }
+  .chat-off { padding: 26px 4px; text-align: center; color: var(--muted); font-size: 13px; line-height: 2; }
+  .chat-off code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; direction: ltr;
+                   background: var(--plane); border: 1px solid var(--border);
+                   border-radius: 5px; padding: 2px 7px; display: inline-block; }
+
   .status { font-size: 12px; color: var(--muted); }
   .status.ok { color: var(--good); }
   .status.bad { color: var(--critical); }
@@ -184,6 +241,19 @@
       <button id="btn-theme" type="button">تم</button>
     </div>
   </header>
+
+  <section class="card chat" id="chat-card">
+    <div class="chat-head">
+      <div>
+        <h2>گفت‌وگو</h2>
+        <p class="sub" style="margin:0">هر پاسخ پیش از تولید، از بودجهٔ عامل مجوز می‌گیرد.</p>
+      </div>
+      <div class="chat-meta" id="chat-meta"></div>
+      <button type="button" id="btn-new-chat" hidden>گفت‌وگوی تازه</button>
+    </div>
+    <div class="thread" id="thread"></div>
+    <div id="composer-wrap"></div>
+  </section>
 
   <div class="kpis" id="kpis"></div>
 
@@ -624,6 +694,284 @@ function renderBlocks() {
   host.replaceChildren(table);
 }
 
+/* ---------- chat ---------- */
+const chat = {
+  enabled: false, conversationId: null, sending: false,
+  status: {}, messages: [],
+};
+
+/** Escape first, then apply a small markdown subset.
+ *  Model output is text, not markup: dropping it into innerHTML unescaped
+ *  would let an answer inject script into this page. */
+function renderMarkdown(source) {
+  const escaped = String(source)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  const blocks = [];
+  const withoutFences = escaped.replace(/```([\s\S]*?)```/g, (_, code) => {
+    blocks.push(code.replace(/^\w*\n/, ""));
+    return `\u0000BLOCK${blocks.length - 1}\u0000`;
+  });
+
+  const html = withoutFences
+    .split(/\n{2,}/)
+    .map((chunk) => {
+      const trimmed = chunk.trim();
+      if (!trimmed) return "";
+      if (/^\u0000BLOCK\d+\u0000$/.test(trimmed)) return trimmed;
+      const lines = trimmed.split("\n");
+      if (lines.every((line) => /^\s*[-*]\s+/.test(line))) {
+        return "<ul>" + lines.map((line) =>
+          `<li>${inline(line.replace(/^\s*[-*]\s+/, ""))}</li>`).join("") + "</ul>";
+      }
+      if (lines.every((line) => /^\s*\d+[.)]\s+/.test(line))) {
+        return "<ol>" + lines.map((line) =>
+          `<li>${inline(line.replace(/^\s*\d+[.)]\s+/, ""))}</li>`).join("") + "</ol>";
+      }
+      return `<p>${inline(trimmed).replace(/\n/g, "<br>")}</p>`;
+    })
+    .join("");
+
+  return html.replace(/\u0000BLOCK(\d+)\u0000/g,
+    (_, index) => `<pre><code>${blocks[Number(index)]}</code></pre>`);
+
+  function inline(text) {
+    return text
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
+  }
+}
+
+function renderChatMeta() {
+  const host = document.getElementById("chat-meta");
+  if (!chat.enabled) { host.replaceChildren(); return; }
+  const s = chat.status;
+  const parts = [
+    ["مدل", s.model || "—"],
+    ["موجودی", s.balance_text || "—"],
+    ["توکن خروجی قابل خرید", s.affordable_output_tokens >= 0 ? num(s.affordable_output_tokens) : "بی‌حد"],
+    ["عامل", s.label || short(s.agent || "", 10)],
+  ];
+  host.replaceChildren(...parts.map(([label, value]) => {
+    const span = el("span");
+    span.append(document.createTextNode(label + " "));
+    span.append(el("b", {}, String(value)));
+    return span;
+  }));
+}
+
+function renderThread() {
+  const host = document.getElementById("thread");
+  if (!chat.enabled) {
+    const off = el("div", { class: "chat-off" });
+    off.append(el("div", {}, "چت روی این سرور فعال نیست."));
+    const how = el("div");
+    how.append(document.createTextNode("برای فعال‌کردنش سرور را این‌طور اجرا کنید: "));
+    how.append(el("code", {}, "chainmind serve --chat --agent atlas"));
+    off.append(how);
+    off.append(el("div", {}, "این کار تنها مسیر نوشتنی را اضافه می‌کند و کلید عامل را در حافظهٔ سرور نگه می‌دارد."));
+    host.replaceChildren(off);
+    return;
+  }
+
+  if (!chat.messages.length) {
+    host.replaceChildren(el("div", { class: "chat-off" },
+      "چیزی بپرسید. هزینهٔ هر پاسخ پیش از تولیدش از بودجه مجوز می‌گیرد و بعد روی زنجیره ثبت می‌شود."));
+    return;
+  }
+
+  host.replaceChildren(...chat.messages.map((message) => {
+    const node = el("div", { class: "msg " + message.role + (message.pending ? " pending" : "")
+      + (message.refused ? " refused" : "") });
+
+    const who = el("div", { class: "who" });
+    who.append(el("i", { class: "dot" }));
+    who.append(document.createTextNode(
+      message.refused ? "زنجیره اجازه نداد" : message.role === "user" ? "شما" : "عامل"));
+    node.append(who);
+
+    const text = el("div", { class: "text" });
+    if (message.pending) {
+      text.append(el("span", { class: "dots" }, "در حال فکر کردن"));
+    } else if (message.refused) {
+      text.textContent = message.content;
+    } else {
+      text.innerHTML = renderMarkdown(message.content);
+    }
+    node.append(text);
+
+    if (message.receipt) {
+      const receipt = el("div", { class: "receipt" });
+      const r = message.receipt;
+      if (r.cost_text) {
+        const cost = el("span");
+        cost.append(document.createTextNode("هزینه "));
+        cost.append(el("span", { class: "n" }, r.cost_text));
+        receipt.append(cost);
+      }
+      Object.entries(r.usage || {}).forEach(([resource, amount]) => {
+        const source = (r.sources || {})[resource] || "declared";
+        const pill = el("span", { class: "pill " + source },
+          `${num(amount)} ${resourceName(resource)} · ${SOURCE_FA[source] || source}`);
+        receipt.append(pill);
+      });
+      if (r.height != null) receipt.append(el("span", {}, `بلاک #${r.height}`));
+      if (r.note) receipt.append(el("span", { style: "color:var(--warning)" }, r.note));
+      node.append(receipt);
+    }
+    return node;
+  }));
+  host.scrollTop = host.scrollHeight;
+}
+
+function renderComposer() {
+  const host = document.getElementById("composer-wrap");
+  if (!chat.enabled) { host.replaceChildren(); return; }
+  if (host.querySelector("textarea")) { updateComposerState(); return; }
+
+  const wrap = el("div", { class: "composer" });
+  const box = el("textarea", {
+    id: "prompt-box", rows: "1", placeholder: "پیامتان را بنویسید…",
+    "aria-label": "پیام",
+  });
+  const send = el("button", { class: "send", type: "button", id: "send-btn" }, "بفرست");
+
+  box.addEventListener("input", () => {
+    box.style.height = "auto";
+    box.style.height = Math.min(200, box.scrollHeight) + "px";
+    updateComposerState();
+  });
+  box.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); submitPrompt(); }
+  });
+  send.addEventListener("click", submitPrompt);
+
+  wrap.append(box, send);
+  host.replaceChildren(wrap, el("div", { class: "hint" },
+    "Enter برای ارسال، Shift+Enter برای خط جدید. هر نوبت، کل گفت‌وگو دوباره برای مدل فرستاده می‌شود — برای همین گفت‌وگوی بلندتر گران‌تر است."));
+  updateComposerState();
+}
+
+function updateComposerState() {
+  const box = document.getElementById("prompt-box");
+  const send = document.getElementById("send-btn");
+  if (!box || !send) return;
+  send.disabled = chat.sending || !box.value.trim();
+  send.textContent = chat.sending ? "در حال ارسال…" : "بفرست";
+  box.disabled = chat.sending;
+}
+
+async function submitPrompt() {
+  const box = document.getElementById("prompt-box");
+  if (!box || chat.sending) return;
+  const prompt = box.value.trim();
+  if (!prompt) return;
+
+  box.value = "";
+  box.style.height = "auto";
+  chat.sending = true;
+  chat.messages.push({ role: "user", content: prompt });
+  chat.messages.push({ role: "assistant", content: "", pending: true });
+  renderThread();
+  updateComposerState();
+
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-ChainMind-Chat": "1" },
+      body: JSON.stringify({ prompt, conversation_id: chat.conversationId }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    chat.messages.pop();   // drop the pending placeholder
+
+    if (response.status === 402 || payload.refused) {
+      // The chain declined. Nothing was sent to the model, so the turn is
+      // not part of the conversation the next turn will be billed for.
+      chat.messages.push({
+        role: "assistant", refused: true,
+        content: payload.reason || "بودجه یا سهمیه اجازه نداد.",
+        receipt: { note: payload.estimated_cost
+          ? `برآورد ${(payload.estimated_cost / CREDIT).toFixed(6)} اعتبار` : "" },
+      });
+    } else if (!response.ok) {
+      chat.messages.push({ role: "assistant", refused: true,
+        content: payload.error || `خطای ${response.status}` });
+    } else {
+      chat.conversationId = payload.conversation_id || chat.conversationId;
+      chat.messages.push({
+        role: "assistant",
+        content: payload.answer || "(پاسخ خالی بود)",
+        receipt: {
+          cost_text: payload.cost_text, usage: payload.usage,
+          sources: payload.sources, height: payload.height, note: payload.note,
+        },
+      });
+      chat.status.balance_text = payload.balance_text;
+      chat.status.balance = payload.balance;
+    }
+  } catch (error) {
+    chat.messages.pop();
+    chat.messages.push({ role: "assistant", refused: true, content: "خطای شبکه: " + error.message });
+  } finally {
+    chat.sending = false;
+    renderChatMeta();
+    renderThread();
+    updateComposerState();
+    refresh();          // the ledger just grew
+  }
+}
+
+/** Turn the server's record of a conversation into what the thread renders.
+ *  The server's copy is the one that counts -- it is what gets replayed to
+ *  the model and what the on-chain digest commits to. */
+function adoptConversation(conversation) {
+  chat.conversationId = conversation.id;
+  chat.messages = conversation.turns.map((turn) => ({
+    role: turn.role,
+    content: turn.content,
+    receipt: turn.role === "assistant"
+      ? {
+          cost_text: turn.cost ? (turn.cost / CREDIT).toFixed(6) + " cr" : "",
+          usage: turn.usage, sources: turn.sources,
+          height: turn.height, note: turn.note,
+        }
+      : null,
+  }));
+}
+
+async function loadChat() {
+  try {
+    const payload = await fetchJson("/api/chat");
+    chat.enabled = Boolean(payload.enabled);
+    chat.status = payload;
+
+    // Reloading the page should not lose the conversation: pick up the most
+    // recent one rather than silently starting a second history the agent
+    // will not have.
+    const recent = (payload.conversations || [])[0];
+    if (recent && recent.turns > 0 && !chat.messages.length) {
+      try {
+        adoptConversation(await fetchJson(`/api/chat?conversation=${encodeURIComponent(recent.id)}`));
+      } catch (error) {
+        /* a conversation that vanished is not worth failing the page over */
+      }
+    }
+  } catch (error) {
+    chat.enabled = false;
+  }
+  document.getElementById("chat-card").hidden = false;
+  document.getElementById("btn-new-chat").hidden = !chat.enabled;
+  renderChatMeta(); renderThread(); renderComposer();
+}
+
+document.getElementById("btn-new-chat").addEventListener("click", () => {
+  chat.conversationId = null;
+  chat.messages = [];
+  renderThread();
+  const box = document.getElementById("prompt-box");
+  if (box) box.focus();
+});
+
 /* ---------- data ---------- */
 async function fetchJson(path) {
   const response = await fetch(path, { cache: "no-store" });
@@ -697,6 +1045,7 @@ window.addEventListener("resize", () => {
   }, 150);
 });
 
+loadChat();
 refresh();
 </script>
 </body>

@@ -10,6 +10,7 @@ peer a block whose transactions say one thing and whose state says another.
 from __future__ import annotations
 
 import json
+import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -21,13 +22,81 @@ from .crypto import SigningKey, canonical_bytes, merkle_root, sha256_hex
 from .state import GenesisConfig, Receipt, StateError, WorldState
 from .transactions import InvalidTransaction, Transaction
 
-__all__ = ["Chain", "ChainError", "ProposalResult", "MAX_TXS_PER_BLOCK"]
+__all__ = ["Chain", "ChainError", "LedgerBusy", "ProposalResult", "MAX_TXS_PER_BLOCK"]
 
 MAX_TXS_PER_BLOCK = 512
+
+try:
+    import fcntl
+except ImportError:  # pragma: no cover - Windows
+    fcntl = None  # type: ignore[assignment]
 
 
 class ChainError(Exception):
     """The chain refused a block."""
+
+
+class LedgerBusy(ChainError):
+    """Another process already holds the write lock on this ledger."""
+
+
+class _WriteLock:
+    """An advisory exclusive lock, held for as long as a chain may append.
+
+    A ledger file has exactly one valid next block, so two processes
+    appending to it independently do not merge -- they produce two blocks at
+    the same height and the file stops loading at all.  That is not a
+    hypothetical: it happens the first time someone runs ``chainmind policy``
+    while ``chainmind serve --chat`` is up.
+
+    The lock lives in a sidecar file so that rewriting the ledger itself
+    (which happens when a genesis block is written) does not disturb it.
+    """
+
+    def __init__(self, ledger_path: Path) -> None:
+        self.path = ledger_path.with_suffix(ledger_path.suffix + ".lock")
+        self._handle = None
+
+    def acquire(self) -> None:
+        if self._handle is not None or fcntl is None:
+            # Without fcntl there is no advisory locking to do; the caller
+            # keeps working rather than being blocked on a platform that
+            # cannot offer the guarantee.
+            return
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        handle = self.path.open("a+")
+        try:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as exc:
+            handle.close()
+            raise LedgerBusy(
+                f"another process is writing to {self.path.stem}; "
+                "stop it before running a command that changes the ledger "
+                "(a running 'chainmind serve --chat' holds this lock)"
+            ) from exc
+        handle.seek(0)
+        handle.truncate()
+        handle.write(f"{os.getpid()}\n")
+        handle.flush()
+        self._handle = handle
+
+    def release(self) -> None:
+        if self._handle is None:
+            return
+        try:
+            if fcntl is not None:
+                fcntl.flock(self._handle.fileno(), fcntl.LOCK_UN)
+        finally:
+            self._handle.close()
+            self._handle = None
+
+    def __del__(self) -> None:
+        # The OS drops an flock when the process exits, but closing the
+        # handle here keeps a long-lived program from leaking descriptors.
+        try:
+            self.release()
+        except Exception:
+            pass
 
 
 @dataclass
@@ -54,6 +123,7 @@ class Chain:
         self.blocks: list[Block] = []
         self.state = WorldState(genesis)
         self._receipts: dict[str, Receipt] = {}
+        self._lock = _WriteLock(self.path) if self.path else None
 
     # -- construction ------------------------------------------------------
 
@@ -73,6 +143,7 @@ class Chain:
                path: Path | str | None = None, timestamp: int | None = None) -> "Chain":
         """Build a chain and seal its genesis block."""
         chain = cls(genesis, consensus, path=path)
+        chain._ensure_writable()
         header = BlockHeader(
             height=0,
             prev_hash=cls.genesis_commitment(genesis),
@@ -159,8 +230,19 @@ class Chain:
         block = self.consensus.seal(Block(header, tuple(accepted)), sealer)
         return ProposalResult(block=block, receipts=receipts, rejected=rejected)
 
+    def _ensure_writable(self) -> None:
+        """Claim the right to append before any state is advanced.
+
+        Taking the lock inside ``_persist`` was too late: by then the block
+        was already committed in memory, so a losing writer ended up one
+        block ahead of its own file.
+        """
+        if self.path is not None and self._lock is not None:
+            self._lock.acquire()
+
     def append(self, block: Block) -> list[Receipt]:
         """Validate a block from anywhere and, if it holds up, commit it."""
+        self._ensure_writable()
         parent = self.blocks[-1] if self.blocks else None
         try:
             self.consensus.validate(block, parent)
@@ -246,6 +328,7 @@ class Chain:
     def _persist(self, block: Block) -> None:
         if self.path is None:
             return
+        self._ensure_writable()
         self.path.parent.mkdir(parents=True, exist_ok=True)
         if block.height == 0:
             header_line = json.dumps(
@@ -294,6 +377,18 @@ class Chain:
                 finally:
                     chain.path = saved_path
         return chain
+
+    def close(self) -> None:
+        """Release the write lock, if this chain took one."""
+        if self._lock is not None:
+            self._lock.release()
+
+    def __enter__(self) -> "Chain":
+        return self
+
+    def __exit__(self, *exc_info) -> bool:
+        self.close()
+        return False
 
     def __len__(self) -> int:
         return len(self.blocks)

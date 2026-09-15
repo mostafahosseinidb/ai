@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 from chainmind.block import Block, BlockHeader
-from chainmind.chain import Chain, ChainError
+from chainmind.chain import Chain, ChainError, LedgerBusy
 from chainmind.consensus import ConsensusError, ProofOfAuthority, ProofOfWork
 from chainmind.crypto import SigningKey, merkle_root, sha256_hex
 from chainmind.mempool import Mempool
@@ -268,3 +268,69 @@ class MempoolTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class WriteLockTests(unittest.TestCase):
+    """One ledger file, one writer.
+
+    Two processes appending independently do not merge; they produce two
+    blocks at the same height and the file stops loading entirely.
+    """
+
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.dir.cleanup)
+        self.path = Path(self.dir.name) / "ledger.jsonl"
+        self.first = Chain.create(
+            make_genesis(), AUTHORITY, ProofOfAuthority([AUTHORITY.public_hex()]),
+            path=self.path, timestamp=1_700_000_000,
+        )
+        self.addCleanup(self.first.close)
+
+    def test_a_reader_needs_no_lock(self):
+        reader = Chain.load(self.path)
+        self.assertEqual(reader.height, self.first.height)
+
+    def test_a_second_writer_is_refused(self):
+        second = Chain.load(self.path)
+        self.addCleanup(second.close)
+        with self.assertRaises(LedgerBusy) as ctx:
+            second.seal_block(AUTHORITY, [])
+        self.assertIn("another process is writing", str(ctx.exception))
+
+    def test_the_refused_writer_does_not_advance_in_memory(self):
+        second = Chain.load(self.path)
+        self.addCleanup(second.close)
+        before = second.height
+        with self.assertRaises(LedgerBusy):
+            second.seal_block(AUTHORITY, [])
+        self.assertEqual(second.height, before)
+        self.assertEqual(second.state.state_root(), Chain.load(self.path).state.state_root())
+
+    def test_the_lock_is_released_on_close(self):
+        self.first.close()
+        second = Chain.load(self.path)
+        self.addCleanup(second.close)
+        second.seal_block(AUTHORITY, [])
+        self.assertEqual(second.height, 1)
+
+    def test_the_file_never_gains_a_duplicate_height(self):
+        second = Chain.load(self.path)
+        self.addCleanup(second.close)
+        with self.assertRaises(LedgerBusy):
+            second.seal_block(AUTHORITY, [])
+        self.first.seal_block(AUTHORITY, [])
+        heights = [
+            json.loads(line)["header"]["height"]
+            for line in self.path.read_text().splitlines()[1:] if line.strip()
+        ]
+        self.assertEqual(len(heights), len(set(heights)))
+        Chain.load(self.path)          # still loads
+
+    def test_a_chain_works_as_a_context_manager(self):
+        self.first.close()
+        with Chain.load(self.path) as chain:
+            chain.seal_block(AUTHORITY, [])
+        with Chain.load(self.path) as other:
+            other.seal_block(AUTHORITY, [])     # the first one let go
+        self.assertEqual(other.height, 2)

@@ -19,7 +19,8 @@ Typical use::
 
 from .agent import ActionOutcome, AgentHalted, AgentKernel, BudgetAwarePlanner, LocalLedger, Step, StaticPlanner
 from .block import Block, BlockHeader
-from .chain import Chain, ChainError, ProposalResult
+from .chain import Chain, ChainError, LedgerBusy, ProposalResult
+from .chat import ChatBusy, ChatRejected, ChatService, Conversation
 from .consensus import ConsensusError, ProofOfAuthority, ProofOfWork
 from .crypto import SigningKey, VerifyingKey, merkle_root, sha256_hex
 from .executors import Executor, InProcessExecutor, SandboxExecutor
@@ -44,6 +45,7 @@ __version__ = "0.3.0"
 
 __all__ = [
     "ActionOutcome", "Account", "AgentHalted", "AgentKernel", "Block", "BlockHeader",
+    "ChatBusy", "ChatRejected", "ChatService", "Conversation", "LedgerBusy",
     "Executor", "InProcessExecutor", "SandboxExecutor", "SandboxLimits", "SandboxResult",
     "SandboxUnavailable", "SANDBOX_SUPPORTED",
     "BudgetAwarePlanner", "CREDIT", "Chain", "ChainError", "ConsensusError", "DEFAULT_PRICES",

@@ -8,5 +8,6 @@ dist/
 .pytest_cache/
 .chainmind/
 *.chain.jsonl
+*.jsonl.lock
 *.key
 .DS_Store

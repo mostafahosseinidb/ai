@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass, field
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from .meter import Meter
 from .resources import ResourceKind
@@ -89,8 +89,27 @@ class ClaudeModel:
 
     # -- pre-flight ---------------------------------------------------------
 
-    def count_input_tokens(self, prompt: str) -> int:
-        """Exactly how many input tokens this prompt will cost.
+    @staticmethod
+    def conversation(prompt: str, history: Sequence[Mapping[str, str]] | None = None
+                     ) -> list[dict[str, str]]:
+        """The full message list for one turn.
+
+        The API is stateless, so a multi-turn conversation means resending
+        everything each time -- which is also why a long chat costs more per
+        turn than a short one.  The ledger makes that growth visible instead
+        of letting it hide in a bill at the end of the month.
+        """
+        messages = [
+            {"role": str(entry["role"]), "content": str(entry["content"])}
+            for entry in (history or [])
+            if entry.get("content")
+        ]
+        messages.append({"role": "user", "content": prompt})
+        return messages
+
+    def count_input_tokens(self, prompt: str,
+                           history: Sequence[Mapping[str, str]] | None = None) -> int:
+        """Exactly how many input tokens this turn will cost.
 
         Used for the authorisation step, so the chain approves a real figure
         rather than an estimate.  If the endpoint is unreachable the caller
@@ -98,32 +117,37 @@ class ClaudeModel:
         pessimistic approximation rather than to zero -- under-estimating
         would let an agent slip past its own budget check.
         """
+        messages = self.conversation(prompt, history)
         try:
             counted = self.client.messages.count_tokens(
                 model=self.model,
                 system=self.system,
-                messages=[{"role": "user", "content": prompt}],
+                messages=messages,
             )
             return int(counted.input_tokens)
         except Exception:
-            return self.approximate_tokens(prompt) + self.approximate_tokens(self.system)
+            return sum(
+                self.approximate_tokens(message["content"]) for message in messages
+            ) + self.approximate_tokens(self.system)
 
     @staticmethod
     def approximate_tokens(text: str) -> int:
         """A rough upper bound, for when counting is not available."""
         return max(1, len(text) // 3)
 
-    def estimate(self, prompt: str, max_tokens: int | None = None) -> dict[str, int]:
+    def estimate(self, prompt: str, max_tokens: int | None = None,
+                 history: Sequence[Mapping[str, str]] | None = None) -> dict[str, int]:
         """What to authorise before calling.  Output is a ceiling, not a guess."""
         return {
-            ResourceKind.LLM_INPUT_TOKENS.value: self.count_input_tokens(prompt),
+            ResourceKind.LLM_INPUT_TOKENS.value: self.count_input_tokens(prompt, history),
             ResourceKind.LLM_OUTPUT_TOKENS.value: int(max_tokens or self.max_tokens),
         }
 
     # -- the call -----------------------------------------------------------
 
     def respond(self, meter: Meter, prompt: str, max_tokens: int | None = None,
-                system: str | None = None) -> dict[str, Any]:
+                system: str | None = None,
+                history: Sequence[Mapping[str, str]] | None = None) -> dict[str, Any]:
         """Ask the model, record what it billed, return a JSON-safe result.
 
         The return value crosses a process boundary when the agent runs
@@ -133,7 +157,7 @@ class ClaudeModel:
             "model": self.model,
             "max_tokens": int(max_tokens or self.max_tokens),
             "system": system if system is not None else self.system,
-            "messages": [{"role": "user", "content": prompt}],
+            "messages": self.conversation(prompt, history),
             # Adaptive thinking is on by default for this model family, and
             # effort is the lever that trades depth against tokens spent.
             "thinking": {"type": "adaptive"},
@@ -200,15 +224,18 @@ def build_model_tool(model: ClaudeModel | None = None, *, name: str = "ask") -> 
     engine = model or ClaudeModel()
 
     def run(meter: Meter, prompt: str, max_tokens: int | None = None,
-            system: str | None = None) -> dict[str, Any]:
-        return engine.respond(meter, prompt, max_tokens=max_tokens, system=system)
+            system: str | None = None,
+            history: Sequence[Mapping[str, str]] | None = None) -> dict[str, Any]:
+        return engine.respond(
+            meter, prompt, max_tokens=max_tokens, system=system, history=history
+        )
 
     return Tool(
         name=name,
         description=f"Answer a prompt with {engine.model}, billed by the tokens it reports.",
         run=run,
         estimate=lambda kw: engine.estimate(
-            str(kw.get("prompt", "")), kw.get("max_tokens")
+            str(kw.get("prompt", "")), kw.get("max_tokens"), kw.get("history")
         ),
     )
 
