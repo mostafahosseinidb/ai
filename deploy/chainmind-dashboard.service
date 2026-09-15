@@ -1,0 +1,47 @@
+# The read-only dashboard.
+#
+# Bound to loopback, and it should stay there.  This machine holds exchange
+# credentials; adding a network-facing service to it is a decision that needs
+# a better reason than convenience.  Reach the dashboard over an SSH tunnel:
+#
+#   ssh -N -L 8787:127.0.0.1:8787 you@your-server
+#
+# then open http://127.0.0.1:8787 in your own browser.
+
+[Unit]
+Description=ChainMind read-only dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=chainmind
+Group=chainmind
+WorkingDirectory=/opt/chainmind
+ExecStart=/usr/bin/python3 -m chainmind.cli \
+    --workspace /var/lib/chainmind serve --host 127.0.0.1 --port 8787
+Restart=on-failure
+RestartSec=5
+
+Nice=10
+CPUQuota=10%
+MemoryMax=256M
+TasksMax=32
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+# The dashboard never writes, and never needs the keys.
+ReadOnlyPaths=/var/lib/chainmind
+IPAddressAllow=localhost
+IPAddressDeny=any
+
+[Install]
+WantedBy=multi-user.target

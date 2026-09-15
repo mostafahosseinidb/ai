@@ -23,7 +23,7 @@
 
 استقلال و پاسخ‌گویی اینجا دو نیروی متضاد نیستند؛ یک سازوکار واحدند.
 
-> راهنمای کامل گام‌به‌گام: [`docs/usage.md`](docs/usage.md)
+> راهنمای کامل گام‌به‌گام: [`docs/usage.md`](docs/usage.md) · بردنش روی سرور: [`docs/deployment.md`](docs/deployment.md)
 
 ## نمایش سریع
 

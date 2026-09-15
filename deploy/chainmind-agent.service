@@ -1,0 +1,69 @@
+# Run the agent alongside something that matters more than it does.
+#
+#   install:  sudo cp deploy/chainmind-*.service /etc/systemd/system/
+#             sudo systemctl daemon-reload
+#             sudo systemctl enable --now chainmind-agent.timer
+#
+# The resource caps here are not decoration.  On a box that also runs a
+# trading bot, the agent must never be the reason a tick is handled late:
+# it is niced below the bot, capped to a fraction of one core, and given a
+# memory ceiling it cannot argue with.
+
+[Unit]
+Description=ChainMind autonomous agent
+Documentation=file:///opt/chainmind/docs/usage.md
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=chainmind
+Group=chainmind
+WorkingDirectory=/opt/chainmind
+
+# %i would only expand in a templated unit (chainmind-agent@.service), so the
+# goal comes from a config file the operator edits instead of the unit itself.
+# Braced ${VAR} inside quotes stays one argument, which matters for a goal
+# written as a sentence.
+EnvironmentFile=-/etc/default/chainmind
+Environment="CHAINMIND_GOAL=review today's telemetry and note anything worth acting on"
+Environment="CHAINMIND_AGENT=atlas"
+Environment="CHAINMIND_COMPUTE_MS=2000"
+ExecStart=/usr/bin/python3 -m chainmind.cli \
+    --workspace /var/lib/chainmind \
+    run "${CHAINMIND_GOAL}" --agent "${CHAINMIND_AGENT}" \
+    --sandbox --max-compute-ms "${CHAINMIND_COMPUTE_MS}"
+
+# A run that hangs should end, not linger next to a latency-sensitive process.
+# For Type=oneshot this is the bound that actually applies; RuntimeMaxSec is
+# ignored here, as systemd-analyze will tell you if you add it.
+TimeoutStartSec=300
+
+# --- yield to everything else on this machine -------------------------------
+Nice=15
+CPUSchedulingPolicy=batch
+IOSchedulingClass=idle
+CPUQuota=25%
+MemoryMax=512M
+TasksMax=64
+
+# --- containment ------------------------------------------------------------
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+# The ledger and the keys are the only things it may write.
+ReadWritePaths=/var/lib/chainmind
+# @system-service keeps clone/fork available, which out-of-process metering
+# needs; without it --sandbox dies at the first action.
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target

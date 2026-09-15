@@ -1,0 +1,19 @@
+# Wake the agent on a schedule instead of leaving it looping.
+#
+# A periodic one-shot is the honest shape for this: the agent works, settles
+# what it spent, and exits.  Nothing accumulates in memory between runs, and a
+# run that hangs is bounded by RuntimeMaxSec rather than by hope.
+
+[Unit]
+Description=Run the ChainMind agent periodically
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=1h
+# Stagger against everything else the machine does on the hour.
+RandomizedDelaySec=300
+AccuracySec=1min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
