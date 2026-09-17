@@ -55,6 +55,7 @@ __all__ = [
     "SUFFIX",
     "backend_name",
     "load_weights",
+    "read_header",
     "save_weights",
 ]
 
@@ -87,12 +88,19 @@ class Architecture:
     context: int = 512
     norm_eps: float = 1e-5
     rope_theta: float = 10_000.0
+    #: How many options a decision head chooses between; 0 for a plain
+    #: language model. See :mod:`chainmind.decide` for what this is for.
+    decisions: int = 0
 
     def __post_init__(self) -> None:
         if self.dim % self.heads:
             raise ValueError(f"dim {self.dim} is not divisible by heads {self.heads}")
         if self.head_dim % 2:
             raise ValueError("head_dim must be even for rotary embeddings")
+        if self.decisions == 1:
+            raise ValueError("a decision between one option is not a decision")
+        if self.decisions < 0:
+            raise ValueError("decisions cannot be negative")
 
     @property
     def head_dim(self) -> int:
@@ -101,7 +109,8 @@ class Architecture:
     @property
     def parameters(self) -> int:
         per_layer = 4 * self.dim * self.dim + 3 * self.dim * self.hidden + 2 * self.dim
-        return self.vocab_size * self.dim + self.layers * per_layer + self.dim
+        return (self.vocab_size * self.dim + self.layers * per_layer + self.dim
+                + self.decisions * self.dim)
 
     def tensor_shapes(self) -> list[tuple[str, tuple[int, ...]]]:
         """Every tensor in the model, in the order the file stores them."""
@@ -122,6 +131,8 @@ class Architecture:
                 (f"{prefix}.w2", (self.dim, self.hidden)),
             ]
         shapes.append(("norm", (self.dim,)))
+        if self.decisions:
+            shapes.append(("decision_head", (self.decisions, self.dim)))
         return shapes
 
     def to_dict(self) -> dict[str, Any]:
@@ -129,6 +140,7 @@ class Architecture:
             "vocab_size": self.vocab_size, "dim": self.dim, "layers": self.layers,
             "heads": self.heads, "hidden": self.hidden, "context": self.context,
             "norm_eps": self.norm_eps, "rope_theta": self.rope_theta,
+            "decisions": self.decisions,
         }
 
     @classmethod
@@ -136,7 +148,7 @@ class Architecture:
         known = {field_name: payload[field_name] for field_name in
                  ("vocab_size", "dim", "layers", "heads", "hidden")
                  if field_name in payload}
-        for optional in ("context", "norm_eps", "rope_theta"):
+        for optional in ("context", "norm_eps", "rope_theta", "decisions"):
             if optional in payload:
                 known[optional] = payload[optional]
         try:
@@ -392,6 +404,40 @@ def save_weights(path: Path | str, architecture: Architecture,
     return path
 
 
+def read_header(path: Path | str) -> dict[str, Any]:
+    """The header alone, without pulling the weights into memory.
+
+    Discovery asks several questions of every file in the models directory --
+    what shape is it, does it have a decision head, was it calibrated -- and
+    a multi-gigabyte file should not be read end to end to answer them.
+    """
+    path = Path(path)
+    try:
+        with path.open("rb") as handle:
+            prologue = handle.read(8)
+            if len(prologue) < 8 or prologue[:4] != MAGIC:
+                raise WeightsError(
+                    f"{path.name} is not a ChainMind weights file (expected magic "
+                    f"{MAGIC.decode()})"
+                )
+            (length,) = struct.unpack("<I", prologue[4:8])
+            if length > _HEADER_LIMIT:
+                raise WeightsError(f"{path.name} has a corrupt header length")
+            raw = handle.read(length)
+    except OSError as exc:
+        raise WeightsError(f"cannot read {path}: {exc}") from exc
+
+    if len(raw) < length:
+        raise WeightsError(f"{path.name} has a corrupt header length")
+    try:
+        header = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise WeightsError(f"{path.name} has an unreadable header: {exc}") from exc
+    if not isinstance(header, dict):
+        raise WeightsError(f"{path.name} has an unreadable header")
+    return header
+
+
 def load_weights(path: Path | str) -> tuple[Architecture, Tokenizer,
                                             dict[str, array.array], dict[str, Any]]:
     """Read a ``.cmw`` file, checking the parts that could be lies."""
@@ -484,6 +530,7 @@ class NanoModel:
     _tok_emb: Any = field(default=None, repr=False)
     _layers: list[_Layer] = field(default_factory=list, repr=False)
     _norm: Any = field(default=None, repr=False)
+    _decision_head: Any = field(default=None, repr=False)
 
     # -- construction ------------------------------------------------------
 
@@ -506,6 +553,7 @@ class NanoModel:
                     meta=dict(meta or {}), path=path, fingerprint=fingerprint)
         model._tok_emb = take("tok_emb")
         model._norm = take("norm")
+        model._decision_head = take("decision_head") if architecture.decisions else None
         model._layers = [
             _Layer(
                 attn_norm=take(f"layer.{index}.attn_norm"),
@@ -530,7 +578,12 @@ class NanoModel:
 
     def _forward(self, token: int, position: int,
                  cache: list[tuple[list[Any], list[Any]]]) -> Any:
-        """One token in, one row of logits out, cache extended in place."""
+        """One token in, one *hidden state* out, cache extended in place.
+
+        Stops before the output head on purpose: the same vector feeds the
+        language-model head (which predicts the next token) and the decision
+        head (which chooses between typed options). One stack, two readings.
+        """
         arch = self.architecture
         head_dim = arch.head_dim
         x = _OPS.row(self._tok_emb, token)
@@ -548,17 +601,42 @@ class NanoModel:
             gated = _OPS.swiglu(_OPS.matvec(layer.w1, h), _OPS.matvec(layer.w3, h))
             x = _OPS.add(x, _OPS.matvec(layer.w2, gated))
 
-        return _OPS.matvec(self._tok_emb, _OPS.rmsnorm(x, self._norm, arch.norm_eps))
+        return _OPS.rmsnorm(x, self._norm, arch.norm_eps)
+
+    def _hidden(self, tokens: Sequence[int]) -> Any:
+        """The hidden state after reading ``tokens``."""
+        if not tokens:
+            raise ValueError("need at least one token")
+        cache: list[tuple[list[Any], list[Any]]] = [([], []) for _ in self._layers]
+        state: Any = None
+        for position, token in enumerate(tokens):
+            state = self._forward(token, position, cache)
+        return state
 
     def logits(self, tokens: Sequence[int]) -> list[float]:
         """Logits for the token after ``tokens``.  Mostly here for the tests."""
-        cache: list[tuple[list[Any], list[Any]]] = [([], []) for _ in self._layers]
-        output: Any = None
-        for position, token in enumerate(tokens):
-            output = self._forward(token, position, cache)
-        if output is None:
-            raise ValueError("need at least one token")
-        return _OPS.to_list(output)
+        return _OPS.to_list(_OPS.matvec(self._tok_emb, self._hidden(tokens)))
+
+    def decision_logits(self, tokens: Sequence[int]) -> list[float]:
+        """One logit per option, from the decision head.
+
+        There are exactly ``architecture.decisions`` of them and there is no
+        code path that produces any other number, which is the whole
+        structural argument for a typed output: the model cannot name an
+        option that does not exist, because it never names anything -- it
+        scores a fixed list.
+        """
+        # `is None`, not truthiness: a NumPy array refuses to say whether it
+        # is true, and under the pure-Python backend an all-zero head is a
+        # list of lists that would read as false.
+        if self._decision_head is None:
+            raise WeightsError(
+                f"{self.path.name if self.path else 'this model'} has no decision "
+                "head; it is a language model. Train one with "
+                "training/train_decider.py."
+            )
+        window = list(tokens)[-self.architecture.context:]
+        return _OPS.to_list(_OPS.matvec(self._decision_head, self._hidden(window)))
 
     # -- generation --------------------------------------------------------
 
@@ -597,17 +675,18 @@ class NanoModel:
         stops = set(stop)
 
         cache: list[tuple[list[Any], list[Any]]] = [([], []) for _ in self._layers]
-        logits: Any = None
+        state: Any = None
         for position, token in enumerate(window):
-            logits = self._forward(token, position, cache)
+            state = self._forward(token, position, cache)
         position = len(window)
 
         for _ in range(max_tokens):
-            token = self._sample(_OPS.to_list(logits), temperature, top_k, rng)
+            logits = _OPS.to_list(_OPS.matvec(self._tok_emb, state))
+            token = self._sample(logits, temperature, top_k, rng)
             yield token
             if token in stops or position >= arch.context:
                 return
-            logits = self._forward(token, position, cache)
+            state = self._forward(token, position, cache)
             position += 1
 
     @staticmethod

@@ -27,6 +27,16 @@ from .local import LocalModel, LocalRuntimeUnavailable, discover_runtime
 from .embedded import EmbeddedModel, EmbeddedUnavailable, discover_models, model_fingerprint
 from .nano import Architecture, NanoModel, WeightsError, load_weights, save_weights
 from .native import NativeModel, NativeUnavailable, discover_native
+from .decide import (
+    Calibration,
+    Decision,
+    DecisionModel,
+    DecisionSchema,
+    DecisionUnavailable,
+    discover_deciders,
+    expected_calibration_error,
+    fit_temperature,
+)
 from .tokenizer import Tokenizer, train_tokenizer
 from .evaluate import EvalReport, Evaluation, RowResult, rouge_l, split_dataset, token_f1
 from .executors import Executor, InProcessExecutor, SandboxExecutor
@@ -49,7 +59,7 @@ from .transactions import (
     build_usage,
 )
 
-__version__ = "0.9.0"
+__version__ = "0.10.0"
 
 __all__ = [
     "ActionOutcome", "Account", "AgentHalted", "AgentKernel", "Block", "BlockHeader",
@@ -58,6 +68,9 @@ __all__ = [
     "EmbeddedModel", "EmbeddedUnavailable", "discover_models", "model_fingerprint",
     "Architecture", "NanoModel", "WeightsError", "load_weights", "save_weights",
     "NativeModel", "NativeUnavailable", "discover_native",
+    "Calibration", "Decision", "DecisionModel", "DecisionSchema",
+    "DecisionUnavailable", "discover_deciders", "expected_calibration_error",
+    "fit_temperature",
     "Tokenizer", "train_tokenizer",
     "Node", "NodeError", "PeerInfo", "join_network", "submit_to_node",
     "Feedback", "FeedbackStore", "Hit", "MemoryStore", "Note", "build_training_dataset",

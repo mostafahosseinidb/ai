@@ -181,6 +181,63 @@ class FlagPositionTests(CliTestCase):
         self.assertIn("chain_id", json.loads(out.getvalue()))
 
 
+class DecideCommandTests(CliTestCase):
+    """A decision is an action: authorised, metered and settled."""
+
+    def prepare(self, **kwargs):
+        from test_decide import make_decider
+
+        self.bootstrap()
+        self.run_cli("grant", "atlas", "5")
+        return make_decider(self.workspace, **kwargs)
+
+    def test_a_decision_is_one_of_the_schema_options(self):
+        self.prepare()
+        report = self.run_cli("decide", "پولم رو پس بدید", "--threshold", "0")
+        self.assertIn(report["decision"]["option"], ["refund", "status", "human"])
+        self.assertTrue(report["ok"])
+        self.assertGreater(report["spent"], 0)
+
+    def test_abstaining_exits_differently_from_deciding(self):
+        """So a shell script can route the unsure ones to a person.
+
+        Three exit codes that mean three different things: decided, the
+        chain said no, and the model was not sure enough.
+        """
+        self.prepare()
+        self.run_cli("decide", "متنی برای دسته‌بندی", "--threshold", "1.0",
+                     expect=3)
+
+    def test_the_chain_refusing_is_not_the_model_abstaining(self):
+        from test_decide import make_decider
+
+        self.bootstrap()                       # no grant: the agent has nothing
+        make_decider(self.workspace)
+        self.run_cli("decide", "متن", expect=2)
+
+    def test_an_empty_input_is_refused_before_anything_is_spent(self):
+        self.prepare()
+        with self.assertRaises(SystemExit):
+            self.run_cli("decide", "   ")
+
+    def test_a_workspace_with_no_decider_says_how_to_train_one(self):
+        self.bootstrap()
+        with self.assertRaises(SystemExit) as ctx:
+            self.run_cli("decide", "متن")
+        self.assertIn("train_decider.py", str(ctx.exception))
+
+    def test_the_decision_is_visible_in_the_audit(self):
+        """What was concluded, not just that credits moved.
+
+        A ledger that records the spend and not the decision cannot answer
+        the question anyone actually has later.
+        """
+        self.prepare()
+        self.run_cli("decide", "پولم رو پس بدید", "--threshold", "0")
+        audit = self.run_cli("audit")
+        self.assertTrue(audit)
+
+
 class RuntimeCommandTests(CliTestCase):
     def test_it_reports_every_way_of_running_a_model(self):
         self.bootstrap()
@@ -210,6 +267,23 @@ class RuntimeCommandTests(CliTestCase):
         self.assertIn("training/pretrain.py", advice)
         for product in ("ollama", "lm studio", "vllm"):
             self.assertNotIn(product, advice)
+
+    def test_a_decider_is_reported_separately_from_a_language_model(self):
+        """They are different jobs and the report should not blur them.
+
+        A decision model cannot answer a prompt, so it must not make the
+        machine look able to.
+        """
+        from test_decide import make_decider
+
+        self.bootstrap()
+        make_decider(self.workspace, calibration={"temperature": 1.4, "ece": 0.06,
+                                                  "accuracy": 0.91, "rows": 400})
+        report = self.run_cli("runtime", expect=1)
+        self.assertTrue(report["decision"]["available"])
+        self.assertEqual(report["decision"]["models"][0]["options"],
+                         ["refund", "status", "human"])
+        self.assertFalse(report["available"])
 
     def test_init_makes_somewhere_to_put_the_weights(self):
         self.bootstrap()

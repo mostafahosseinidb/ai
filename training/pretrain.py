@@ -237,15 +237,17 @@ def _softmax(x: "np.ndarray") -> "np.ndarray":
     return exponent / exponent.sum(axis=-1, keepdims=True)
 
 
-def forward_backward(params: dict[str, "np.ndarray"], architecture: Architecture,
-                     inputs: "np.ndarray", targets: "np.ndarray",
-                     compute_gradients: bool = True
-                     ) -> tuple[float, dict[str, "np.ndarray"]]:
-    """Mean cross-entropy over a batch, and the gradient of every parameter.
+def forward_stack(params: dict[str, "np.ndarray"], architecture: Architecture,
+                  inputs: "np.ndarray") -> tuple["np.ndarray", dict[str, Any]]:
+    """Run the transformer and stop before the head.
 
-    Written out rather than delegated to an autograd framework so that the
-    only dependency is an array library, and so that what the model does is
-    readable in one file next to the inference code it has to match.
+    Returns the normalised hidden state for every position, plus everything
+    the backward pass needs. Split out from the loss because two different
+    heads read the same stack: the language-model head in this file predicts
+    the next token, and the decision head in ``train_decider.py`` chooses
+    between typed options. Sharing the implementation is what stops the two
+    trainers -- and the inference code in ``chainmind/nano.py`` -- from
+    drifting apart.
     """
     batch, time_steps = inputs.shape
     dim, heads = architecture.dim, architecture.heads
@@ -295,30 +297,26 @@ def forward_backward(params: dict[str, "np.ndarray"], architecture: Architecture
         tape.append(step)
 
     final, final_inverse = _rmsnorm(x, params["norm"], eps)
-    logits = final @ embedding.T
-    probabilities = _softmax(logits)
+    state = {"tape": tape, "x": x, "final_inverse": final_inverse,
+             "cos": cos, "sin": sin, "inputs": inputs}
+    return final, state
 
-    count = batch * time_steps
-    flat_probabilities = probabilities.reshape(count, -1)
-    flat_targets = targets.reshape(count)
-    picked = flat_probabilities[np.arange(count), flat_targets]
-    loss = float(-np.log(np.maximum(picked, 1e-12)).mean())
 
-    if not compute_gradients:
-        return loss, {}
+def backward_stack(params: dict[str, "np.ndarray"], architecture: Architecture,
+                   state: dict[str, Any], d_final: "np.ndarray",
+                   grads: dict[str, "np.ndarray"]) -> None:
+    """Propagate a gradient on the final hidden state through the stack.
 
-    grads: dict[str, np.ndarray] = {
-        name: np.zeros_like(value) for name, value in params.items()
-    }
+    ``d_final`` is the gradient with respect to what :func:`forward_stack`
+    returned. Accumulates into ``grads`` in place, embeddings included.
+    """
+    dim, heads = architecture.dim, architecture.heads
+    head_dim = architecture.head_dim
+    tape, cos, sin = state["tape"], state["cos"], state["sin"]
+    batch, time_steps = state["inputs"].shape
 
-    d_logits = probabilities.copy()
-    d_logits.reshape(count, -1)[np.arange(count), flat_targets] -= 1.0
-    d_logits /= count
-
-    grads["tok_emb"] += np.einsum("btv,btd->vd", d_logits, final)
-    d_final = d_logits @ embedding
-
-    d_x, grad_gain = _rmsnorm_backward(d_final, x, params["norm"], final_inverse)
+    d_x, grad_gain = _rmsnorm_backward(d_final, state["x"], params["norm"],
+                                       state["final_inverse"])
     grads["norm"] += grad_gain
 
     for index in reversed(range(architecture.layers)):
@@ -352,10 +350,10 @@ def forward_backward(params: dict[str, "np.ndarray"], architecture: Architecture
         d_probabilities = np.einsum("bqhd,bkhd->bhqk", d_attended, step["v"])
         d_v = np.einsum("bhqk,bqhd->bkhd", step["probabilities"], d_attended)
 
-        probabilities_ = step["probabilities"]
-        d_scores = probabilities_ * (
+        probabilities = step["probabilities"]
+        d_scores = probabilities * (
             d_probabilities
-            - (d_probabilities * probabilities_).sum(axis=-1, keepdims=True)
+            - (d_probabilities * probabilities).sum(axis=-1, keepdims=True)
         )
         d_scores /= math.sqrt(head_dim)
 
@@ -378,7 +376,47 @@ def forward_backward(params: dict[str, "np.ndarray"], architecture: Architecture
         grads[f"{prefix}.attn_norm"] += grad_gain
         d_x = d_x + d_input
 
-    np.add.at(grads["tok_emb"], inputs.reshape(-1), d_x.reshape(-1, dim))
+    np.add.at(grads["tok_emb"], state["inputs"].reshape(-1), d_x.reshape(-1, dim))
+
+
+def forward_backward(params: dict[str, "np.ndarray"], architecture: Architecture,
+                     inputs: "np.ndarray", targets: "np.ndarray",
+                     compute_gradients: bool = True
+                     ) -> tuple[float, dict[str, "np.ndarray"]]:
+    """Mean cross-entropy over a batch, and the gradient of every parameter.
+
+    Written out rather than delegated to an autograd framework so that the
+    only dependency is an array library, and so that what the model does is
+    readable in one file next to the inference code it has to match.
+    """
+    embedding = params["tok_emb"]
+    final, state = forward_stack(params, architecture, inputs)
+
+    logits = final @ embedding.T
+    probabilities = _softmax(logits)
+
+    batch, time_steps = inputs.shape
+    count = batch * time_steps
+    flat_probabilities = probabilities.reshape(count, -1)
+    flat_targets = targets.reshape(count)
+    picked = flat_probabilities[np.arange(count), flat_targets]
+    loss = float(-np.log(np.maximum(picked, 1e-12)).mean())
+
+    if not compute_gradients:
+        return loss, {}
+
+    grads: dict[str, np.ndarray] = {
+        name: np.zeros_like(value) for name, value in params.items()
+    }
+
+    d_logits = probabilities.copy()
+    d_logits.reshape(count, -1)[np.arange(count), flat_targets] -= 1.0
+    d_logits /= count
+
+    grads["tok_emb"] += np.einsum("btv,btd->vd", d_logits, final)
+    d_final = d_logits @ embedding
+
+    backward_stack(params, architecture, state, d_final, grads)
     return loss, grads
 
 

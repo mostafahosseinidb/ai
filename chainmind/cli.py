@@ -525,6 +525,114 @@ def cmd_ask(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_decide(args: argparse.Namespace) -> int:
+    """A typed decision, authorised and settled like any other action.
+
+    The distinction that makes this worth a separate command: an abstention
+    is not a failure. The model saying "I am not sure enough" is the outcome
+    a caller most needs to be able to see, and it exits 3 so a shell script
+    can route it to a person without parsing anything.
+    """
+    from .decide import DecisionUnavailable
+    from .models import build_decider
+    from .tools import Tool, ToolRegistry
+
+    workspace = Workspace(args.workspace)
+    chain = workspace.load_chain()
+    sealer = workspace.load_key(args.sealer)
+    agent_key = workspace.load_key(args.agent)
+
+    text = args.text
+    if text == "-":
+        text = sys.stdin.read()
+    text = text.strip()
+    if not text:
+        raise SystemExit("there is nothing to decide about")
+
+    try:
+        decider = build_decider(args.model, workspace=workspace.root,
+                                threshold=args.threshold)
+    except DecisionUnavailable as exc:
+        raise SystemExit(str(exc)) from exc
+
+    registry = ToolRegistry()
+    registry.register(Tool(
+        name="decide",
+        description=f"Choose one of {', '.join(decider.schema.options)}.",
+        run=lambda meter, text: decider.decide(meter, text).to_dict(),
+        estimate=lambda kw: decider.estimate(str(kw.get("text", ""))),
+    ))
+
+    ledger = LocalLedger(chain, sealer)
+    kernel = AgentKernel(agent_key, ledger, tools=registry, label=args.agent)
+    kernel.register()
+
+    before = kernel.balance
+    outcome = kernel.perform("decide", text=text)
+    ledger.flush()
+    spent = before - kernel.balance
+
+    decision = outcome.value if isinstance(outcome.value, dict) else {}
+    payload = {
+        "text": text,
+        "decision": decision,
+        "authorised": outcome.authorised,
+        "ok": outcome.ok,
+        "reason": outcome.reason or outcome.error,
+        "model": decider.describe(),
+        "spent": spent,
+        "balance": kernel.balance,
+        "txids": outcome.txids,
+        "height": chain.height,
+    }
+
+    if args.json:
+        _emit(payload, True)
+    elif outcome.refused:
+        print(f"REFUSED   {outcome.reason}", file=sys.stderr)
+        return 2
+    elif not outcome.ok:
+        print(f"FAILED    {outcome.error}", file=sys.stderr)
+        return 1
+    else:
+        if decision.get("abstained"):
+            print(f"ABSTAINED  best guess {decision['option'] or _best(decision)} at "
+                  f"{decision['confidence']:.1%}, below {decider.cutoff:.0%}")
+        else:
+            print(f"{decision['option']}  {decision['confidence']:.1%}")
+        if not args.quiet:
+            spread = "  ".join(
+                f"{option} {probability:.1%}"
+                for option, probability in sorted(
+                    decision.get("distribution", {}).items(),
+                    key=lambda item: -item[1],
+                )
+            )
+            print(f"\n---\n{spread}", file=sys.stderr)
+            quality = (f"calibration error {decision['ece']:.3f}"
+                       if decision.get("calibrated")
+                       else "UNCALIBRATED — this confidence is a raw score, not a "
+                            "probability")
+            print(f"{quality} · margin {decision.get('margin', 0):.1%}",
+                  file=sys.stderr)
+            print(
+                f"cost {format_credits(spent)} · balance "
+                f"{format_credits(kernel.balance)} · block #{chain.height}",
+                file=sys.stderr,
+            )
+
+    if outcome.refused:
+        return 2
+    if not outcome.ok:
+        return 1
+    return 3 if decision.get("abstained") else 0
+
+
+def _best(decision: dict) -> str:
+    distribution = decision.get("distribution") or {}
+    return max(distribution, key=distribution.__getitem__) if distribution else "?"
+
+
 def cmd_serve(args: argparse.Namespace) -> int:
     from .server import serve
 
@@ -906,6 +1014,22 @@ def cmd_runtime(args: argparse.Namespace) -> int:
     else:
         lines.append(f"own       no — {own.get('reason', 'not checked')}")
 
+    decision = found["decision"]
+    if decision["available"]:
+        lines.append("decision  yes — typed decisions, one forward pass, no sampling")
+        for entry in decision["models"]:
+            if "error" in entry:
+                lines.append(f"          {entry['name']}  ({entry['error']})")
+                continue
+            quality = (f"ECE {entry['ece']:.3f} on {entry['measured_on']} rows"
+                       if entry["calibrated"] else "UNCALIBRATED")
+            lines.append(f"          {entry['name']}  ({entry['schema']}: "
+                         f"{', '.join(entry['options'])})")
+            lines.append(f"          {'':<{len(entry['name'])}}  {quality}, "
+                         f"abstains below {entry['threshold']:.0%}")
+    else:
+        lines.append(f"decision  no — {decision.get('reason', 'not checked')}")
+
     embedded = found["embedded"]
     if embedded["available"]:
         lines.append("embedded  yes — open weights, loaded into this process")
@@ -1095,6 +1219,17 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--max-compute-ms", type=int, default=30_000)
     p.add_argument("--quiet", action="store_true", help="print only the answer")
     p.set_defaults(func=cmd_ask)
+
+    p = sub.add_parser("decide", parents=[shared],
+                       help="ask for a typed decision with a calibrated confidence")
+    p.add_argument("text", help="what to decide about, or - for standard input")
+    p.add_argument("--model", default=None, help="a .cmw decision model to use")
+    p.add_argument("--threshold", type=float, default=None,
+                   help="override the confidence below which it abstains")
+    p.add_argument("--agent", default="atlas")
+    p.add_argument("--sealer", default="authority")
+    p.add_argument("--quiet", action="store_true", help="just the decision")
+    p.set_defaults(func=cmd_decide)
 
     p = sub.add_parser("status", parents=[shared], help="show accounts, prices and quotas")
     p.set_defaults(func=cmd_status)

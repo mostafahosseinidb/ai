@@ -39,6 +39,13 @@ from .embedded import (
     discover_models,
 )
 from .local import LocalModel, LocalRuntimeUnavailable, discover_runtime
+from .decide import (
+    Calibration,
+    DecisionModel,
+    DecisionSchema,
+    DecisionUnavailable,
+    discover_deciders,
+)
 from .meter import Meter
 from .nano import backend_name, load_weights
 from .native import (
@@ -58,6 +65,7 @@ __all__ = [
     "register_model_tool",
     "available_runtimes",
     "model_is_path",
+    "build_decider",
 ]
 
 
@@ -120,6 +128,21 @@ def build_model(model: str | None = None, *, workspace: Any = None,
         ) from exc
 
 
+def build_decider(model: str | None = None, *, workspace: Any = None,
+                  **overrides: Any) -> DecisionModel:
+    """Find a typed decision model, which is a different job from ``ask``.
+
+    Deliberately not part of :func:`build_model`. Both have a ``respond``,
+    so a decider would work where a language model is expected -- and
+    silently answering "refund at 92%" to a request for prose is exactly the
+    kind of surprise this project should not contain. Asking for one is
+    explicit.
+    """
+    return DecisionModel(
+        path=Path(model) if model else None, workspace=workspace, **overrides
+    )
+
+
 def model_is_path(model: str | None) -> bool:
     """Whether ``--model`` names a weights file rather than a runtime's model."""
     if not model:
@@ -146,11 +169,25 @@ def available_runtimes(workspace: Any = None) -> dict[str, Any]:
     """What this machine can currently offer, for reporting."""
     report: dict[str, Any] = {
         "own": {"available": False},
+        "decision": {"available": False},
         "embedded": {"available": False},
         "served": {"available": False},
     }
 
     if workspace is not None:
+        deciders = discover_deciders(workspace)
+        report["decision"] = {
+            "available": bool(deciders),
+            "models": [_describe_file(path) | _describe_decider(path)
+                       for path in deciders],
+        } if deciders else {
+            "available": False,
+            "reason": (
+                f"no decision model in {Path(workspace) / MODELS_DIRNAME} — train "
+                "one with `python3 training/train_decider.py --dataset ...`"
+            ),
+        }
+
         own = discover_native(workspace)
         if own:
             report["own"] = {
@@ -186,6 +223,8 @@ def available_runtimes(workspace: Any = None) -> dict[str, Any]:
     except LocalRuntimeUnavailable as exc:
         report["served"] = {"available": False, "reason": str(exc)}
 
+    # A decider cannot answer a prompt, so it does not make the machine
+    # "able to think" for the purposes of `ask`; it is reported separately.
     report["available"] = any(
         report[kind]["available"] for kind in ("own", "embedded", "served")
     )
@@ -195,6 +234,26 @@ def available_runtimes(workspace: Any = None) -> dict[str, Any]:
 def _describe_file(path: Path) -> dict[str, Any]:
     return {"name": path.stem, "path": str(path),
             "size_mb": round(path.stat().st_size / (1 << 20))}
+
+
+def _describe_decider(path: Path) -> dict[str, Any]:
+    """Read a decider's schema and calibration for the report."""
+    try:
+        architecture, _tokenizer, _tensors, meta = load_weights(path)
+        schema = DecisionSchema.from_dict(meta["decision_schema"])
+        calibration = Calibration.from_dict(meta.get("calibration"))
+    except Exception as exc:
+        return {"error": str(exc)}
+    return {
+        "schema": schema.name,
+        "options": list(schema.options),
+        "threshold": schema.threshold,
+        "parameters": architecture.parameters,
+        "calibrated": calibration.measured,
+        "ece": calibration.ece,
+        "accuracy": calibration.accuracy,
+        "measured_on": calibration.rows,
+    }
 
 
 def _describe_native(path: Path) -> dict[str, Any]:

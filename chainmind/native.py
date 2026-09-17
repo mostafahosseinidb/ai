@@ -31,13 +31,15 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from .meter import Meter
-from .nano import SUFFIX, NanoModel, WeightsError, backend_name
+from .nano import SUFFIX, NanoModel, WeightsError, backend_name, read_header
 from .resources import ResourceKind
 
 __all__ = [
     "NativeModel",
     "NativeUnavailable",
     "discover_native",
+    "discover_weights",
+    "is_decider",
     "NATIVE_SUFFIXES",
 ]
 
@@ -58,8 +60,8 @@ class NativeUnavailable(RuntimeError):
     """No model of our own is available, with a reason a person can act on."""
 
 
-def discover_native(root: Path | str) -> list[Path]:
-    """Our own weight files in a workspace, largest first."""
+def discover_weights(root: Path | str) -> list[Path]:
+    """Every one of our weight files in a workspace, largest first."""
     directory = Path(root) / MODELS_DIRNAME
     if not directory.is_dir():
         return []
@@ -68,6 +70,33 @@ def discover_native(root: Path | str) -> list[Path]:
         if path.is_file() and path.suffix.lower() in NATIVE_SUFFIXES
     ]
     return sorted(found, key=lambda path: (-path.stat().st_size, path.name))
+
+
+def is_decider(path: Path | str) -> bool:
+    """Whether a weights file is a decision model rather than a language one.
+
+    Read from the header, so this costs a few kilobytes rather than the
+    whole file.
+    """
+    try:
+        header = read_header(path)
+    except WeightsError:
+        return False
+    architecture = header.get("architecture") or {}
+    return bool(architecture.get("decisions")
+                and (header.get("meta") or {}).get("decision_schema"))
+
+
+def discover_native(root: Path | str) -> list[Path]:
+    """Language models in a workspace, largest first.
+
+    Decision models are excluded even though they are the same file format.
+    They have a language-model head and would load and generate -- fluent
+    nonsense, because nothing ever trained that head. Offering one where a
+    chat model is expected is the kind of silent substitution this project
+    should not contain.
+    """
+    return [path for path in discover_weights(root) if not is_decider(path)]
 
 
 @dataclass
@@ -119,6 +148,12 @@ class NativeModel:
                     "See training/README.md for what it costs and what to expect."
                 )
             self.path = candidates[0]
+        if is_decider(self.path):
+            raise NativeUnavailable(
+                f"{Path(self.path).name} is a decision model, not a language "
+                "model: it chooses between typed options and was never trained "
+                "to write. Use `chainmind decide` instead."
+            )
         try:
             return NanoModel.load(Path(self.path))
         except WeightsError as exc:

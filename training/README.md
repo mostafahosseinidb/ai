@@ -3,20 +3,22 @@
 The deliberate step. Nothing in ChainMind calls it, and nothing in
 ChainMind depends on it.
 
-Two different jobs live here, and they answer two different questions:
+Three jobs live here, and they answer three different questions:
 
-| | `pretrain.py` | `train_lora.py` |
-|---|---|---|
-| starts from | random numbers | somebody else's open model |
-| needs | NumPy | torch, transformers, peft |
-| produces | a `.cmw` file — architecture, vocabulary and weights all from this project | an adapter for a model trained elsewhere |
-| good at | being wholly yours | actually answering hard questions |
+| | `pretrain.py` | `train_decider.py` | `train_lora.py` |
+|---|---|---|---|
+| starts from | random numbers | random numbers, or a pretrained `.cmw` | somebody else's open model |
+| needs | NumPy | NumPy | torch, transformers, peft |
+| produces | a model that writes | a model that chooses, with a calibrated confidence | an adapter for a model trained elsewhere |
+| good at | being wholly yours | being wholly yours **and** good at its job | answering hard open questions |
 
-If what you want is a system with **no outside parts**, `pretrain.py` is the
-one. If what you want is the most capable assistant your hardware can run,
-`train_lora.py` is. Both are supported, and the rest of ChainMind cannot
-tell which answered — only the ledger can, because the weights fingerprint
-goes into the evidence digest of every usage record.
+The middle column is the one most real work turns out to need, and it is
+the one where training from scratch stops being a compromise — see below.
+
+If what you want is the most capable assistant your hardware can run,
+`train_lora.py` is the road. Both are supported, and the rest of ChainMind
+cannot tell which answered — only the ledger can, because the weights
+fingerprint goes into the evidence digest of every usage record.
 
 ## Why this is separate from the package
 
@@ -84,6 +86,89 @@ back: a model trained without conversations is given plain text instead of
 a chat template, because feeding control tokens to a model that has never
 seen them turns the output into noise and looks like a broken model rather
 than a corpus with no conversations in it.
+
+## Training a decision model
+
+```bash
+python3 training/train_decider.py --dataset labelled.jsonl \
+    --options refund status human other \
+    --from .chainmind/models/atlas.cmw --workspace .chainmind
+
+chainmind decide "the message to route"
+```
+
+The dataset is one JSON object per line: `{"text": ..., "label": ...}`.
+`chainmind learning --export` writes prompt/response rows; a decision
+dataset is labelled by you, which is the work.
+
+### Why this is the easy direction
+
+`pretrain.py` is honest that a model one person trains from scratch is far
+worse at open-ended conversation than any open model they could run instead.
+That limit comes from open-ended-ness, and it mostly goes away here. A
+decision between four options over a domain you have labelled data for is a
+small problem: a few thousand examples and a few million parameters is a
+real model, and it is faster and cheaper than asking a large one the same
+question by orders of magnitude — one forward pass, no sampling loop.
+
+### Three splits, not two
+
+Rows are split deterministically by hashing the text, into **train** (fits
+the weights), **calibration** (fits the one temperature that turns scores
+into probabilities) and **test** (measures accuracy and calibration error).
+Fitting the temperature and then reporting the error on the same rows would
+certify the fit against itself. The number written into the weights file is
+from rows used for neither.
+
+Hashing rather than shuffling means adding data next month does not
+reshuffle what was held out, so two runs stay comparable.
+
+### What the trainer does on your behalf
+
+* **Keeps the best checkpoint, not the last.** On a few hundred rows the
+  held-out loss bottoms out long before the training loss stops falling.
+  On our own test run this changed the kept step from 599 to 30 and took
+  accuracy *up*, from 89.2% to 90.4%.
+* **Refuses a calibration that makes things worse.** Fitting minimises
+  log-likelihood, which is not the same as minimising calibration error, and
+  on a few hundred rows the two can disagree. Both are measured on the
+  calibration split; if scaling loses, the scores are left alone and it says
+  so.
+* **Warns when the result is too good.** Perfect accuracy on a small test set
+  usually means near-duplicate rows landed on both sides of the split, not
+  that you have solved the problem.
+
+### The check that matters most before deploying one
+
+```bash
+python3 training/train_decider.py ... --unfamiliar unrelated-text.txt
+```
+
+Calibration is fitted on held-out rows that *look like* the training rows.
+It says nothing about an input from outside the distribution entirely. A
+router trained on three kinds of support message will answer a question
+about the weather, confidently, with one of its three options — because
+those are the only things it can say.
+
+`--unfamiliar` takes a file of deliberately unrelated text and reports how
+often the model abstains on it. Our own number on a 0.2M-parameter router
+was **50%**, which is not good enough to deploy unattended.
+
+The fix is real and is not more calibration: add a catch-all option to
+`--options` and label rows with it. A decision model can only be unsure
+about what it was taught to be unsure about.
+
+### What "zero hallucinations" does and does not mean
+
+It is true here in the only sense that can be made precise: the output is
+always a valid option, because there is no code path producing anything
+except an index into the schema. That is a property of the type, not of the
+model's behaviour, and `tests/test_decide.py` asserts it against a
+deliberately deranged model.
+
+It is not the same as being right, and it is not the same as knowing when it
+is out of its depth. Those are the `--unfamiliar` number and the calibration
+error, and both are measured rather than claimed.
 
 ## Fine-tuning open weights instead
 
@@ -153,6 +238,18 @@ the default, because it is a second program to install and keep running.
 * **It is slow.** NumPy on a CPU is what this is. A few million parameters
   over a few thousand steps is an evening, not a week — but it is also not
   a minute.
+
+### Deciding
+
+* **Perfect accuracy.** Almost always the split: near-duplicate rows on both
+  sides of it. Look at what is actually in the test rows.
+* **Confident nonsense on unrelated input.** Expected, and measured by
+  `--unfamiliar`. Add a catch-all option.
+* **An option with almost no examples.** It is guessed at, not learned. The
+  trainer prints the per-option counts before it starts for this reason.
+* **A calibration error above about 0.1.** The confidence is not yet a
+  probability. More data is the usual answer; do not raise the threshold and
+  call it fixed.
 
 ### Fine-tuning
 
