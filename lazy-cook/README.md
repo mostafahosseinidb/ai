@@ -2,7 +2,7 @@
 
 برنامه‌ی غذایی هفتگیِ فارسی که با زندگی واقعی خانه تغییر می‌کند. PWA موبایل‌اول، راست‌به‌چپ.
 
-Built from the product spec in phases (spec §14). **Status: phase 0 and phase 1 done.**
+Built from the product spec in phases (spec §14). **Status: phases 0, 1 and 2 done.**
 
 ## Run it
 
@@ -12,7 +12,7 @@ Requirements: Node 20+ and PostgreSQL 14+.
 cp .env.example .env          # then set DATABASE_URL and AUTH_SECRET (openssl rand -base64 32)
 npm install                   # also runs prisma generate
 npx prisma migrate deploy     # create the tables
-npm run db:seed               # 363 ingredients, 48 recipes (idempotent)
+npm run db:seed               # 363 ingredients, 50 recipes, local names for 9 countries (idempotent)
 npm run dev                   # http://localhost:3000
 ```
 
@@ -57,9 +57,21 @@ and the assistant button, installable PWA (manifest `dir: rtl`, service worker),
   undo), move to another day/slot (swaps), replace (3 rule-safe alternatives or the library), skip,
   "we also ate…", and tonight's prep tasks generated from recipes' `prep_ahead`.
 
-**Not yet** (later phases): pantry, shopping list, assistant chat and AI planning, recipe import,
-wishlist, batch prep, channel posts, notifications, payments, the offline tick queue. Their tabs show
-a friendly "coming in the next phase" page.
+**Phase 2 — pantry and shopping list:**
+
+- Pantry in three places (fridge, freezer, cupboard): add by Persian or local shelf name, amount,
+  opened or not, package date. Expiry is the earliest of package date, shelf life and "after opening";
+  green / yellow / red badges and a banner for what's about to go off.
+- Ticking a meal takes its ingredients out of the pantry (soonest-expiring first); un-ticking puts
+  them back. Plans favour recipes that use what's about to expire.
+- Automatic shopping list: plan minus pantry, with unit conversion, rounded up to what you can buy,
+  required vs optional, grouped by aisle, local names (e.g. «تخم‌مرغ — Ձու · Яйца куриные») and
+  package hints («نیم کیلو», «۱ بطری ۱ لیتری»). Updates on every plan or pantry change.
+- «خریدم» puts the bought amount in the pantry (with undo); add your own items; copy as plain text
+  for a messenger; shared live between household members.
+
+**Not yet** (later phases): assistant chat and AI planning, recipe import, adding from a photo,
+wishlist, batch prep, channel posts, notifications, payments, the offline tick queue.
 
 ## Layout
 

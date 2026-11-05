@@ -1,0 +1,716 @@
+[
+  {
+    "ingredient": "olive_oil",
+    "language": "tr",
+    "name": "Zeytinyağı",
+    "notes": null
+  },
+  {
+    "ingredient": "onion",
+    "language": "tr",
+    "name": "Kuru soğan",
+    "notes": null
+  },
+  {
+    "ingredient": "bell_pepper",
+    "language": "tr",
+    "name": "Dolmalık biber",
+    "notes": null
+  },
+  {
+    "ingredient": "garlic",
+    "language": "tr",
+    "name": "Sarımsak",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato",
+    "language": "tr",
+    "name": "Domates",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato_paste",
+    "language": "tr",
+    "name": "Domates salçası",
+    "notes": null
+  },
+  {
+    "ingredient": "sugar",
+    "language": "tr",
+    "name": "Toz şeker",
+    "notes": null
+  },
+  {
+    "ingredient": "cumin",
+    "language": "tr",
+    "name": "Kimyon",
+    "notes": null
+  },
+  {
+    "ingredient": "paprika",
+    "language": "tr",
+    "name": "Toz kırmızı biber (tatlı)",
+    "notes": null
+  },
+  {
+    "ingredient": "salt",
+    "language": "tr",
+    "name": "Tuz",
+    "notes": null
+  },
+  {
+    "ingredient": "black_pepper",
+    "language": "tr",
+    "name": "Karabiber",
+    "notes": null
+  },
+  {
+    "ingredient": "egg",
+    "language": "tr",
+    "name": "Yumurta",
+    "notes": null
+  },
+  {
+    "ingredient": "parsley",
+    "language": "tr",
+    "name": "Maydanoz",
+    "notes": null
+  },
+  {
+    "ingredient": "feta_cheese",
+    "language": "tr",
+    "name": "Beyaz peynir (tam yağlı)",
+    "notes": "beyaz peynir شبیه پنیر سفید ایرانیه"
+  },
+  {
+    "ingredient": "greek_yogurt",
+    "language": "tr",
+    "name": "Süzme yoğurt",
+    "notes": "süzme yoğurt همون ماست چکیده‌ست"
+  },
+  {
+    "ingredient": "vinegar",
+    "language": "tr",
+    "name": "Sirke (üzüm sirkesi)",
+    "notes": null
+  },
+  {
+    "ingredient": "butter",
+    "language": "tr",
+    "name": "Tereyağı",
+    "notes": null
+  },
+  {
+    "ingredient": "chili_flakes",
+    "language": "tr",
+    "name": "Pul biber",
+    "notes": null
+  },
+  {
+    "ingredient": "dill",
+    "language": "tr",
+    "name": "Dereotu",
+    "notes": null
+  },
+  {
+    "ingredient": "toast_bread",
+    "language": "tr",
+    "name": "Tost ekmeği",
+    "notes": null
+  },
+  {
+    "ingredient": "milk",
+    "language": "tr",
+    "name": "Tam yağlı süt",
+    "notes": null
+  },
+  {
+    "ingredient": "cinnamon",
+    "language": "tr",
+    "name": "Toz tarçın",
+    "notes": null
+  },
+  {
+    "ingredient": "vanilla",
+    "language": "tr",
+    "name": "Vanilin",
+    "notes": null
+  },
+  {
+    "ingredient": "honey",
+    "language": "tr",
+    "name": "Bal",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_oil",
+    "language": "tr",
+    "name": "Ayçiçek yağı",
+    "notes": null
+  },
+  {
+    "ingredient": "kalbas",
+    "language": "tr",
+    "name": "Dana salam",
+    "notes": null
+  },
+  {
+    "ingredient": "turmeric",
+    "language": "tr",
+    "name": "Zerdeçal",
+    "notes": null
+  },
+  {
+    "ingredient": "carrot",
+    "language": "tr",
+    "name": "Havuç",
+    "notes": null
+  },
+  {
+    "ingredient": "green_onion",
+    "language": "tr",
+    "name": "Taze soğan",
+    "notes": null
+  },
+  {
+    "ingredient": "mozzarella",
+    "language": "tr",
+    "name": "Mozzarella peyniri",
+    "notes": null
+  },
+  {
+    "ingredient": "potato",
+    "language": "tr",
+    "name": "Patates",
+    "notes": null
+  },
+  {
+    "ingredient": "lavash_bread",
+    "language": "tr",
+    "name": "Lavaş",
+    "notes": null
+  },
+  {
+    "ingredient": "spinach",
+    "language": "tr",
+    "name": "Ispanak",
+    "notes": null
+  },
+  {
+    "ingredient": "beef_mince",
+    "language": "tr",
+    "name": "Dana kıyma",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon",
+    "language": "tr",
+    "name": "Limon",
+    "notes": null
+  },
+  {
+    "ingredient": "lamb_stew_meat",
+    "language": "tr",
+    "name": "Kuzu kuşbaşı",
+    "notes": null
+  },
+  {
+    "ingredient": "kidney_bean",
+    "language": "tr",
+    "name": "Kuru kırmızı fasulye",
+    "notes": null
+  },
+  {
+    "ingredient": "ghormeh_sabzi_herbs",
+    "language": "tr",
+    "name": "Kurutulmuş yeşillik karışımı (Ghormeh sabzi)",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه؛ جایگزین: جعفری، تره و شنبلیله‌ی تازه"
+  },
+  {
+    "ingredient": "dried_lime",
+    "language": "tr",
+    "name": "Kuru limon (Umman limonu)",
+    "notes": "تو عطاری‌ها و بازار ادویه هست"
+  },
+  {
+    "ingredient": "water",
+    "language": "tr",
+    "name": "Su",
+    "notes": null
+  },
+  {
+    "ingredient": "basmati_rice",
+    "language": "tr",
+    "name": "Basmati pirinç",
+    "notes": "برنج ایرانی (طارم/هاشمی) رو تو مغازه‌های ایرانی پیدا می‌کنی"
+  },
+  {
+    "ingredient": "chicken_thigh",
+    "language": "tr",
+    "name": "Tavuk but (kemiksiz)",
+    "notes": null
+  },
+  {
+    "ingredient": "saffron",
+    "language": "tr",
+    "name": "Safran",
+    "notes": "زعفران ایرانی رو از مغازه‌ی ایرانی بخر؛ اصل‌تر و به‌صرفه‌تره"
+  },
+  {
+    "ingredient": "barberry",
+    "language": "tr",
+    "name": "Kuru kadıntuzluğu (zereşk)",
+    "notes": "تو عطاری‌ها و مغازه‌های ایرانی پیدا می‌شه"
+  },
+  {
+    "ingredient": "soy_mince",
+    "language": "tr",
+    "name": "Soya kıyması",
+    "notes": "سویای ایرانی تو مغازه‌های ایرانی هم هست"
+  },
+  {
+    "ingredient": "green_bean",
+    "language": "tr",
+    "name": "Taze fasulye",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_corn",
+    "language": "tr",
+    "name": "Konserve mısır",
+    "notes": null
+  },
+  {
+    "ingredient": "oregano",
+    "language": "tr",
+    "name": "Kekik (oregano)",
+    "notes": null
+  },
+  {
+    "ingredient": "arborio_rice",
+    "language": "tr",
+    "name": "Arborio pirinç (risotto)",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_stock",
+    "language": "tr",
+    "name": "Sebze bulyon",
+    "notes": null
+  },
+  {
+    "ingredient": "frozen_peas",
+    "language": "tr",
+    "name": "Dondurulmuş bezelye",
+    "notes": null
+  },
+  {
+    "ingredient": "ginger",
+    "language": "tr",
+    "name": "Taze zencefil",
+    "notes": null
+  },
+  {
+    "ingredient": "curry_powder",
+    "language": "tr",
+    "name": "Köri",
+    "notes": null
+  },
+  {
+    "ingredient": "coconut_milk",
+    "language": "tr",
+    "name": "Hindistan cevizi sütü",
+    "notes": null
+  },
+  {
+    "ingredient": "plain_yogurt",
+    "language": "tr",
+    "name": "Yoğurt (sade, tam yağlı)",
+    "notes": null
+  },
+  {
+    "ingredient": "green_lentil",
+    "language": "tr",
+    "name": "Yeşil mercimek",
+    "notes": null
+  },
+  {
+    "ingredient": "yellow_split_pea",
+    "language": "tr",
+    "name": "Sarı bezelye (kırık)",
+    "notes": "اگه پیدا نشد، sarı mercimek (عدس زرد) جایگزین خوبیه"
+  },
+  {
+    "ingredient": "lemon_juice",
+    "language": "tr",
+    "name": "Limon suyu (%100)",
+    "notes": "«limon sosu» آب‌لیموی طبیعی نیست؛ دنبال ٪۱۰۰ limon suyu باش"
+  },
+  {
+    "ingredient": "caper",
+    "language": "tr",
+    "name": "Kapari",
+    "notes": null
+  },
+  {
+    "ingredient": "cucumber",
+    "language": "tr",
+    "name": "Salatalık",
+    "notes": null
+  },
+  {
+    "ingredient": "eggplant",
+    "language": "tr",
+    "name": "Patlıcan",
+    "notes": null
+  },
+  {
+    "ingredient": "zucchini",
+    "language": "tr",
+    "name": "Kabak (sakız kabağı)",
+    "notes": null
+  },
+  {
+    "ingredient": "dried_thyme",
+    "language": "tr",
+    "name": "Kekik (kurutulmuş)",
+    "notes": null
+  },
+  {
+    "ingredient": "basil",
+    "language": "tr",
+    "name": "Fesleğen",
+    "notes": null
+  },
+  {
+    "ingredient": "spaghetti",
+    "language": "tr",
+    "name": "Spagetti makarna",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tomato",
+    "language": "tr",
+    "name": "Konserve domates (doğranmış)",
+    "notes": null
+  },
+  {
+    "ingredient": "parmesan",
+    "language": "tr",
+    "name": "Parmesan peyniri",
+    "notes": null
+  },
+  {
+    "ingredient": "fettuccine",
+    "language": "tr",
+    "name": "Fettuccine makarna",
+    "notes": null
+  },
+  {
+    "ingredient": "mushroom",
+    "language": "tr",
+    "name": "Kültür mantarı",
+    "notes": null
+  },
+  {
+    "ingredient": "cream_cheese",
+    "language": "tr",
+    "name": "Krem peynir",
+    "notes": null
+  },
+  {
+    "ingredient": "penne",
+    "language": "tr",
+    "name": "Kalem makarna (penne)",
+    "notes": null
+  },
+  {
+    "ingredient": "red_lentil",
+    "language": "tr",
+    "name": "Kırmızı mercimek",
+    "notes": null
+  },
+  {
+    "ingredient": "egg_noodle",
+    "language": "tr",
+    "name": "Yumurtalı erişte",
+    "notes": null
+  },
+  {
+    "ingredient": "cabbage",
+    "language": "tr",
+    "name": "Beyaz lahana",
+    "notes": null
+  },
+  {
+    "ingredient": "soy_sauce",
+    "language": "tr",
+    "name": "Soya sosu",
+    "notes": null
+  },
+  {
+    "ingredient": "sesame_oil",
+    "language": "tr",
+    "name": "Susam yağı",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_kidney_bean",
+    "language": "tr",
+    "name": "Kırmızı fasulye konservesi",
+    "notes": null
+  },
+  {
+    "ingredient": "tortilla",
+    "language": "tr",
+    "name": "Tortilla (buğday)",
+    "notes": null
+  },
+  {
+    "ingredient": "cilantro",
+    "language": "tr",
+    "name": "Kişniş (taze)",
+    "notes": "بیشتر تو بازارهای هفتگی و مغازه‌های عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "chicken_breast",
+    "language": "tr",
+    "name": "Tavuk göğsü (bonfile)",
+    "notes": null
+  },
+  {
+    "ingredient": "rolled_oats",
+    "language": "tr",
+    "name": "Yulaf ezmesi",
+    "notes": null
+  },
+  {
+    "ingredient": "flour",
+    "language": "tr",
+    "name": "Buğday unu",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_white_bean",
+    "language": "tr",
+    "name": "Haşlanmış kuru fasulye (konserve)",
+    "notes": null
+  },
+  {
+    "ingredient": "tahini",
+    "language": "tr",
+    "name": "Tahin",
+    "notes": null
+  },
+  {
+    "ingredient": "date_syrup",
+    "language": "tr",
+    "name": "Hurma pekmezi",
+    "notes": null
+  },
+  {
+    "ingredient": "halva",
+    "language": "tr",
+    "name": "Tahin helvası",
+    "notes": "حلوای ارده‌ی ترکی/عربی تقریباً همونه"
+  },
+  {
+    "ingredient": "banana",
+    "language": "tr",
+    "name": "Muz",
+    "notes": null
+  },
+  {
+    "ingredient": "apple",
+    "language": "tr",
+    "name": "Elma",
+    "notes": null
+  },
+  {
+    "ingredient": "puff_pastry",
+    "language": "tr",
+    "name": "Milföy hamuru",
+    "notes": null
+  },
+  {
+    "ingredient": "digestive_biscuit",
+    "language": "tr",
+    "name": "Digestive bisküvi",
+    "notes": null
+  },
+  {
+    "ingredient": "heavy_cream",
+    "language": "tr",
+    "name": "Sıvı krema (%35 yağlı)",
+    "notes": null
+  },
+  {
+    "ingredient": "powdered_sugar",
+    "language": "tr",
+    "name": "Pudra şekeri",
+    "notes": null
+  },
+  {
+    "ingredient": "walnut",
+    "language": "tr",
+    "name": "Ceviz içi",
+    "notes": null
+  },
+  {
+    "ingredient": "golpar",
+    "language": "tr",
+    "name": "Golpar (İran baharatı)",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه"
+  },
+  {
+    "ingredient": "dried_mint",
+    "language": "tr",
+    "name": "Kuru nane",
+    "notes": null
+  },
+  {
+    "ingredient": "chia_seed",
+    "language": "tr",
+    "name": "Chia tohumu",
+    "notes": null
+  },
+  {
+    "ingredient": "red_onion",
+    "language": "tr",
+    "name": "Mor soğan",
+    "notes": null
+  },
+  {
+    "ingredient": "black_olive",
+    "language": "tr",
+    "name": "Siyah zeytin",
+    "notes": null
+  },
+  {
+    "ingredient": "breadcrumbs",
+    "language": "tr",
+    "name": "Galeta unu",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tuna",
+    "language": "tr",
+    "name": "Ton balığı (konserve)",
+    "notes": null
+  },
+  {
+    "ingredient": "mayonnaise",
+    "language": "tr",
+    "name": "Mayonez",
+    "notes": null
+  },
+  {
+    "ingredient": "pickle",
+    "language": "tr",
+    "name": "Salatalık turşusu",
+    "notes": null
+  },
+  {
+    "ingredient": "raisin",
+    "language": "tr",
+    "name": "Kuru üzüm",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_petal",
+    "language": "tr",
+    "name": "Kurutulmuş gül yaprağı",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "lettuce",
+    "language": "tr",
+    "name": "Marul",
+    "notes": null
+  },
+  {
+    "ingredient": "sumac",
+    "language": "tr",
+    "name": "Sumak",
+    "notes": null
+  },
+  {
+    "ingredient": "cherry_tomato",
+    "language": "tr",
+    "name": "Çeri domates",
+    "notes": null
+  },
+  {
+    "ingredient": "doogh",
+    "language": "tr",
+    "name": "Ayran",
+    "notes": "آیران گاز نداره و ترشیش کمتره؛ نعناع خشک بزن"
+  },
+  {
+    "ingredient": "lighvan_cheese",
+    "language": "tr",
+    "name": "Koyun beyaz peyniri (Ezine)",
+    "notes": "پنیر Ezine نزدیک‌ترین مزه رو به لیقوان داره"
+  },
+  {
+    "ingredient": "chickpea",
+    "language": "tr",
+    "name": "Nohut",
+    "notes": null
+  },
+  {
+    "ingredient": "kashk",
+    "language": "tr",
+    "name": "Kurut (keşk)",
+    "notes": "kurut خشکه و باید تو آب گرم حل بشه؛ کشک مایع تو مغازه‌های ایرانی هست"
+  },
+  {
+    "ingredient": "pistachio",
+    "language": "tr",
+    "name": "Antep fıstığı",
+    "notes": null
+  },
+  {
+    "ingredient": "date",
+    "language": "tr",
+    "name": "Hurma",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_water",
+    "language": "tr",
+    "name": "Gül suyu",
+    "notes": null
+  },
+  {
+    "ingredient": "sour_cream",
+    "language": "tr",
+    "name": "Ekşi krema",
+    "notes": null
+  },
+  {
+    "ingredient": "cottage_cheese",
+    "language": "tr",
+    "name": "Cottage peyniri",
+    "notes": null
+  },
+  {
+    "ingredient": "orange",
+    "language": "tr",
+    "name": "Portakal",
+    "notes": null
+  },
+  {
+    "ingredient": "mint",
+    "language": "tr",
+    "name": "Taze nane",
+    "notes": null
+  },
+  {
+    "ingredient": "cardamom",
+    "language": "tr",
+    "name": "Kakule",
+    "notes": null
+  }
+]

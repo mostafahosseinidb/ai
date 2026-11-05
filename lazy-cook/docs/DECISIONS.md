@@ -51,3 +51,19 @@ Choices the spec leaves open (spec §0.3), one line of reasoning each.
 - **Loading skeletons only on `/recipes/[id]`** — a `loading.tsx` above pages that navigate to themselves with new search params (`/today?d=`, `/recipes?type=`) made those navigations silently not commit in production builds of Next 15.5; those pages render fast server-side anyway.
 - **`prefetch={false}` on long link lists** (recipe library, day strip, meal titles) — prefetching ~50 dynamic recipe pages per visit costs ~50 server renders and delayed taps.
 - **Hand-written service worker (`public/sw.js`)** rather than Serwist/next-pwa — network-first pages with cache fallback is all phase 0 needs, and it avoids a webpack plugin.
+
+## Phase 2 — pantry & shopping
+
+- **Expiry = earliest of: package date, purchase + shelf life for that place, opened + "after opening" days** (opening doesn't shorten frozen food). Items with no data have no expiry.
+- **Colours: > 3 days green, 1–3 yellow, ≤ 0 red** (spec §5.5); a banner lists yellow/red items.
+- **Default place for a new item:** frozen → freezer; meat/dairy → fridge; anything opened that has an "after opening" life → fridge; long pantry life (≥ 5 days) → cupboard; else fridge. A warning shows when the ingredient has no shelf life in the chosen place (raw chicken in the cupboard).
+- **Auto-deduct on tick, soonest-expiring lot first, converting units through grams.** Each lot change is logged in `change_log` (`entity = pantry_deduction`, `batchId = planned meal id`), so un-ticking or undoing restores exactly what was taken. Leftover meals deduct nothing (cooked earlier). Toggle: `households.autoDeductPantry`.
+- **Shopping list = planned (not done/skipped/eaten-out, non-leftover) meals from today on, scaled by portions, minus pantry stock that's still good today.** Built in code, never by AI.
+- **One unit per ingredient on the list:** its default unit if every use converts to it, else grams; unconvertible uses stay separate.
+- **Rounded up, not to nearest** — you can't buy 0.3 cucumber; and a shortfall under 10 % of the need isn't listed.
+- **Staples (spices, salt, pepper, sugar, flour, oils, vinegar) go to "optional"**; water is never listed; meal `side`/`drink` text becomes optional free-text items.
+- **The list is regenerated after every plan or pantry change, and on opening the shopping page** (so yesterday's meals drop off). Regeneration **diffs** open auto rows (update/insert/delete) instead of recreating them, so row ids stay stable while another member has the list open; user-added and ticked rows are never touched.
+- **«خریدم» asks for the bought amount and creates a pantry lot; undo removes that lot and unticks in one request.**
+- **Live sharing = polling every 5 s + refetch on focus (TanStack Query).** Works on any host; Supabase Realtime/SSE can replace it later without UI changes.
+- **Local names: every shelf language of the country is shown** (Yerevan: Armenian · Russian), with an optional Persian tip. Seeded for AM, TR, DE, AT, NL, GB, US, CA, AE for the 119 ingredients the recipes use most; AI fills other countries in phase 3. Ingredient search also matches local names.
+- **Two seed recipes use jarred eggplant caviar** (toast, penne) so the "opened jar" scenario (acceptance #5) has something to plan; the filler scores recipes that use soon-to-expire items higher.

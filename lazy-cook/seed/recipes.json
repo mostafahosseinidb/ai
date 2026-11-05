@@ -6607,5 +6607,198 @@
     ],
     "source": "seed",
     "source_credit": null
+  },
+  {
+    "key": "eggplant_caviar_toast",
+    "title_fa": "تست خاویار بادمجان و پنیر",
+    "title_original": "Eggplant Caviar Toast",
+    "intro_fa": "شیشه رو باز کردی؟ این سریع‌ترین راه تموم کردنشه، قبل از اینکه یادت بره.",
+    "cuisine": "armenian",
+    "meal_types": [
+      "breakfast",
+      "snack"
+    ],
+    "base_servings": 2,
+    "active_minutes": 5,
+    "total_minutes": 5,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "toast_bread",
+        "quantity": 4,
+        "unit": "slice",
+        "prep_note": "برشته",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "eggplant_caviar",
+        "quantity": 6,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "feta_cheese",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": "خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "walnut",
+        "quantity": 6,
+        "unit": "piece",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "parsley",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": "ریزخرد",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "نون‌ها رو تو تابه یا توستر برشته کن.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "روی هر برش یه لایه‌ی پهن خاویار بادمجان بمال."
+      },
+      {
+        "text": "پنیر و گردو و جعفری رو بپاش روش و بخور."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 290,
+      "protein": 10,
+      "carbs": 32,
+      "fat": 14,
+      "fiber": 4
+    },
+    "freezer_friendly": false,
+    "fridge_days": null,
+    "reheat_note": null,
+    "prep_ahead": [],
+    "tags": [
+      "ten_minute",
+      "vegetarian",
+      "no_oven",
+      "budget"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "eggplant_caviar_pasta",
+    "title_fa": "پنه با خاویار بادمجان",
+    "title_original": "Penne with Eggplant Caviar",
+    "intro_fa": "سس آماده تو شیشه‌ست؛ تو فقط ماکارونی رو بپز.",
+    "cuisine": "other",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 10,
+    "total_minutes": 20,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "penne",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "eggplant_caviar",
+        "quantity": 8,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 2,
+        "unit": "clove",
+        "prep_note": "له‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "feta_cheese",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "برای آب ماکارونی",
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "پنه رو تو آب جوش نمک‌دار بپز.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "سیر رو با روغن زیتون یه دقیقه تفت بده.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "خاویار بادمجان و چند قاشق آب ماکارونی رو بریز و گرم کن."
+      },
+      {
+        "text": "پنه رو قاطی کن و با فتا سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 520,
+      "protein": 16,
+      "carbs": 82,
+      "fat": 14,
+      "fiber": 8
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "با یه قاشق آب تو تابه گرم کن.",
+    "prep_ahead": [],
+    "tags": [
+      "one_pot",
+      "vegetarian",
+      "no_oven",
+      "budget",
+      "ten_minute"
+    ],
+    "source": "seed",
+    "source_credit": null
   }
 ]

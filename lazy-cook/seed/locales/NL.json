@@ -1,0 +1,716 @@
+[
+  {
+    "ingredient": "olive_oil",
+    "language": "nl",
+    "name": "Olijfolie",
+    "notes": null
+  },
+  {
+    "ingredient": "onion",
+    "language": "nl",
+    "name": "Uien",
+    "notes": null
+  },
+  {
+    "ingredient": "bell_pepper",
+    "language": "nl",
+    "name": "Paprika (rood)",
+    "notes": null
+  },
+  {
+    "ingredient": "garlic",
+    "language": "nl",
+    "name": "Knoflook",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato",
+    "language": "nl",
+    "name": "Tomaten",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato_paste",
+    "language": "nl",
+    "name": "Tomatenpuree",
+    "notes": null
+  },
+  {
+    "ingredient": "sugar",
+    "language": "nl",
+    "name": "Kristalsuiker",
+    "notes": null
+  },
+  {
+    "ingredient": "cumin",
+    "language": "nl",
+    "name": "Komijn (gemalen)",
+    "notes": null
+  },
+  {
+    "ingredient": "paprika",
+    "language": "nl",
+    "name": "Paprikapoeder",
+    "notes": null
+  },
+  {
+    "ingredient": "salt",
+    "language": "nl",
+    "name": "Zout",
+    "notes": null
+  },
+  {
+    "ingredient": "black_pepper",
+    "language": "nl",
+    "name": "Zwarte peper (gemalen)",
+    "notes": null
+  },
+  {
+    "ingredient": "egg",
+    "language": "nl",
+    "name": "Eieren",
+    "notes": null
+  },
+  {
+    "ingredient": "parsley",
+    "language": "nl",
+    "name": "Peterselie (platte)",
+    "notes": null
+  },
+  {
+    "ingredient": "feta_cheese",
+    "language": "nl",
+    "name": "Feta",
+    "notes": null
+  },
+  {
+    "ingredient": "greek_yogurt",
+    "language": "nl",
+    "name": "Griekse yoghurt 10%",
+    "notes": null
+  },
+  {
+    "ingredient": "vinegar",
+    "language": "nl",
+    "name": "Witte wijnazijn",
+    "notes": null
+  },
+  {
+    "ingredient": "butter",
+    "language": "nl",
+    "name": "Roomboter",
+    "notes": null
+  },
+  {
+    "ingredient": "chili_flakes",
+    "language": "nl",
+    "name": "Chilivlokken",
+    "notes": null
+  },
+  {
+    "ingredient": "dill",
+    "language": "nl",
+    "name": "Dille",
+    "notes": null
+  },
+  {
+    "ingredient": "toast_bread",
+    "language": "nl",
+    "name": "Tostibrood",
+    "notes": null
+  },
+  {
+    "ingredient": "milk",
+    "language": "nl",
+    "name": "Volle melk",
+    "notes": null
+  },
+  {
+    "ingredient": "cinnamon",
+    "language": "nl",
+    "name": "Kaneel (gemalen)",
+    "notes": null
+  },
+  {
+    "ingredient": "vanilla",
+    "language": "nl",
+    "name": "Vanille-extract",
+    "notes": null
+  },
+  {
+    "ingredient": "honey",
+    "language": "nl",
+    "name": "Honing",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_oil",
+    "language": "nl",
+    "name": "Zonnebloemolie",
+    "notes": null
+  },
+  {
+    "ingredient": "kalbas",
+    "language": "nl",
+    "name": "Boterhamworst",
+    "notes": "کالباس حلال رو تو مغازه‌های ترکی/عربی/ایرانی پیدا می‌کنی"
+  },
+  {
+    "ingredient": "turmeric",
+    "language": "nl",
+    "name": "Kurkuma (geelwortel)",
+    "notes": null
+  },
+  {
+    "ingredient": "carrot",
+    "language": "nl",
+    "name": "Winterpeen (wortels)",
+    "notes": null
+  },
+  {
+    "ingredient": "green_onion",
+    "language": "nl",
+    "name": "Bosui",
+    "notes": null
+  },
+  {
+    "ingredient": "mozzarella",
+    "language": "nl",
+    "name": "Mozzarella",
+    "notes": null
+  },
+  {
+    "ingredient": "potato",
+    "language": "nl",
+    "name": "Aardappelen",
+    "notes": null
+  },
+  {
+    "ingredient": "lavash_bread",
+    "language": "nl",
+    "name": "Lavash (dun platbrood)",
+    "notes": "تو نونوایی‌های ترکی «Yufka» هم شبیه لواشه"
+  },
+  {
+    "ingredient": "spinach",
+    "language": "nl",
+    "name": "Spinazie",
+    "notes": null
+  },
+  {
+    "ingredient": "beef_mince",
+    "language": "nl",
+    "name": "Rundergehakt",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon",
+    "language": "nl",
+    "name": "Citroenen",
+    "notes": null
+  },
+  {
+    "ingredient": "lamb_stew_meat",
+    "language": "nl",
+    "name": "Lamsstoofvlees",
+    "notes": null
+  },
+  {
+    "ingredient": "kidney_bean",
+    "language": "nl",
+    "name": "Kidneybonen (gedroogd)",
+    "notes": null
+  },
+  {
+    "ingredient": "ghormeh_sabzi_herbs",
+    "language": "nl",
+    "name": "Ghormeh sabzi kruidenmix (gedroogd)",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه؛ جایگزین: جعفری، تره و شنبلیله‌ی تازه"
+  },
+  {
+    "ingredient": "dried_lime",
+    "language": "nl",
+    "name": "Gedroogde limoenen",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "water",
+    "language": "nl",
+    "name": "Water",
+    "notes": null
+  },
+  {
+    "ingredient": "basmati_rice",
+    "language": "nl",
+    "name": "Basmatirijst",
+    "notes": "برنج ایرانی (طارم/هاشمی) رو تو مغازه‌های ایرانی پیدا می‌کنی"
+  },
+  {
+    "ingredient": "chicken_thigh",
+    "language": "nl",
+    "name": "Kippendijfilet",
+    "notes": null
+  },
+  {
+    "ingredient": "saffron",
+    "language": "nl",
+    "name": "Saffraan",
+    "notes": "زعفران ایرانی رو از مغازه‌ی ایرانی بخر؛ اصل‌تر و به‌صرفه‌تره"
+  },
+  {
+    "ingredient": "barberry",
+    "language": "nl",
+    "name": "Gedroogde berberis (zuurbessen)",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "soy_mince",
+    "language": "nl",
+    "name": "Sojagehakt (sojabrokjes)",
+    "notes": "سویای ایرانی تو مغازه‌های ایرانی هم هست"
+  },
+  {
+    "ingredient": "green_bean",
+    "language": "nl",
+    "name": "Sperziebonen",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_corn",
+    "language": "nl",
+    "name": "Maïs (blik)",
+    "notes": null
+  },
+  {
+    "ingredient": "oregano",
+    "language": "nl",
+    "name": "Oregano (gedroogd)",
+    "notes": null
+  },
+  {
+    "ingredient": "arborio_rice",
+    "language": "nl",
+    "name": "Risottorijst (Arborio)",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_stock",
+    "language": "nl",
+    "name": "Groentebouillon",
+    "notes": null
+  },
+  {
+    "ingredient": "frozen_peas",
+    "language": "nl",
+    "name": "Diepvries doperwten",
+    "notes": null
+  },
+  {
+    "ingredient": "ginger",
+    "language": "nl",
+    "name": "Verse gember",
+    "notes": null
+  },
+  {
+    "ingredient": "curry_powder",
+    "language": "nl",
+    "name": "Kerriepoeder",
+    "notes": null
+  },
+  {
+    "ingredient": "coconut_milk",
+    "language": "nl",
+    "name": "Kokosmelk",
+    "notes": null
+  },
+  {
+    "ingredient": "plain_yogurt",
+    "language": "nl",
+    "name": "Volle yoghurt (naturel)",
+    "notes": null
+  },
+  {
+    "ingredient": "green_lentil",
+    "language": "nl",
+    "name": "Groene linzen",
+    "notes": null
+  },
+  {
+    "ingredient": "yellow_split_pea",
+    "language": "nl",
+    "name": "Gele spliterwten",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon_juice",
+    "language": "nl",
+    "name": "Citroensap",
+    "notes": null
+  },
+  {
+    "ingredient": "caper",
+    "language": "nl",
+    "name": "Kappertjes",
+    "notes": null
+  },
+  {
+    "ingredient": "cucumber",
+    "language": "nl",
+    "name": "Komkommer",
+    "notes": null
+  },
+  {
+    "ingredient": "eggplant",
+    "language": "nl",
+    "name": "Aubergine",
+    "notes": null
+  },
+  {
+    "ingredient": "zucchini",
+    "language": "nl",
+    "name": "Courgette",
+    "notes": null
+  },
+  {
+    "ingredient": "dried_thyme",
+    "language": "nl",
+    "name": "Tijm (gedroogd)",
+    "notes": null
+  },
+  {
+    "ingredient": "basil",
+    "language": "nl",
+    "name": "Basilicum",
+    "notes": null
+  },
+  {
+    "ingredient": "spaghetti",
+    "language": "nl",
+    "name": "Spaghetti",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tomato",
+    "language": "nl",
+    "name": "Tomatenblokjes (blik)",
+    "notes": null
+  },
+  {
+    "ingredient": "parmesan",
+    "language": "nl",
+    "name": "Parmezaanse kaas",
+    "notes": null
+  },
+  {
+    "ingredient": "fettuccine",
+    "language": "nl",
+    "name": "Fettuccine",
+    "notes": null
+  },
+  {
+    "ingredient": "mushroom",
+    "language": "nl",
+    "name": "Champignons",
+    "notes": null
+  },
+  {
+    "ingredient": "cream_cheese",
+    "language": "nl",
+    "name": "Roomkaas",
+    "notes": null
+  },
+  {
+    "ingredient": "penne",
+    "language": "nl",
+    "name": "Penne",
+    "notes": null
+  },
+  {
+    "ingredient": "red_lentil",
+    "language": "nl",
+    "name": "Rode linzen",
+    "notes": null
+  },
+  {
+    "ingredient": "egg_noodle",
+    "language": "nl",
+    "name": "Eiermie",
+    "notes": null
+  },
+  {
+    "ingredient": "cabbage",
+    "language": "nl",
+    "name": "Witte kool",
+    "notes": null
+  },
+  {
+    "ingredient": "soy_sauce",
+    "language": "nl",
+    "name": "Sojasaus (ketjap asin)",
+    "notes": "ketjap manis شیرینه؛ دنبال sojasaus یا ketjap asin باش"
+  },
+  {
+    "ingredient": "sesame_oil",
+    "language": "nl",
+    "name": "Sesamolie",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_kidney_bean",
+    "language": "nl",
+    "name": "Kidneybonen (blik)",
+    "notes": null
+  },
+  {
+    "ingredient": "tortilla",
+    "language": "nl",
+    "name": "Tortilla wraps",
+    "notes": null
+  },
+  {
+    "ingredient": "cilantro",
+    "language": "nl",
+    "name": "Koriander (vers)",
+    "notes": null
+  },
+  {
+    "ingredient": "chicken_breast",
+    "language": "nl",
+    "name": "Kipfilet",
+    "notes": null
+  },
+  {
+    "ingredient": "rolled_oats",
+    "language": "nl",
+    "name": "Havermout",
+    "notes": null
+  },
+  {
+    "ingredient": "flour",
+    "language": "nl",
+    "name": "Tarwebloem",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_white_bean",
+    "language": "nl",
+    "name": "Witte bonen (blik)",
+    "notes": null
+  },
+  {
+    "ingredient": "tahini",
+    "language": "nl",
+    "name": "Tahin (sesampasta)",
+    "notes": null
+  },
+  {
+    "ingredient": "date_syrup",
+    "language": "nl",
+    "name": "Dadelsiroop",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "halva",
+    "language": "nl",
+    "name": "Halva (tahin)",
+    "notes": "حلوای ارده‌ی ترکی/عربی تقریباً همونه"
+  },
+  {
+    "ingredient": "banana",
+    "language": "nl",
+    "name": "Bananen",
+    "notes": null
+  },
+  {
+    "ingredient": "apple",
+    "language": "nl",
+    "name": "Appels",
+    "notes": null
+  },
+  {
+    "ingredient": "puff_pastry",
+    "language": "nl",
+    "name": "Bladerdeeg",
+    "notes": null
+  },
+  {
+    "ingredient": "digestive_biscuit",
+    "language": "nl",
+    "name": "Digestive biscuits",
+    "notes": null
+  },
+  {
+    "ingredient": "heavy_cream",
+    "language": "nl",
+    "name": "Slagroom 35%",
+    "notes": null
+  },
+  {
+    "ingredient": "powdered_sugar",
+    "language": "nl",
+    "name": "Poedersuiker",
+    "notes": null
+  },
+  {
+    "ingredient": "walnut",
+    "language": "nl",
+    "name": "Walnoten",
+    "notes": null
+  },
+  {
+    "ingredient": "golpar",
+    "language": "nl",
+    "name": "Golpar (Perzische berenklauw, gemalen)",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه"
+  },
+  {
+    "ingredient": "dried_mint",
+    "language": "nl",
+    "name": "Gedroogde munt",
+    "notes": null
+  },
+  {
+    "ingredient": "chia_seed",
+    "language": "nl",
+    "name": "Chiazaad",
+    "notes": null
+  },
+  {
+    "ingredient": "red_onion",
+    "language": "nl",
+    "name": "Rode uien",
+    "notes": null
+  },
+  {
+    "ingredient": "black_olive",
+    "language": "nl",
+    "name": "Zwarte olijven",
+    "notes": null
+  },
+  {
+    "ingredient": "breadcrumbs",
+    "language": "nl",
+    "name": "Paneermeel",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tuna",
+    "language": "nl",
+    "name": "Tonijn (blik)",
+    "notes": null
+  },
+  {
+    "ingredient": "mayonnaise",
+    "language": "nl",
+    "name": "Mayonaise",
+    "notes": null
+  },
+  {
+    "ingredient": "pickle",
+    "language": "nl",
+    "name": "Augurken",
+    "notes": null
+  },
+  {
+    "ingredient": "raisin",
+    "language": "nl",
+    "name": "Rozijnen",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_petal",
+    "language": "nl",
+    "name": "Gedroogde rozenblaadjes",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "lettuce",
+    "language": "nl",
+    "name": "Kropsla",
+    "notes": null
+  },
+  {
+    "ingredient": "sumac",
+    "language": "nl",
+    "name": "Sumak",
+    "notes": "تو مغازه‌های ترکی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "cherry_tomato",
+    "language": "nl",
+    "name": "Cherrytomaten",
+    "notes": null
+  },
+  {
+    "ingredient": "doogh",
+    "language": "nl",
+    "name": "Ayran (yoghurtdrank)",
+    "notes": "جایگزین: آیران یا ماست رقیق با نمک و نعناع خشک"
+  },
+  {
+    "ingredient": "lighvan_cheese",
+    "language": "nl",
+    "name": "Schapenkaas in pekel",
+    "notes": "جایگزین: پنیر فتای گوسفندی؛ لیقوان اصل تو مغازه‌های ایرانی هست"
+  },
+  {
+    "ingredient": "chickpea",
+    "language": "nl",
+    "name": "Kikkererwten (gedroogd)",
+    "notes": null
+  },
+  {
+    "ingredient": "kashk",
+    "language": "nl",
+    "name": "Kashk (vloeibare gedroogde yoghurt)",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه؛ جایگزین: ماست چکیده با کمی نمک"
+  },
+  {
+    "ingredient": "pistachio",
+    "language": "nl",
+    "name": "Pistachenoten",
+    "notes": null
+  },
+  {
+    "ingredient": "date",
+    "language": "nl",
+    "name": "Dadels",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_water",
+    "language": "nl",
+    "name": "Rozenwater",
+    "notes": "تو مغازه‌های ترکی/عربی پیدا می‌شه و ارزون‌تره"
+  },
+  {
+    "ingredient": "sour_cream",
+    "language": "nl",
+    "name": "Zure room",
+    "notes": null
+  },
+  {
+    "ingredient": "cottage_cheese",
+    "language": "nl",
+    "name": "Hüttenkäse",
+    "notes": null
+  },
+  {
+    "ingredient": "orange",
+    "language": "nl",
+    "name": "Sinaasappels",
+    "notes": null
+  },
+  {
+    "ingredient": "mint",
+    "language": "nl",
+    "name": "Verse munt",
+    "notes": null
+  },
+  {
+    "ingredient": "cardamom",
+    "language": "nl",
+    "name": "Kardemom (groen)",
+    "notes": null
+  }
+]

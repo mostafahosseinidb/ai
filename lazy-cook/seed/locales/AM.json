@@ -1,0 +1,1430 @@
+[
+  {
+    "ingredient": "olive_oil",
+    "language": "hy",
+    "name": "Ձիթապտղի յուղ",
+    "notes": null
+  },
+  {
+    "ingredient": "olive_oil",
+    "language": "ru",
+    "name": "Оливковое масло",
+    "notes": null
+  },
+  {
+    "ingredient": "onion",
+    "language": "hy",
+    "name": "Սոխ",
+    "notes": null
+  },
+  {
+    "ingredient": "onion",
+    "language": "ru",
+    "name": "Лук репчатый",
+    "notes": null
+  },
+  {
+    "ingredient": "bell_pepper",
+    "language": "hy",
+    "name": "Բուլղարական պղպեղ",
+    "notes": null
+  },
+  {
+    "ingredient": "bell_pepper",
+    "language": "ru",
+    "name": "Перец болгарский",
+    "notes": null
+  },
+  {
+    "ingredient": "garlic",
+    "language": "hy",
+    "name": "Սխտոր",
+    "notes": null
+  },
+  {
+    "ingredient": "garlic",
+    "language": "ru",
+    "name": "Чеснок",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato",
+    "language": "hy",
+    "name": "Լոլիկ",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato",
+    "language": "ru",
+    "name": "Помидоры",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato_paste",
+    "language": "hy",
+    "name": "Տոմատի մածուկ",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato_paste",
+    "language": "ru",
+    "name": "Томатная паста",
+    "notes": null
+  },
+  {
+    "ingredient": "sugar",
+    "language": "hy",
+    "name": "Շաքարավազ",
+    "notes": null
+  },
+  {
+    "ingredient": "sugar",
+    "language": "ru",
+    "name": "Сахар",
+    "notes": null
+  },
+  {
+    "ingredient": "cumin",
+    "language": "hy",
+    "name": "Զիրա (քեմոն)",
+    "notes": null
+  },
+  {
+    "ingredient": "cumin",
+    "language": "ru",
+    "name": "Зира (кумин)",
+    "notes": null
+  },
+  {
+    "ingredient": "paprika",
+    "language": "hy",
+    "name": "Պապրիկա (աղացած)",
+    "notes": null
+  },
+  {
+    "ingredient": "paprika",
+    "language": "ru",
+    "name": "Паприка молотая",
+    "notes": null
+  },
+  {
+    "ingredient": "salt",
+    "language": "hy",
+    "name": "Աղ",
+    "notes": null
+  },
+  {
+    "ingredient": "salt",
+    "language": "ru",
+    "name": "Соль",
+    "notes": null
+  },
+  {
+    "ingredient": "black_pepper",
+    "language": "hy",
+    "name": "Սև պղպեղ (աղացած)",
+    "notes": null
+  },
+  {
+    "ingredient": "black_pepper",
+    "language": "ru",
+    "name": "Перец чёрный молотый",
+    "notes": null
+  },
+  {
+    "ingredient": "egg",
+    "language": "hy",
+    "name": "Ձու",
+    "notes": null
+  },
+  {
+    "ingredient": "egg",
+    "language": "ru",
+    "name": "Яйца куриные",
+    "notes": null
+  },
+  {
+    "ingredient": "parsley",
+    "language": "hy",
+    "name": "Մաղադանոս",
+    "notes": null
+  },
+  {
+    "ingredient": "parsley",
+    "language": "ru",
+    "name": "Петрушка",
+    "notes": null
+  },
+  {
+    "ingredient": "feta_cheese",
+    "language": "hy",
+    "name": "Ֆետա պանիր",
+    "notes": null
+  },
+  {
+    "ingredient": "feta_cheese",
+    "language": "ru",
+    "name": "Сыр фета",
+    "notes": null
+  },
+  {
+    "ingredient": "greek_yogurt",
+    "language": "hy",
+    "name": "Հունական յոգուրտ",
+    "notes": null
+  },
+  {
+    "ingredient": "greek_yogurt",
+    "language": "ru",
+    "name": "Греческий йогурт",
+    "notes": null
+  },
+  {
+    "ingredient": "vinegar",
+    "language": "hy",
+    "name": "Քացախ",
+    "notes": null
+  },
+  {
+    "ingredient": "vinegar",
+    "language": "ru",
+    "name": "Уксус столовый",
+    "notes": null
+  },
+  {
+    "ingredient": "butter",
+    "language": "hy",
+    "name": "Կարագ",
+    "notes": null
+  },
+  {
+    "ingredient": "butter",
+    "language": "ru",
+    "name": "Масло сливочное 82%",
+    "notes": null
+  },
+  {
+    "ingredient": "chili_flakes",
+    "language": "hy",
+    "name": "Կարմիր պղպեղի փաթիլներ",
+    "notes": null
+  },
+  {
+    "ingredient": "chili_flakes",
+    "language": "ru",
+    "name": "Перец чили хлопья",
+    "notes": null
+  },
+  {
+    "ingredient": "dill",
+    "language": "hy",
+    "name": "Սամիթ",
+    "notes": null
+  },
+  {
+    "ingredient": "dill",
+    "language": "ru",
+    "name": "Укроп",
+    "notes": null
+  },
+  {
+    "ingredient": "toast_bread",
+    "language": "hy",
+    "name": "Տոստի հաց",
+    "notes": null
+  },
+  {
+    "ingredient": "toast_bread",
+    "language": "ru",
+    "name": "Хлеб для тостов",
+    "notes": null
+  },
+  {
+    "ingredient": "milk",
+    "language": "hy",
+    "name": "Կաթ",
+    "notes": null
+  },
+  {
+    "ingredient": "milk",
+    "language": "ru",
+    "name": "Молоко 3,2%",
+    "notes": null
+  },
+  {
+    "ingredient": "cinnamon",
+    "language": "hy",
+    "name": "Դարչին (աղացած)",
+    "notes": null
+  },
+  {
+    "ingredient": "cinnamon",
+    "language": "ru",
+    "name": "Корица молотая",
+    "notes": null
+  },
+  {
+    "ingredient": "vanilla",
+    "language": "hy",
+    "name": "Վանիլին",
+    "notes": null
+  },
+  {
+    "ingredient": "vanilla",
+    "language": "ru",
+    "name": "Ванильный сахар / ванилин",
+    "notes": null
+  },
+  {
+    "ingredient": "honey",
+    "language": "hy",
+    "name": "Մեղր",
+    "notes": null
+  },
+  {
+    "ingredient": "honey",
+    "language": "ru",
+    "name": "Мёд",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_oil",
+    "language": "hy",
+    "name": "Արևածաղկի ձեթ",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_oil",
+    "language": "ru",
+    "name": "Масло подсолнечное рафинированное",
+    "notes": null
+  },
+  {
+    "ingredient": "kalbas",
+    "language": "hy",
+    "name": "Եփած երշիկ",
+    "notes": "کالباس حلال رو تو مغازه‌های ترکی/عربی/ایرانی پیدا می‌کنی"
+  },
+  {
+    "ingredient": "kalbas",
+    "language": "ru",
+    "name": "Колбаса варёная (докторская)",
+    "notes": "کالباس حلال رو تو مغازه‌های ترکی/عربی/ایرانی پیدا می‌کنی"
+  },
+  {
+    "ingredient": "turmeric",
+    "language": "hy",
+    "name": "Քրքում",
+    "notes": null
+  },
+  {
+    "ingredient": "turmeric",
+    "language": "ru",
+    "name": "Куркума молотая",
+    "notes": null
+  },
+  {
+    "ingredient": "carrot",
+    "language": "hy",
+    "name": "Գազար",
+    "notes": null
+  },
+  {
+    "ingredient": "carrot",
+    "language": "ru",
+    "name": "Морковь",
+    "notes": null
+  },
+  {
+    "ingredient": "green_onion",
+    "language": "hy",
+    "name": "Կանաչ սոխ",
+    "notes": null
+  },
+  {
+    "ingredient": "green_onion",
+    "language": "ru",
+    "name": "Зелёный лук",
+    "notes": null
+  },
+  {
+    "ingredient": "mozzarella",
+    "language": "hy",
+    "name": "Մոցարելլա",
+    "notes": null
+  },
+  {
+    "ingredient": "mozzarella",
+    "language": "ru",
+    "name": "Сыр моцарелла",
+    "notes": null
+  },
+  {
+    "ingredient": "potato",
+    "language": "hy",
+    "name": "Կարտոֆիլ",
+    "notes": null
+  },
+  {
+    "ingredient": "potato",
+    "language": "ru",
+    "name": "Картофель",
+    "notes": null
+  },
+  {
+    "ingredient": "lavash_bread",
+    "language": "hy",
+    "name": "Լավաշ",
+    "notes": null
+  },
+  {
+    "ingredient": "lavash_bread",
+    "language": "ru",
+    "name": "Лаваш армянский",
+    "notes": null
+  },
+  {
+    "ingredient": "spinach",
+    "language": "hy",
+    "name": "Սպանախ",
+    "notes": null
+  },
+  {
+    "ingredient": "spinach",
+    "language": "ru",
+    "name": "Шпинат",
+    "notes": null
+  },
+  {
+    "ingredient": "beef_mince",
+    "language": "hy",
+    "name": "Տավարի աղացած միս",
+    "notes": null
+  },
+  {
+    "ingredient": "beef_mince",
+    "language": "ru",
+    "name": "Фарш говяжий",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon",
+    "language": "hy",
+    "name": "Կիտրոն",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon",
+    "language": "ru",
+    "name": "Лимоны",
+    "notes": null
+  },
+  {
+    "ingredient": "lamb_stew_meat",
+    "language": "hy",
+    "name": "Ոչխարի միս (ռագուի)",
+    "notes": null
+  },
+  {
+    "ingredient": "lamb_stew_meat",
+    "language": "ru",
+    "name": "Баранина для тушения (мякоть)",
+    "notes": null
+  },
+  {
+    "ingredient": "kidney_bean",
+    "language": "hy",
+    "name": "Կարմիր լոբի",
+    "notes": null
+  },
+  {
+    "ingredient": "kidney_bean",
+    "language": "ru",
+    "name": "Фасоль красная (сухая)",
+    "notes": null
+  },
+  {
+    "ingredient": "ghormeh_sabzi_herbs",
+    "language": "hy",
+    "name": "Չորացրած կանաչի (Ղորմե սաբզի)",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه؛ جایگزین: جعفری، تره و شنبلیله‌ی تازه"
+  },
+  {
+    "ingredient": "ghormeh_sabzi_herbs",
+    "language": "ru",
+    "name": "Сушёная зелень для гормэ сабзи",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه؛ جایگزین: جعفری، تره و شنبلیله‌ی تازه"
+  },
+  {
+    "ingredient": "dried_lime",
+    "language": "hy",
+    "name": "Չորացրած լայմ",
+    "notes": "تو بازارهای میوه‌ی خشک (مثل GUM مارکت) پیدا می‌شه"
+  },
+  {
+    "ingredient": "dried_lime",
+    "language": "ru",
+    "name": "Сушёный лайм",
+    "notes": "تو بازارهای میوه‌ی خشک (مثل GUM مارکت) پیدا می‌شه"
+  },
+  {
+    "ingredient": "water",
+    "language": "hy",
+    "name": "Ջուր",
+    "notes": null
+  },
+  {
+    "ingredient": "water",
+    "language": "ru",
+    "name": "Вода питьевая",
+    "notes": null
+  },
+  {
+    "ingredient": "basmati_rice",
+    "language": "hy",
+    "name": "Բասմատի բրինձ",
+    "notes": "برنج ایرانی (طارم/هاشمی) رو تو مغازه‌های ایرانی پیدا می‌کنی"
+  },
+  {
+    "ingredient": "basmati_rice",
+    "language": "ru",
+    "name": "Рис басмати",
+    "notes": "برنج ایرانی (طارم/هاشمی) رو تو مغازه‌های ایرانی پیدا می‌کنی"
+  },
+  {
+    "ingredient": "chicken_thigh",
+    "language": "hy",
+    "name": "Հավի ազդր (առանց ոսկորի)",
+    "notes": null
+  },
+  {
+    "ingredient": "chicken_thigh",
+    "language": "ru",
+    "name": "Бедро куриное (без кости)",
+    "notes": null
+  },
+  {
+    "ingredient": "saffron",
+    "language": "hy",
+    "name": "Զաֆրան",
+    "notes": "زعفران ایرانی رو از مغازه‌ی ایرانی بخر؛ اصل‌تر و به‌صرفه‌تره"
+  },
+  {
+    "ingredient": "saffron",
+    "language": "ru",
+    "name": "Шафран",
+    "notes": "زعفران ایرانی رو از مغازه‌ی ایرانی بخر؛ اصل‌تر و به‌صرفه‌تره"
+  },
+  {
+    "ingredient": "barberry",
+    "language": "hy",
+    "name": "Չորացրած ծորենի",
+    "notes": "تو بازارهای میوه‌ی خشک پیدا می‌شه"
+  },
+  {
+    "ingredient": "barberry",
+    "language": "ru",
+    "name": "Барбарис сушёный",
+    "notes": "تو بازارهای میوه‌ی خشک پیدا می‌شه"
+  },
+  {
+    "ingredient": "soy_mince",
+    "language": "hy",
+    "name": "Սոյայի աղացած միս",
+    "notes": "سویای ایرانی تو مغازه‌های ایرانی هم هست"
+  },
+  {
+    "ingredient": "soy_mince",
+    "language": "ru",
+    "name": "Соевый фарш",
+    "notes": "سویای ایرانی تو مغازه‌های ایرانی هم هست"
+  },
+  {
+    "ingredient": "green_bean",
+    "language": "hy",
+    "name": "Կանաչ լոբի",
+    "notes": null
+  },
+  {
+    "ingredient": "green_bean",
+    "language": "ru",
+    "name": "Фасоль стручковая",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_corn",
+    "language": "hy",
+    "name": "Եգիպտացորենի պահածո",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_corn",
+    "language": "ru",
+    "name": "Кукуруза консервированная",
+    "notes": null
+  },
+  {
+    "ingredient": "oregano",
+    "language": "hy",
+    "name": "Օրեգանո (չորացրած)",
+    "notes": null
+  },
+  {
+    "ingredient": "oregano",
+    "language": "ru",
+    "name": "Орегано сушёный",
+    "notes": null
+  },
+  {
+    "ingredient": "arborio_rice",
+    "language": "hy",
+    "name": "Արբորիո բրինձ",
+    "notes": null
+  },
+  {
+    "ingredient": "arborio_rice",
+    "language": "ru",
+    "name": "Рис арборио",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_stock",
+    "language": "hy",
+    "name": "Բանջարեղենի արգանակ (խորանարդիկ)",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_stock",
+    "language": "ru",
+    "name": "Бульон овощной (кубики)",
+    "notes": null
+  },
+  {
+    "ingredient": "frozen_peas",
+    "language": "hy",
+    "name": "Սառեցված կանաչ ոլոռ",
+    "notes": null
+  },
+  {
+    "ingredient": "frozen_peas",
+    "language": "ru",
+    "name": "Горошек зелёный замороженный",
+    "notes": null
+  },
+  {
+    "ingredient": "ginger",
+    "language": "hy",
+    "name": "Կոճապղպեղ (թարմ)",
+    "notes": null
+  },
+  {
+    "ingredient": "ginger",
+    "language": "ru",
+    "name": "Имбирь свежий",
+    "notes": null
+  },
+  {
+    "ingredient": "curry_powder",
+    "language": "hy",
+    "name": "Կարրի (համեմունք)",
+    "notes": null
+  },
+  {
+    "ingredient": "curry_powder",
+    "language": "ru",
+    "name": "Карри (приправа)",
+    "notes": null
+  },
+  {
+    "ingredient": "coconut_milk",
+    "language": "hy",
+    "name": "Կոկոսի կաթ",
+    "notes": null
+  },
+  {
+    "ingredient": "coconut_milk",
+    "language": "ru",
+    "name": "Кокосовое молоко",
+    "notes": null
+  },
+  {
+    "ingredient": "plain_yogurt",
+    "language": "hy",
+    "name": "Մածուն",
+    "notes": "ماتسون ماست غلیظ و کمی ترشیه؛ برای غذا عالیه"
+  },
+  {
+    "ingredient": "plain_yogurt",
+    "language": "ru",
+    "name": "Мацун (йогурт натуральный)",
+    "notes": "ماتسون ماست غلیظ و کمی ترشیه؛ برای غذا عالیه"
+  },
+  {
+    "ingredient": "green_lentil",
+    "language": "hy",
+    "name": "Ոսպ (կանաչ)",
+    "notes": null
+  },
+  {
+    "ingredient": "green_lentil",
+    "language": "ru",
+    "name": "Чечевица зелёная",
+    "notes": null
+  },
+  {
+    "ingredient": "yellow_split_pea",
+    "language": "hy",
+    "name": "Դեղին ոլոռ (կիսված)",
+    "notes": null
+  },
+  {
+    "ingredient": "yellow_split_pea",
+    "language": "ru",
+    "name": "Горох жёлтый колотый",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon_juice",
+    "language": "hy",
+    "name": "Կիտրոնի հյութ",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon_juice",
+    "language": "ru",
+    "name": "Лимонный сок",
+    "notes": null
+  },
+  {
+    "ingredient": "caper",
+    "language": "hy",
+    "name": "Կապար",
+    "notes": null
+  },
+  {
+    "ingredient": "caper",
+    "language": "ru",
+    "name": "Каперсы",
+    "notes": null
+  },
+  {
+    "ingredient": "cucumber",
+    "language": "hy",
+    "name": "Վարունգ",
+    "notes": null
+  },
+  {
+    "ingredient": "cucumber",
+    "language": "ru",
+    "name": "Огурцы",
+    "notes": null
+  },
+  {
+    "ingredient": "eggplant",
+    "language": "hy",
+    "name": "Սմբուկ",
+    "notes": null
+  },
+  {
+    "ingredient": "eggplant",
+    "language": "ru",
+    "name": "Баклажаны",
+    "notes": null
+  },
+  {
+    "ingredient": "zucchini",
+    "language": "hy",
+    "name": "Դդմիկ",
+    "notes": null
+  },
+  {
+    "ingredient": "zucchini",
+    "language": "ru",
+    "name": "Кабачки (цукини)",
+    "notes": null
+  },
+  {
+    "ingredient": "dried_thyme",
+    "language": "hy",
+    "name": "Ուրց (չորացրած)",
+    "notes": null
+  },
+  {
+    "ingredient": "dried_thyme",
+    "language": "ru",
+    "name": "Тимьян сушёный (чабрец)",
+    "notes": null
+  },
+  {
+    "ingredient": "basil",
+    "language": "hy",
+    "name": "Ռեհան",
+    "notes": null
+  },
+  {
+    "ingredient": "basil",
+    "language": "ru",
+    "name": "Базилик",
+    "notes": null
+  },
+  {
+    "ingredient": "spaghetti",
+    "language": "hy",
+    "name": "Սպագետի",
+    "notes": null
+  },
+  {
+    "ingredient": "spaghetti",
+    "language": "ru",
+    "name": "Спагетти",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tomato",
+    "language": "hy",
+    "name": "Լոլիկի պահածո (կտրատած)",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tomato",
+    "language": "ru",
+    "name": "Томаты резаные в собственном соку",
+    "notes": null
+  },
+  {
+    "ingredient": "parmesan",
+    "language": "hy",
+    "name": "Պարմեզան պանիր",
+    "notes": null
+  },
+  {
+    "ingredient": "parmesan",
+    "language": "ru",
+    "name": "Сыр пармезан",
+    "notes": null
+  },
+  {
+    "ingredient": "fettuccine",
+    "language": "hy",
+    "name": "Ֆետուչինի",
+    "notes": null
+  },
+  {
+    "ingredient": "fettuccine",
+    "language": "ru",
+    "name": "Феттуччине",
+    "notes": null
+  },
+  {
+    "ingredient": "mushroom",
+    "language": "hy",
+    "name": "Շամպինիոն սունկ",
+    "notes": null
+  },
+  {
+    "ingredient": "mushroom",
+    "language": "ru",
+    "name": "Шампиньоны",
+    "notes": null
+  },
+  {
+    "ingredient": "cream_cheese",
+    "language": "hy",
+    "name": "Սերուցքային պանիր",
+    "notes": null
+  },
+  {
+    "ingredient": "cream_cheese",
+    "language": "ru",
+    "name": "Сливочный сыр (крем-сыр)",
+    "notes": null
+  },
+  {
+    "ingredient": "penne",
+    "language": "hy",
+    "name": "Պեննե",
+    "notes": null
+  },
+  {
+    "ingredient": "penne",
+    "language": "ru",
+    "name": "Пенне",
+    "notes": null
+  },
+  {
+    "ingredient": "red_lentil",
+    "language": "hy",
+    "name": "Կարմիր ոսպ",
+    "notes": null
+  },
+  {
+    "ingredient": "red_lentil",
+    "language": "ru",
+    "name": "Чечевица красная",
+    "notes": null
+  },
+  {
+    "ingredient": "egg_noodle",
+    "language": "hy",
+    "name": "Ձվով արիշտա",
+    "notes": null
+  },
+  {
+    "ingredient": "egg_noodle",
+    "language": "ru",
+    "name": "Лапша яичная",
+    "notes": null
+  },
+  {
+    "ingredient": "cabbage",
+    "language": "hy",
+    "name": "Կաղամբ",
+    "notes": null
+  },
+  {
+    "ingredient": "cabbage",
+    "language": "ru",
+    "name": "Капуста белокочанная",
+    "notes": null
+  },
+  {
+    "ingredient": "soy_sauce",
+    "language": "hy",
+    "name": "Սոյայի սոուս",
+    "notes": null
+  },
+  {
+    "ingredient": "soy_sauce",
+    "language": "ru",
+    "name": "Соевый соус",
+    "notes": null
+  },
+  {
+    "ingredient": "sesame_oil",
+    "language": "hy",
+    "name": "Քնջութի յուղ",
+    "notes": null
+  },
+  {
+    "ingredient": "sesame_oil",
+    "language": "ru",
+    "name": "Масло кунжутное",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_kidney_bean",
+    "language": "hy",
+    "name": "Կարմիր լոբու պահածո",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_kidney_bean",
+    "language": "ru",
+    "name": "Фасоль красная консервированная",
+    "notes": null
+  },
+  {
+    "ingredient": "tortilla",
+    "language": "hy",
+    "name": "Տորտիլա",
+    "notes": null
+  },
+  {
+    "ingredient": "tortilla",
+    "language": "ru",
+    "name": "Тортилья пшеничная",
+    "notes": null
+  },
+  {
+    "ingredient": "cilantro",
+    "language": "hy",
+    "name": "Համեմ",
+    "notes": null
+  },
+  {
+    "ingredient": "cilantro",
+    "language": "ru",
+    "name": "Кинза",
+    "notes": null
+  },
+  {
+    "ingredient": "chicken_breast",
+    "language": "hy",
+    "name": "Հավի կրծքամիս",
+    "notes": null
+  },
+  {
+    "ingredient": "chicken_breast",
+    "language": "ru",
+    "name": "Куриное филе (грудка)",
+    "notes": null
+  },
+  {
+    "ingredient": "rolled_oats",
+    "language": "hy",
+    "name": "Վարսակի փաթիլներ",
+    "notes": null
+  },
+  {
+    "ingredient": "rolled_oats",
+    "language": "ru",
+    "name": "Овсяные хлопья (геркулес)",
+    "notes": null
+  },
+  {
+    "ingredient": "flour",
+    "language": "hy",
+    "name": "Ալյուր (բարձր տեսակ)",
+    "notes": null
+  },
+  {
+    "ingredient": "flour",
+    "language": "ru",
+    "name": "Мука пшеничная в/с",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_white_bean",
+    "language": "hy",
+    "name": "Սպիտակ լոբու պահածո",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_white_bean",
+    "language": "ru",
+    "name": "Фасоль белая консервированная",
+    "notes": null
+  },
+  {
+    "ingredient": "tahini",
+    "language": "hy",
+    "name": "Թահինի (քնջութի մածուկ)",
+    "notes": "ارده‌ی ایرانی شیرین‌تره؛ تو مغازه‌های ایرانی هم هست"
+  },
+  {
+    "ingredient": "tahini",
+    "language": "ru",
+    "name": "Тахини (кунжутная паста)",
+    "notes": "ارده‌ی ایرانی شیرین‌تره؛ تو مغازه‌های ایرانی هم هست"
+  },
+  {
+    "ingredient": "date_syrup",
+    "language": "hy",
+    "name": "Արմավի օշարակ",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "date_syrup",
+    "language": "ru",
+    "name": "Финиковый сироп",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "halva",
+    "language": "hy",
+    "name": "Թահինի հալվա",
+    "notes": "حلوای ارده‌ی ترکی/عربی تقریباً همونه"
+  },
+  {
+    "ingredient": "halva",
+    "language": "ru",
+    "name": "Халва тахинная (кунжутная)",
+    "notes": "حلوای ارده‌ی ترکی/عربی تقریباً همونه"
+  },
+  {
+    "ingredient": "banana",
+    "language": "hy",
+    "name": "Բանան",
+    "notes": null
+  },
+  {
+    "ingredient": "banana",
+    "language": "ru",
+    "name": "Бананы",
+    "notes": null
+  },
+  {
+    "ingredient": "apple",
+    "language": "hy",
+    "name": "Խնձոր",
+    "notes": null
+  },
+  {
+    "ingredient": "apple",
+    "language": "ru",
+    "name": "Яблоки",
+    "notes": null
+  },
+  {
+    "ingredient": "puff_pastry",
+    "language": "hy",
+    "name": "Շերտավոր խմոր",
+    "notes": null
+  },
+  {
+    "ingredient": "puff_pastry",
+    "language": "ru",
+    "name": "Слоёное тесто",
+    "notes": null
+  },
+  {
+    "ingredient": "digestive_biscuit",
+    "language": "hy",
+    "name": "Դայջեստիվ թխվածքաբլիթ",
+    "notes": "جایگزین: بیسکویت «Юбилейное»"
+  },
+  {
+    "ingredient": "digestive_biscuit",
+    "language": "ru",
+    "name": "Печенье Digestive",
+    "notes": "جایگزین: بیسکویت «Юбилейное»"
+  },
+  {
+    "ingredient": "heavy_cream",
+    "language": "hy",
+    "name": "Սերուցք 33%",
+    "notes": null
+  },
+  {
+    "ingredient": "heavy_cream",
+    "language": "ru",
+    "name": "Сливки 33%",
+    "notes": null
+  },
+  {
+    "ingredient": "powdered_sugar",
+    "language": "hy",
+    "name": "Շաքարափոշի",
+    "notes": null
+  },
+  {
+    "ingredient": "powdered_sugar",
+    "language": "ru",
+    "name": "Сахарная пудра",
+    "notes": null
+  },
+  {
+    "ingredient": "walnut",
+    "language": "hy",
+    "name": "Ընկույզ (մաքրած)",
+    "notes": null
+  },
+  {
+    "ingredient": "walnut",
+    "language": "ru",
+    "name": "Грецкие орехи (очищенные)",
+    "notes": null
+  },
+  {
+    "ingredient": "golpar",
+    "language": "hy",
+    "name": "Գոլփար (իրանական համեմունք)",
+    "notes": "تو مغازه‌های ایرانی ایروان پیدا می‌شه"
+  },
+  {
+    "ingredient": "golpar",
+    "language": "ru",
+    "name": "Гольпар (персидская специя)",
+    "notes": "تو مغازه‌های ایرانی ایروان پیدا می‌شه"
+  },
+  {
+    "ingredient": "dried_mint",
+    "language": "hy",
+    "name": "Չորացրած անանուխ",
+    "notes": null
+  },
+  {
+    "ingredient": "dried_mint",
+    "language": "ru",
+    "name": "Мята сушёная",
+    "notes": null
+  },
+  {
+    "ingredient": "chia_seed",
+    "language": "hy",
+    "name": "Չիայի սերմեր",
+    "notes": null
+  },
+  {
+    "ingredient": "chia_seed",
+    "language": "ru",
+    "name": "Семена чиа",
+    "notes": null
+  },
+  {
+    "ingredient": "red_onion",
+    "language": "hy",
+    "name": "Կարմիր սոխ",
+    "notes": null
+  },
+  {
+    "ingredient": "red_onion",
+    "language": "ru",
+    "name": "Лук красный",
+    "notes": null
+  },
+  {
+    "ingredient": "black_olive",
+    "language": "hy",
+    "name": "Սև ձիթապտուղ",
+    "notes": null
+  },
+  {
+    "ingredient": "black_olive",
+    "language": "ru",
+    "name": "Маслины чёрные",
+    "notes": null
+  },
+  {
+    "ingredient": "breadcrumbs",
+    "language": "hy",
+    "name": "Հացի փշրանք",
+    "notes": null
+  },
+  {
+    "ingredient": "breadcrumbs",
+    "language": "ru",
+    "name": "Панировочные сухари",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tuna",
+    "language": "hy",
+    "name": "Թյունոսի պահածո",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tuna",
+    "language": "ru",
+    "name": "Тунец консервированный",
+    "notes": null
+  },
+  {
+    "ingredient": "mayonnaise",
+    "language": "hy",
+    "name": "Մայոնեզ",
+    "notes": null
+  },
+  {
+    "ingredient": "mayonnaise",
+    "language": "ru",
+    "name": "Майонез",
+    "notes": null
+  },
+  {
+    "ingredient": "pickle",
+    "language": "hy",
+    "name": "Թթու վարունգ",
+    "notes": null
+  },
+  {
+    "ingredient": "pickle",
+    "language": "ru",
+    "name": "Огурцы маринованные",
+    "notes": null
+  },
+  {
+    "ingredient": "raisin",
+    "language": "hy",
+    "name": "Չամիչ",
+    "notes": null
+  },
+  {
+    "ingredient": "raisin",
+    "language": "ru",
+    "name": "Изюм",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_petal",
+    "language": "hy",
+    "name": "Չորացրած վարդի թերթիկներ",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "rose_petal",
+    "language": "ru",
+    "name": "Лепестки розы сушёные",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "lettuce",
+    "language": "hy",
+    "name": "Հազար (սալաթ)",
+    "notes": null
+  },
+  {
+    "ingredient": "lettuce",
+    "language": "ru",
+    "name": "Салат латук",
+    "notes": null
+  },
+  {
+    "ingredient": "sumac",
+    "language": "hy",
+    "name": "Սումախ",
+    "notes": null
+  },
+  {
+    "ingredient": "sumac",
+    "language": "ru",
+    "name": "Сумах",
+    "notes": null
+  },
+  {
+    "ingredient": "cherry_tomato",
+    "language": "hy",
+    "name": "Չերի լոլիկ",
+    "notes": null
+  },
+  {
+    "ingredient": "cherry_tomato",
+    "language": "ru",
+    "name": "Помидоры черри",
+    "notes": null
+  },
+  {
+    "ingredient": "doogh",
+    "language": "hy",
+    "name": "Թան",
+    "notes": "تان ارمنی تقریباً همون دوغه"
+  },
+  {
+    "ingredient": "doogh",
+    "language": "ru",
+    "name": "Тан (кисломолочный напиток)",
+    "notes": "تان ارمنی تقریباً همون دوغه"
+  },
+  {
+    "ingredient": "lighvan_cheese",
+    "language": "hy",
+    "name": "Չանախ պանիր (ոչխարի)",
+    "notes": "پنیر چاناخ نزدیک‌ترین مزه رو به لیقوان داره"
+  },
+  {
+    "ingredient": "lighvan_cheese",
+    "language": "ru",
+    "name": "Сыр чанах (рассольный овечий)",
+    "notes": "پنیر چاناخ نزدیک‌ترین مزه رو به لیقوان داره"
+  },
+  {
+    "ingredient": "chickpea",
+    "language": "hy",
+    "name": "Սիսեռ",
+    "notes": null
+  },
+  {
+    "ingredient": "chickpea",
+    "language": "ru",
+    "name": "Нут",
+    "notes": null
+  },
+  {
+    "ingredient": "kashk",
+    "language": "hy",
+    "name": "Չորթան (քաշք)",
+    "notes": "چورتان خشکه؛ باید تو آب گرم حلش کنی"
+  },
+  {
+    "ingredient": "kashk",
+    "language": "ru",
+    "name": "Кашк (сушёный йогурт, чортан)",
+    "notes": "چورتان خشکه؛ باید تو آب گرم حلش کنی"
+  },
+  {
+    "ingredient": "pistachio",
+    "language": "hy",
+    "name": "Պիստակ",
+    "notes": null
+  },
+  {
+    "ingredient": "pistachio",
+    "language": "ru",
+    "name": "Фисташки",
+    "notes": null
+  },
+  {
+    "ingredient": "date",
+    "language": "hy",
+    "name": "Արմավ",
+    "notes": null
+  },
+  {
+    "ingredient": "date",
+    "language": "ru",
+    "name": "Финики",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_water",
+    "language": "hy",
+    "name": "Վարդաջուր",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_water",
+    "language": "ru",
+    "name": "Розовая вода",
+    "notes": null
+  },
+  {
+    "ingredient": "sour_cream",
+    "language": "hy",
+    "name": "Թթվասեր",
+    "notes": null
+  },
+  {
+    "ingredient": "sour_cream",
+    "language": "ru",
+    "name": "Сметана 20%",
+    "notes": null
+  },
+  {
+    "ingredient": "cottage_cheese",
+    "language": "hy",
+    "name": "Կաթնաշոռ (հատիկավոր)",
+    "notes": null
+  },
+  {
+    "ingredient": "cottage_cheese",
+    "language": "ru",
+    "name": "Творог зернёный",
+    "notes": null
+  },
+  {
+    "ingredient": "orange",
+    "language": "hy",
+    "name": "Նարինջ",
+    "notes": null
+  },
+  {
+    "ingredient": "orange",
+    "language": "ru",
+    "name": "Апельсины",
+    "notes": null
+  },
+  {
+    "ingredient": "mint",
+    "language": "hy",
+    "name": "Անանուխ (թարմ)",
+    "notes": null
+  },
+  {
+    "ingredient": "mint",
+    "language": "ru",
+    "name": "Мята свежая",
+    "notes": null
+  },
+  {
+    "ingredient": "cardamom",
+    "language": "hy",
+    "name": "Հիլ",
+    "notes": null
+  },
+  {
+    "ingredient": "cardamom",
+    "language": "ru",
+    "name": "Кардамон",
+    "notes": null
+  }
+]

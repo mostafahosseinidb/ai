@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { ApiError, isoDate, notFound, parseJson, withHousehold } from "@/lib/server/api";
-import { defaultServings, planEnd, syncPrepTasks, violationsIfChanged } from "@/lib/server/plans";
+import { defaultServings, planEnd, violationsIfChanged } from "@/lib/server/plans";
+import { afterPlanChange } from "@/lib/server/plan-sync";
 import { dbDateToISO, isoToDbDate } from "@/lib/i18n/jalali";
 import { SLOTS } from "@/lib/seed-schema";
 
@@ -78,6 +79,6 @@ export const POST = withHousehold<{ id: string }>(async (req, { household }, { i
       servingsByMember: await defaultServings(household.id),
     },
   });
-  await syncPrepTasks(plan.id);
+  await afterPlanChange(plan.id);
   return { meal };
 });

@@ -2,7 +2,9 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { ApiError, isoDate, parseJson, withHousehold } from "@/lib/server/api";
 import { ownedMeal, updateMealLogged } from "@/lib/server/meals";
-import { planEnd, syncPrepTasks, violationsIfChanged } from "@/lib/server/plans";
+import { planEnd, violationsIfChanged } from "@/lib/server/plans";
+import { afterPlanChange } from "@/lib/server/plan-sync";
+import { deductForMeal, restoreForMeal } from "@/lib/server/pantry";
 import { dbDateToISO, isoToDbDate } from "@/lib/i18n/jalali";
 import { SLOTS } from "@/lib/seed-schema";
 
@@ -43,7 +45,12 @@ export const PATCH = withHousehold<{ id: string }>(async (req, { household }, { 
       doneAt: input.status === "done" ? new Date() : null,
       eatenOutText: input.status === "eaten_out" ? input.eaten_out_text?.trim() || null : null,
     });
-    await syncPrepTasks(meal.mealPlanId);
+    // pantry bookkeeping (spec §5.5): ticking takes ingredients out, un-ticking puts them back
+    if (meal.status === "done" && input.status !== "done")
+      await restoreForMeal(household.id, meal.id);
+    if (meal.status !== "done" && input.status === "done" && household.autoDeductPantry)
+      await deductForMeal(household.id, meal.id);
+    await afterPlanChange(meal.mealPlanId);
     return res;
   }
 
@@ -79,7 +86,7 @@ export const PATCH = withHousehold<{ id: string }>(async (req, { household }, { 
       date: isoToDbDate(input.date),
       slot: input.slot,
     });
-    await syncPrepTasks(meal.mealPlanId);
+    await afterPlanChange(meal.mealPlanId);
     return { ...res, swappedWith: occupant?.id ?? null };
   }
 
@@ -109,7 +116,7 @@ export const PATCH = withHousehold<{ id: string }>(async (req, { household }, { 
       status: "planned",
       doneAt: null,
     });
-    await syncPrepTasks(meal.mealPlanId);
+    await afterPlanChange(meal.mealPlanId);
     return res;
   }
 
@@ -123,6 +130,6 @@ export const PATCH = withHousehold<{ id: string }>(async (req, { household }, { 
 export const DELETE = withHousehold<{ id: string }>(async (_req, { household }, { id }) => {
   const meal = await ownedMeal(household.id, id);
   const res = await updateMealLogged(household.id, meal.id, { deletedAt: new Date() });
-  await syncPrepTasks(meal.mealPlanId);
+  await afterPlanChange(meal.mealPlanId);
   return res;
 });

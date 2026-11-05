@@ -246,3 +246,51 @@ describe("prep tasks (acceptance #8 at domain level)", () => {
     ).toEqual([]);
   });
 });
+
+describe("autofill uses what is about to expire (spec §5.3 rule 6)", () => {
+  it("an opened jar of eggplant caviar expiring in 3 days ends up in the plan before it expires", () => {
+    const pantry = [
+      {
+        ingredientId: null,
+        ingredientKey: "eggplant_caviar",
+        expiry: addDaysISO(START, 2),
+        label: "خاویار بادمجان",
+      },
+    ];
+    // only a recipe that uses it can satisfy this; check the seed has one
+    const users = facts.filter((f) => f.ingredientKeys.includes("eggplant_caviar"));
+    if (users.length === 0) return;
+    for (const seed of [1, 2, 3, 4, 5]) {
+      const c = ctx([plain], { pantry });
+      const plan = fill(c, 8, ["breakfast", "lunch", "dinner", "snack"], seed);
+      expect(
+        plan.some(
+          (m) =>
+            m.date <= addDaysISO(START, 2) &&
+            factsById.get(m.recipeId!)!.ingredientKeys.includes("eggplant_caviar"),
+        ),
+      ).toBe(true);
+    }
+  });
+
+  it("milk about to go off gets used", () => {
+    const pantry = [
+      { ingredientId: null, ingredientKey: "milk", expiry: addDaysISO(START, 1), label: "شیر" },
+    ];
+    for (const seed of [1, 2, 3]) {
+      const plan = fill(
+        ctx([plain], { pantry }),
+        8,
+        ["breakfast", "lunch", "dinner", "snack"],
+        seed,
+      );
+      expect(
+        plan.some(
+          (m) =>
+            m.date <= addDaysISO(START, 1) &&
+            factsById.get(m.recipeId!)!.ingredientKeys.includes("milk"),
+        ),
+      ).toBe(true);
+    }
+  });
+});

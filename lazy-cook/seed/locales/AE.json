@@ -1,0 +1,1430 @@
+[
+  {
+    "ingredient": "olive_oil",
+    "language": "ar",
+    "name": "زيت زيتون",
+    "notes": null
+  },
+  {
+    "ingredient": "olive_oil",
+    "language": "en",
+    "name": "Extra virgin olive oil",
+    "notes": null
+  },
+  {
+    "ingredient": "onion",
+    "language": "ar",
+    "name": "بصل",
+    "notes": null
+  },
+  {
+    "ingredient": "onion",
+    "language": "en",
+    "name": "Onions",
+    "notes": null
+  },
+  {
+    "ingredient": "bell_pepper",
+    "language": "ar",
+    "name": "فلفل حلو (رومي)",
+    "notes": null
+  },
+  {
+    "ingredient": "bell_pepper",
+    "language": "en",
+    "name": "Capsicum",
+    "notes": null
+  },
+  {
+    "ingredient": "garlic",
+    "language": "ar",
+    "name": "ثوم",
+    "notes": null
+  },
+  {
+    "ingredient": "garlic",
+    "language": "en",
+    "name": "Garlic",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato",
+    "language": "ar",
+    "name": "طماطم",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato",
+    "language": "en",
+    "name": "Tomatoes",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato_paste",
+    "language": "ar",
+    "name": "معجون طماطم",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato_paste",
+    "language": "en",
+    "name": "Tomato paste",
+    "notes": null
+  },
+  {
+    "ingredient": "sugar",
+    "language": "ar",
+    "name": "سكر",
+    "notes": null
+  },
+  {
+    "ingredient": "sugar",
+    "language": "en",
+    "name": "Granulated sugar",
+    "notes": null
+  },
+  {
+    "ingredient": "cumin",
+    "language": "ar",
+    "name": "كمون مطحون",
+    "notes": null
+  },
+  {
+    "ingredient": "cumin",
+    "language": "en",
+    "name": "Ground cumin",
+    "notes": null
+  },
+  {
+    "ingredient": "paprika",
+    "language": "ar",
+    "name": "بابريكا",
+    "notes": null
+  },
+  {
+    "ingredient": "paprika",
+    "language": "en",
+    "name": "Paprika",
+    "notes": null
+  },
+  {
+    "ingredient": "salt",
+    "language": "ar",
+    "name": "ملح",
+    "notes": null
+  },
+  {
+    "ingredient": "salt",
+    "language": "en",
+    "name": "Salt",
+    "notes": null
+  },
+  {
+    "ingredient": "black_pepper",
+    "language": "ar",
+    "name": "فلفل أسود مطحون",
+    "notes": null
+  },
+  {
+    "ingredient": "black_pepper",
+    "language": "en",
+    "name": "Ground black pepper",
+    "notes": null
+  },
+  {
+    "ingredient": "egg",
+    "language": "ar",
+    "name": "بيض",
+    "notes": null
+  },
+  {
+    "ingredient": "egg",
+    "language": "en",
+    "name": "Eggs",
+    "notes": null
+  },
+  {
+    "ingredient": "parsley",
+    "language": "ar",
+    "name": "بقدونس",
+    "notes": null
+  },
+  {
+    "ingredient": "parsley",
+    "language": "en",
+    "name": "Parsley",
+    "notes": null
+  },
+  {
+    "ingredient": "feta_cheese",
+    "language": "ar",
+    "name": "جبنة فيتا",
+    "notes": null
+  },
+  {
+    "ingredient": "feta_cheese",
+    "language": "en",
+    "name": "Feta cheese",
+    "notes": null
+  },
+  {
+    "ingredient": "greek_yogurt",
+    "language": "ar",
+    "name": "زبادي يوناني",
+    "notes": null
+  },
+  {
+    "ingredient": "greek_yogurt",
+    "language": "en",
+    "name": "Greek yoghurt",
+    "notes": null
+  },
+  {
+    "ingredient": "vinegar",
+    "language": "ar",
+    "name": "خل أبيض",
+    "notes": null
+  },
+  {
+    "ingredient": "vinegar",
+    "language": "en",
+    "name": "White vinegar",
+    "notes": null
+  },
+  {
+    "ingredient": "butter",
+    "language": "ar",
+    "name": "زبدة",
+    "notes": null
+  },
+  {
+    "ingredient": "butter",
+    "language": "en",
+    "name": "Butter (unsalted)",
+    "notes": null
+  },
+  {
+    "ingredient": "chili_flakes",
+    "language": "ar",
+    "name": "شطة مجروشة (رقائق الفلفل الحار)",
+    "notes": null
+  },
+  {
+    "ingredient": "chili_flakes",
+    "language": "en",
+    "name": "Chilli flakes",
+    "notes": null
+  },
+  {
+    "ingredient": "dill",
+    "language": "ar",
+    "name": "شبت",
+    "notes": null
+  },
+  {
+    "ingredient": "dill",
+    "language": "en",
+    "name": "Dill",
+    "notes": null
+  },
+  {
+    "ingredient": "toast_bread",
+    "language": "ar",
+    "name": "خبز توست",
+    "notes": null
+  },
+  {
+    "ingredient": "toast_bread",
+    "language": "en",
+    "name": "Toast bread",
+    "notes": null
+  },
+  {
+    "ingredient": "milk",
+    "language": "ar",
+    "name": "حليب كامل الدسم",
+    "notes": null
+  },
+  {
+    "ingredient": "milk",
+    "language": "en",
+    "name": "Full fat milk",
+    "notes": null
+  },
+  {
+    "ingredient": "cinnamon",
+    "language": "ar",
+    "name": "قرفة مطحونة",
+    "notes": null
+  },
+  {
+    "ingredient": "cinnamon",
+    "language": "en",
+    "name": "Ground cinnamon",
+    "notes": null
+  },
+  {
+    "ingredient": "vanilla",
+    "language": "ar",
+    "name": "خلاصة الفانيليا",
+    "notes": null
+  },
+  {
+    "ingredient": "vanilla",
+    "language": "en",
+    "name": "Vanilla extract",
+    "notes": null
+  },
+  {
+    "ingredient": "honey",
+    "language": "ar",
+    "name": "عسل",
+    "notes": null
+  },
+  {
+    "ingredient": "honey",
+    "language": "en",
+    "name": "Honey",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_oil",
+    "language": "ar",
+    "name": "زيت نباتي (زيت دوار الشمس)",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_oil",
+    "language": "en",
+    "name": "Sunflower oil",
+    "notes": null
+  },
+  {
+    "ingredient": "kalbas",
+    "language": "ar",
+    "name": "مرتديلا لحم بقري",
+    "notes": null
+  },
+  {
+    "ingredient": "kalbas",
+    "language": "en",
+    "name": "Beef mortadella",
+    "notes": null
+  },
+  {
+    "ingredient": "turmeric",
+    "language": "ar",
+    "name": "كركم مطحون",
+    "notes": null
+  },
+  {
+    "ingredient": "turmeric",
+    "language": "en",
+    "name": "Ground turmeric",
+    "notes": null
+  },
+  {
+    "ingredient": "carrot",
+    "language": "ar",
+    "name": "جزر",
+    "notes": null
+  },
+  {
+    "ingredient": "carrot",
+    "language": "en",
+    "name": "Carrots",
+    "notes": null
+  },
+  {
+    "ingredient": "green_onion",
+    "language": "ar",
+    "name": "بصل أخضر",
+    "notes": null
+  },
+  {
+    "ingredient": "green_onion",
+    "language": "en",
+    "name": "Spring onions",
+    "notes": null
+  },
+  {
+    "ingredient": "mozzarella",
+    "language": "ar",
+    "name": "جبنة موزاريلا",
+    "notes": null
+  },
+  {
+    "ingredient": "mozzarella",
+    "language": "en",
+    "name": "Mozzarella",
+    "notes": null
+  },
+  {
+    "ingredient": "potato",
+    "language": "ar",
+    "name": "بطاطس",
+    "notes": null
+  },
+  {
+    "ingredient": "potato",
+    "language": "en",
+    "name": "Potatoes",
+    "notes": null
+  },
+  {
+    "ingredient": "lavash_bread",
+    "language": "ar",
+    "name": "خبز لواش (رقاق)",
+    "notes": null
+  },
+  {
+    "ingredient": "lavash_bread",
+    "language": "en",
+    "name": "Lavash bread",
+    "notes": null
+  },
+  {
+    "ingredient": "spinach",
+    "language": "ar",
+    "name": "سبانخ",
+    "notes": null
+  },
+  {
+    "ingredient": "spinach",
+    "language": "en",
+    "name": "Spinach",
+    "notes": null
+  },
+  {
+    "ingredient": "beef_mince",
+    "language": "ar",
+    "name": "لحم بقري مفروم",
+    "notes": null
+  },
+  {
+    "ingredient": "beef_mince",
+    "language": "en",
+    "name": "Minced beef",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon",
+    "language": "ar",
+    "name": "ليمون",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon",
+    "language": "en",
+    "name": "Lemons",
+    "notes": null
+  },
+  {
+    "ingredient": "lamb_stew_meat",
+    "language": "ar",
+    "name": "لحم غنم مكعبات",
+    "notes": null
+  },
+  {
+    "ingredient": "lamb_stew_meat",
+    "language": "en",
+    "name": "Lamb cubes",
+    "notes": null
+  },
+  {
+    "ingredient": "kidney_bean",
+    "language": "ar",
+    "name": "فاصوليا حمراء جافة",
+    "notes": null
+  },
+  {
+    "ingredient": "kidney_bean",
+    "language": "en",
+    "name": "Dried red kidney beans",
+    "notes": null
+  },
+  {
+    "ingredient": "ghormeh_sabzi_herbs",
+    "language": "ar",
+    "name": "خضار قورمة سبزي مجففة",
+    "notes": "تو سوپرمارکت‌های ایرانی دبی و شارجه هست"
+  },
+  {
+    "ingredient": "ghormeh_sabzi_herbs",
+    "language": "en",
+    "name": "Ghormeh sabzi dried herbs",
+    "notes": "تو سوپرمارکت‌های ایرانی دبی و شارجه هست"
+  },
+  {
+    "ingredient": "dried_lime",
+    "language": "ar",
+    "name": "لومي (ليمون أسود مجفف)",
+    "notes": "تو همه‌ی سوپرمارکت‌ها با اسم «لومی» هست"
+  },
+  {
+    "ingredient": "dried_lime",
+    "language": "en",
+    "name": "Dried lime (loomi)",
+    "notes": "تو همه‌ی سوپرمارکت‌ها با اسم «لومی» هست"
+  },
+  {
+    "ingredient": "water",
+    "language": "ar",
+    "name": "ماء",
+    "notes": null
+  },
+  {
+    "ingredient": "water",
+    "language": "en",
+    "name": "Water",
+    "notes": null
+  },
+  {
+    "ingredient": "basmati_rice",
+    "language": "ar",
+    "name": "أرز بسمتي",
+    "notes": "برنج ایرانی (طارم/هاشمی) رو تو مغازه‌های ایرانی پیدا می‌کنی"
+  },
+  {
+    "ingredient": "basmati_rice",
+    "language": "en",
+    "name": "Basmati rice",
+    "notes": "برنج ایرانی (طارم/هاشمی) رو تو مغازه‌های ایرانی پیدا می‌کنی"
+  },
+  {
+    "ingredient": "chicken_thigh",
+    "language": "ar",
+    "name": "أفخاذ دجاج منزوعة العظم",
+    "notes": null
+  },
+  {
+    "ingredient": "chicken_thigh",
+    "language": "en",
+    "name": "Boneless chicken thighs",
+    "notes": null
+  },
+  {
+    "ingredient": "saffron",
+    "language": "ar",
+    "name": "زعفران",
+    "notes": "زعفران ایرانی تو بیشتر سوپرمارکت‌ها هست"
+  },
+  {
+    "ingredient": "saffron",
+    "language": "en",
+    "name": "Saffron",
+    "notes": "زعفران ایرانی تو بیشتر سوپرمارکت‌ها هست"
+  },
+  {
+    "ingredient": "barberry",
+    "language": "ar",
+    "name": "زرشك (بربريس مجفف)",
+    "notes": "تو سوپرمارکت‌های ایرانی پیدا می‌شه"
+  },
+  {
+    "ingredient": "barberry",
+    "language": "en",
+    "name": "Dried barberries (zereshk)",
+    "notes": "تو سوپرمارکت‌های ایرانی پیدا می‌شه"
+  },
+  {
+    "ingredient": "soy_mince",
+    "language": "ar",
+    "name": "صويا مفرومة (لحم صويا)",
+    "notes": "سویای ایرانی تو مغازه‌های ایرانی هم هست"
+  },
+  {
+    "ingredient": "soy_mince",
+    "language": "en",
+    "name": "Soya chunks (mince)",
+    "notes": "سویای ایرانی تو مغازه‌های ایرانی هم هست"
+  },
+  {
+    "ingredient": "green_bean",
+    "language": "ar",
+    "name": "فاصوليا خضراء",
+    "notes": null
+  },
+  {
+    "ingredient": "green_bean",
+    "language": "en",
+    "name": "Green beans",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_corn",
+    "language": "ar",
+    "name": "ذرة حلوة معلبة",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_corn",
+    "language": "en",
+    "name": "Sweet corn (canned)",
+    "notes": null
+  },
+  {
+    "ingredient": "oregano",
+    "language": "ar",
+    "name": "أوريغانو مجفف",
+    "notes": null
+  },
+  {
+    "ingredient": "oregano",
+    "language": "en",
+    "name": "Dried oregano",
+    "notes": null
+  },
+  {
+    "ingredient": "arborio_rice",
+    "language": "ar",
+    "name": "أرز أربوريو",
+    "notes": null
+  },
+  {
+    "ingredient": "arborio_rice",
+    "language": "en",
+    "name": "Arborio risotto rice",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_stock",
+    "language": "ar",
+    "name": "مرق خضار (مكعبات)",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_stock",
+    "language": "en",
+    "name": "Vegetable stock",
+    "notes": null
+  },
+  {
+    "ingredient": "frozen_peas",
+    "language": "ar",
+    "name": "بازلاء مجمدة",
+    "notes": null
+  },
+  {
+    "ingredient": "frozen_peas",
+    "language": "en",
+    "name": "Frozen peas",
+    "notes": null
+  },
+  {
+    "ingredient": "ginger",
+    "language": "ar",
+    "name": "زنجبيل طازج",
+    "notes": null
+  },
+  {
+    "ingredient": "ginger",
+    "language": "en",
+    "name": "Fresh ginger",
+    "notes": null
+  },
+  {
+    "ingredient": "curry_powder",
+    "language": "ar",
+    "name": "بودرة كاري",
+    "notes": null
+  },
+  {
+    "ingredient": "curry_powder",
+    "language": "en",
+    "name": "Curry powder",
+    "notes": null
+  },
+  {
+    "ingredient": "coconut_milk",
+    "language": "ar",
+    "name": "حليب جوز الهند",
+    "notes": null
+  },
+  {
+    "ingredient": "coconut_milk",
+    "language": "en",
+    "name": "Coconut milk",
+    "notes": null
+  },
+  {
+    "ingredient": "plain_yogurt",
+    "language": "ar",
+    "name": "لبن زبادي طبيعي",
+    "notes": null
+  },
+  {
+    "ingredient": "plain_yogurt",
+    "language": "en",
+    "name": "Plain yoghurt",
+    "notes": null
+  },
+  {
+    "ingredient": "green_lentil",
+    "language": "ar",
+    "name": "عدس أخضر (بني)",
+    "notes": null
+  },
+  {
+    "ingredient": "green_lentil",
+    "language": "en",
+    "name": "Green lentils",
+    "notes": null
+  },
+  {
+    "ingredient": "yellow_split_pea",
+    "language": "ar",
+    "name": "بازلاء صفراء مجروشة",
+    "notes": "chana dal هندی خیلی شبیه لپه‌ست"
+  },
+  {
+    "ingredient": "yellow_split_pea",
+    "language": "en",
+    "name": "Yellow split peas (chana dal)",
+    "notes": "chana dal هندی خیلی شبیه لپه‌ست"
+  },
+  {
+    "ingredient": "lemon_juice",
+    "language": "ar",
+    "name": "عصير ليمون",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon_juice",
+    "language": "en",
+    "name": "Lemon juice",
+    "notes": null
+  },
+  {
+    "ingredient": "caper",
+    "language": "ar",
+    "name": "قبار (كبر)",
+    "notes": null
+  },
+  {
+    "ingredient": "caper",
+    "language": "en",
+    "name": "Capers",
+    "notes": null
+  },
+  {
+    "ingredient": "cucumber",
+    "language": "ar",
+    "name": "خيار",
+    "notes": null
+  },
+  {
+    "ingredient": "cucumber",
+    "language": "en",
+    "name": "Cucumber",
+    "notes": null
+  },
+  {
+    "ingredient": "eggplant",
+    "language": "ar",
+    "name": "باذنجان",
+    "notes": null
+  },
+  {
+    "ingredient": "eggplant",
+    "language": "en",
+    "name": "Eggplant (aubergine)",
+    "notes": null
+  },
+  {
+    "ingredient": "zucchini",
+    "language": "ar",
+    "name": "كوسا",
+    "notes": null
+  },
+  {
+    "ingredient": "zucchini",
+    "language": "en",
+    "name": "Zucchini",
+    "notes": null
+  },
+  {
+    "ingredient": "dried_thyme",
+    "language": "ar",
+    "name": "زعتر بري مجفف (تايم)",
+    "notes": null
+  },
+  {
+    "ingredient": "dried_thyme",
+    "language": "en",
+    "name": "Dried thyme",
+    "notes": null
+  },
+  {
+    "ingredient": "basil",
+    "language": "ar",
+    "name": "ريحان",
+    "notes": null
+  },
+  {
+    "ingredient": "basil",
+    "language": "en",
+    "name": "Basil",
+    "notes": null
+  },
+  {
+    "ingredient": "spaghetti",
+    "language": "ar",
+    "name": "سباغيتي",
+    "notes": null
+  },
+  {
+    "ingredient": "spaghetti",
+    "language": "en",
+    "name": "Spaghetti",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tomato",
+    "language": "ar",
+    "name": "طماطم مقطعة معلبة",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tomato",
+    "language": "en",
+    "name": "Chopped tomatoes (canned)",
+    "notes": null
+  },
+  {
+    "ingredient": "parmesan",
+    "language": "ar",
+    "name": "جبنة بارميزان",
+    "notes": null
+  },
+  {
+    "ingredient": "parmesan",
+    "language": "en",
+    "name": "Parmesan cheese",
+    "notes": null
+  },
+  {
+    "ingredient": "fettuccine",
+    "language": "ar",
+    "name": "فيتوتشيني",
+    "notes": null
+  },
+  {
+    "ingredient": "fettuccine",
+    "language": "en",
+    "name": "Fettuccine",
+    "notes": null
+  },
+  {
+    "ingredient": "mushroom",
+    "language": "ar",
+    "name": "فطر (مشروم)",
+    "notes": null
+  },
+  {
+    "ingredient": "mushroom",
+    "language": "en",
+    "name": "Mushrooms",
+    "notes": null
+  },
+  {
+    "ingredient": "cream_cheese",
+    "language": "ar",
+    "name": "جبنة كريمية",
+    "notes": null
+  },
+  {
+    "ingredient": "cream_cheese",
+    "language": "en",
+    "name": "Cream cheese",
+    "notes": null
+  },
+  {
+    "ingredient": "penne",
+    "language": "ar",
+    "name": "بيني",
+    "notes": null
+  },
+  {
+    "ingredient": "penne",
+    "language": "en",
+    "name": "Penne",
+    "notes": null
+  },
+  {
+    "ingredient": "red_lentil",
+    "language": "ar",
+    "name": "عدس أحمر",
+    "notes": null
+  },
+  {
+    "ingredient": "red_lentil",
+    "language": "en",
+    "name": "Red lentils",
+    "notes": null
+  },
+  {
+    "ingredient": "egg_noodle",
+    "language": "ar",
+    "name": "نودلز بالبيض",
+    "notes": null
+  },
+  {
+    "ingredient": "egg_noodle",
+    "language": "en",
+    "name": "Egg noodles",
+    "notes": null
+  },
+  {
+    "ingredient": "cabbage",
+    "language": "ar",
+    "name": "ملفوف أبيض",
+    "notes": null
+  },
+  {
+    "ingredient": "cabbage",
+    "language": "en",
+    "name": "White cabbage",
+    "notes": null
+  },
+  {
+    "ingredient": "soy_sauce",
+    "language": "ar",
+    "name": "صلصة الصويا",
+    "notes": null
+  },
+  {
+    "ingredient": "soy_sauce",
+    "language": "en",
+    "name": "Soy sauce",
+    "notes": null
+  },
+  {
+    "ingredient": "sesame_oil",
+    "language": "ar",
+    "name": "زيت السمسم",
+    "notes": null
+  },
+  {
+    "ingredient": "sesame_oil",
+    "language": "en",
+    "name": "Sesame oil",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_kidney_bean",
+    "language": "ar",
+    "name": "فاصوليا حمراء معلبة",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_kidney_bean",
+    "language": "en",
+    "name": "Red kidney beans (canned)",
+    "notes": null
+  },
+  {
+    "ingredient": "tortilla",
+    "language": "ar",
+    "name": "خبز تورتيلا",
+    "notes": null
+  },
+  {
+    "ingredient": "tortilla",
+    "language": "en",
+    "name": "Tortilla wraps",
+    "notes": null
+  },
+  {
+    "ingredient": "cilantro",
+    "language": "ar",
+    "name": "كزبرة خضراء",
+    "notes": null
+  },
+  {
+    "ingredient": "cilantro",
+    "language": "en",
+    "name": "Coriander",
+    "notes": null
+  },
+  {
+    "ingredient": "chicken_breast",
+    "language": "ar",
+    "name": "صدور دجاج",
+    "notes": null
+  },
+  {
+    "ingredient": "chicken_breast",
+    "language": "en",
+    "name": "Chicken breast fillets",
+    "notes": null
+  },
+  {
+    "ingredient": "rolled_oats",
+    "language": "ar",
+    "name": "شوفان (رقائق الشوفان)",
+    "notes": null
+  },
+  {
+    "ingredient": "rolled_oats",
+    "language": "en",
+    "name": "Rolled oats",
+    "notes": null
+  },
+  {
+    "ingredient": "flour",
+    "language": "ar",
+    "name": "دقيق أبيض متعدد الاستعمالات",
+    "notes": null
+  },
+  {
+    "ingredient": "flour",
+    "language": "en",
+    "name": "All-purpose flour",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_white_bean",
+    "language": "ar",
+    "name": "فاصوليا بيضاء معلبة",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_white_bean",
+    "language": "en",
+    "name": "White beans (canned)",
+    "notes": null
+  },
+  {
+    "ingredient": "tahini",
+    "language": "ar",
+    "name": "طحينة",
+    "notes": null
+  },
+  {
+    "ingredient": "tahini",
+    "language": "en",
+    "name": "Tahini",
+    "notes": null
+  },
+  {
+    "ingredient": "date_syrup",
+    "language": "ar",
+    "name": "دبس التمر",
+    "notes": null
+  },
+  {
+    "ingredient": "date_syrup",
+    "language": "en",
+    "name": "Date syrup",
+    "notes": null
+  },
+  {
+    "ingredient": "halva",
+    "language": "ar",
+    "name": "حلاوة طحينية",
+    "notes": "حلوای ارده‌ی ترکی/عربی تقریباً همونه"
+  },
+  {
+    "ingredient": "halva",
+    "language": "en",
+    "name": "Tahini halva",
+    "notes": "حلوای ارده‌ی ترکی/عربی تقریباً همونه"
+  },
+  {
+    "ingredient": "banana",
+    "language": "ar",
+    "name": "موز",
+    "notes": null
+  },
+  {
+    "ingredient": "banana",
+    "language": "en",
+    "name": "Bananas",
+    "notes": null
+  },
+  {
+    "ingredient": "apple",
+    "language": "ar",
+    "name": "تفاح",
+    "notes": null
+  },
+  {
+    "ingredient": "apple",
+    "language": "en",
+    "name": "Apples",
+    "notes": null
+  },
+  {
+    "ingredient": "puff_pastry",
+    "language": "ar",
+    "name": "عجينة البف باستري (عجينة مورقة)",
+    "notes": null
+  },
+  {
+    "ingredient": "puff_pastry",
+    "language": "en",
+    "name": "Puff pastry",
+    "notes": null
+  },
+  {
+    "ingredient": "digestive_biscuit",
+    "language": "ar",
+    "name": "بسكويت دايجستف",
+    "notes": null
+  },
+  {
+    "ingredient": "digestive_biscuit",
+    "language": "en",
+    "name": "Digestive biscuits",
+    "notes": null
+  },
+  {
+    "ingredient": "heavy_cream",
+    "language": "ar",
+    "name": "كريمة الخفق (٣٥٪ دسم)",
+    "notes": null
+  },
+  {
+    "ingredient": "heavy_cream",
+    "language": "en",
+    "name": "Whipping cream (35% fat)",
+    "notes": null
+  },
+  {
+    "ingredient": "powdered_sugar",
+    "language": "ar",
+    "name": "سكر بودرة",
+    "notes": null
+  },
+  {
+    "ingredient": "powdered_sugar",
+    "language": "en",
+    "name": "Icing sugar",
+    "notes": null
+  },
+  {
+    "ingredient": "walnut",
+    "language": "ar",
+    "name": "عين الجمل (جوز)",
+    "notes": null
+  },
+  {
+    "ingredient": "walnut",
+    "language": "en",
+    "name": "Walnuts",
+    "notes": null
+  },
+  {
+    "ingredient": "golpar",
+    "language": "ar",
+    "name": "گلپر (بذور الجلبر الإيراني)",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه"
+  },
+  {
+    "ingredient": "golpar",
+    "language": "en",
+    "name": "Golpar (Persian hogweed)",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه"
+  },
+  {
+    "ingredient": "dried_mint",
+    "language": "ar",
+    "name": "نعناع مجفف",
+    "notes": null
+  },
+  {
+    "ingredient": "dried_mint",
+    "language": "en",
+    "name": "Dried mint",
+    "notes": null
+  },
+  {
+    "ingredient": "chia_seed",
+    "language": "ar",
+    "name": "بذور الشيا",
+    "notes": null
+  },
+  {
+    "ingredient": "chia_seed",
+    "language": "en",
+    "name": "Chia seeds",
+    "notes": null
+  },
+  {
+    "ingredient": "red_onion",
+    "language": "ar",
+    "name": "بصل أحمر",
+    "notes": null
+  },
+  {
+    "ingredient": "red_onion",
+    "language": "en",
+    "name": "Red onions",
+    "notes": null
+  },
+  {
+    "ingredient": "black_olive",
+    "language": "ar",
+    "name": "زيتون أسود",
+    "notes": null
+  },
+  {
+    "ingredient": "black_olive",
+    "language": "en",
+    "name": "Black olives",
+    "notes": null
+  },
+  {
+    "ingredient": "breadcrumbs",
+    "language": "ar",
+    "name": "بقسماط (فتات الخبز)",
+    "notes": null
+  },
+  {
+    "ingredient": "breadcrumbs",
+    "language": "en",
+    "name": "Breadcrumbs",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tuna",
+    "language": "ar",
+    "name": "تونة معلبة",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tuna",
+    "language": "en",
+    "name": "Canned tuna",
+    "notes": null
+  },
+  {
+    "ingredient": "mayonnaise",
+    "language": "ar",
+    "name": "مايونيز",
+    "notes": null
+  },
+  {
+    "ingredient": "mayonnaise",
+    "language": "en",
+    "name": "Mayonnaise",
+    "notes": null
+  },
+  {
+    "ingredient": "pickle",
+    "language": "ar",
+    "name": "مخلل خيار",
+    "notes": null
+  },
+  {
+    "ingredient": "pickle",
+    "language": "en",
+    "name": "Pickled cucumbers",
+    "notes": null
+  },
+  {
+    "ingredient": "raisin",
+    "language": "ar",
+    "name": "زبيب",
+    "notes": null
+  },
+  {
+    "ingredient": "raisin",
+    "language": "en",
+    "name": "Raisins",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_petal",
+    "language": "ar",
+    "name": "ورد مجفف (بتلات الورد)",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "rose_petal",
+    "language": "en",
+    "name": "Dried rose petals",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "lettuce",
+    "language": "ar",
+    "name": "خس",
+    "notes": null
+  },
+  {
+    "ingredient": "lettuce",
+    "language": "en",
+    "name": "Lettuce",
+    "notes": null
+  },
+  {
+    "ingredient": "sumac",
+    "language": "ar",
+    "name": "سماق",
+    "notes": null
+  },
+  {
+    "ingredient": "sumac",
+    "language": "en",
+    "name": "Sumac",
+    "notes": null
+  },
+  {
+    "ingredient": "cherry_tomato",
+    "language": "ar",
+    "name": "طماطم كرزية (شيري)",
+    "notes": null
+  },
+  {
+    "ingredient": "cherry_tomato",
+    "language": "en",
+    "name": "Cherry tomatoes",
+    "notes": null
+  },
+  {
+    "ingredient": "doogh",
+    "language": "ar",
+    "name": "دوغ (لبن عيران)",
+    "notes": "دوغ ایرانی تو سوپرمارکت‌ها هست؛ لبن عربی هم جایگزین خوبیه"
+  },
+  {
+    "ingredient": "doogh",
+    "language": "en",
+    "name": "Doogh / Laban",
+    "notes": "دوغ ایرانی تو سوپرمارکت‌ها هست؛ لبن عربی هم جایگزین خوبیه"
+  },
+  {
+    "ingredient": "lighvan_cheese",
+    "language": "ar",
+    "name": "جبنة ليقوان (جبنة غنم بيضاء)",
+    "notes": "تو سوپرمارکت‌های ایرانی پیدا می‌شه؛ جایگزین: فتای گوسفندی"
+  },
+  {
+    "ingredient": "lighvan_cheese",
+    "language": "en",
+    "name": "Lighvan cheese (sheep's cheese)",
+    "notes": "تو سوپرمارکت‌های ایرانی پیدا می‌شه؛ جایگزین: فتای گوسفندی"
+  },
+  {
+    "ingredient": "chickpea",
+    "language": "ar",
+    "name": "حمص حب (جاف)",
+    "notes": null
+  },
+  {
+    "ingredient": "chickpea",
+    "language": "en",
+    "name": "Dried chickpeas",
+    "notes": null
+  },
+  {
+    "ingredient": "kashk",
+    "language": "ar",
+    "name": "كشك إيراني (سائل)",
+    "notes": "کشک عربی خشک و متفاوته؛ کشک مایع ایرانی رو از مغازه‌ی ایرانی بخر"
+  },
+  {
+    "ingredient": "kashk",
+    "language": "en",
+    "name": "Kashk (Persian whey)",
+    "notes": "کشک عربی خشک و متفاوته؛ کشک مایع ایرانی رو از مغازه‌ی ایرانی بخر"
+  },
+  {
+    "ingredient": "pistachio",
+    "language": "ar",
+    "name": "فستق حلبي",
+    "notes": null
+  },
+  {
+    "ingredient": "pistachio",
+    "language": "en",
+    "name": "Pistachios",
+    "notes": null
+  },
+  {
+    "ingredient": "date",
+    "language": "ar",
+    "name": "تمر",
+    "notes": null
+  },
+  {
+    "ingredient": "date",
+    "language": "en",
+    "name": "Dates",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_water",
+    "language": "ar",
+    "name": "ماء ورد",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_water",
+    "language": "en",
+    "name": "Rose water",
+    "notes": null
+  },
+  {
+    "ingredient": "sour_cream",
+    "language": "ar",
+    "name": "قشطة حامضة (كريمة حامضة)",
+    "notes": null
+  },
+  {
+    "ingredient": "sour_cream",
+    "language": "en",
+    "name": "Sour cream",
+    "notes": null
+  },
+  {
+    "ingredient": "cottage_cheese",
+    "language": "ar",
+    "name": "جبنة قريش (كوتاج)",
+    "notes": null
+  },
+  {
+    "ingredient": "cottage_cheese",
+    "language": "en",
+    "name": "Cottage cheese",
+    "notes": null
+  },
+  {
+    "ingredient": "orange",
+    "language": "ar",
+    "name": "برتقال",
+    "notes": null
+  },
+  {
+    "ingredient": "orange",
+    "language": "en",
+    "name": "Oranges",
+    "notes": null
+  },
+  {
+    "ingredient": "mint",
+    "language": "ar",
+    "name": "نعناع طازج",
+    "notes": null
+  },
+  {
+    "ingredient": "mint",
+    "language": "en",
+    "name": "Fresh mint",
+    "notes": null
+  },
+  {
+    "ingredient": "cardamom",
+    "language": "ar",
+    "name": "هيل",
+    "notes": null
+  },
+  {
+    "ingredient": "cardamom",
+    "language": "en",
+    "name": "Cardamom",
+    "notes": null
+  }
+]

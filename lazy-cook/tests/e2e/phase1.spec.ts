@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test";
 import { addDays, createHousehold, db, signInAs, todayIn } from "./helpers";
+import { cleanupUsers } from "./helpers";
 
 test.afterAll(async () => {
-  await db.user.deleteMany({ where: { email: { endsWith: "@test.local" } } });
+  await cleanupUsers();
   await db.$disconnect();
 });
 

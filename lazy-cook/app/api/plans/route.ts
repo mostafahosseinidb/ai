@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { isoDate, parseJson, withHousehold } from "@/lib/server/api";
 import { createPlan } from "@/lib/server/plans";
+import { afterPlanChange } from "@/lib/server/plan-sync";
 
 const body = z.object({
   start_date: z.string().regex(isoDate),
@@ -12,5 +13,6 @@ const body = z.object({
 export const POST = withHousehold(async (req, { household }) => {
   const input = await parseJson(req, body);
   const plan = await createPlan(household, input.start_date, input.days, input.autofill ?? true);
+  await afterPlanChange(plan.id);
   return { plan: { id: plan.id } };
 });

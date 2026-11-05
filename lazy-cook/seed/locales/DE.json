@@ -1,0 +1,716 @@
+[
+  {
+    "ingredient": "olive_oil",
+    "language": "de",
+    "name": "Olivenöl",
+    "notes": null
+  },
+  {
+    "ingredient": "onion",
+    "language": "de",
+    "name": "Zwiebeln",
+    "notes": null
+  },
+  {
+    "ingredient": "bell_pepper",
+    "language": "de",
+    "name": "Paprika rot (Gemüsepaprika)",
+    "notes": null
+  },
+  {
+    "ingredient": "garlic",
+    "language": "de",
+    "name": "Knoblauch",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato",
+    "language": "de",
+    "name": "Tomaten",
+    "notes": null
+  },
+  {
+    "ingredient": "tomato_paste",
+    "language": "de",
+    "name": "Tomatenmark",
+    "notes": null
+  },
+  {
+    "ingredient": "sugar",
+    "language": "de",
+    "name": "Zucker (Weißzucker)",
+    "notes": null
+  },
+  {
+    "ingredient": "cumin",
+    "language": "de",
+    "name": "Kreuzkümmel (Cumin), gemahlen",
+    "notes": null
+  },
+  {
+    "ingredient": "paprika",
+    "language": "de",
+    "name": "Paprikapulver edelsüß",
+    "notes": null
+  },
+  {
+    "ingredient": "salt",
+    "language": "de",
+    "name": "Salz",
+    "notes": null
+  },
+  {
+    "ingredient": "black_pepper",
+    "language": "de",
+    "name": "Schwarzer Pfeffer, gemahlen",
+    "notes": null
+  },
+  {
+    "ingredient": "egg",
+    "language": "de",
+    "name": "Eier",
+    "notes": null
+  },
+  {
+    "ingredient": "parsley",
+    "language": "de",
+    "name": "Petersilie (glatt)",
+    "notes": null
+  },
+  {
+    "ingredient": "feta_cheese",
+    "language": "de",
+    "name": "Feta (Schafskäse)",
+    "notes": null
+  },
+  {
+    "ingredient": "greek_yogurt",
+    "language": "de",
+    "name": "Griechischer Joghurt 10%",
+    "notes": null
+  },
+  {
+    "ingredient": "vinegar",
+    "language": "de",
+    "name": "Weißweinessig",
+    "notes": null
+  },
+  {
+    "ingredient": "butter",
+    "language": "de",
+    "name": "Butter",
+    "notes": null
+  },
+  {
+    "ingredient": "chili_flakes",
+    "language": "de",
+    "name": "Chiliflocken",
+    "notes": null
+  },
+  {
+    "ingredient": "dill",
+    "language": "de",
+    "name": "Dill",
+    "notes": null
+  },
+  {
+    "ingredient": "toast_bread",
+    "language": "de",
+    "name": "Toastbrot",
+    "notes": null
+  },
+  {
+    "ingredient": "milk",
+    "language": "de",
+    "name": "Vollmilch 3,5%",
+    "notes": null
+  },
+  {
+    "ingredient": "cinnamon",
+    "language": "de",
+    "name": "Zimt, gemahlen",
+    "notes": null
+  },
+  {
+    "ingredient": "vanilla",
+    "language": "de",
+    "name": "Vanilleextrakt",
+    "notes": null
+  },
+  {
+    "ingredient": "honey",
+    "language": "de",
+    "name": "Honig",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_oil",
+    "language": "de",
+    "name": "Sonnenblumenöl",
+    "notes": null
+  },
+  {
+    "ingredient": "kalbas",
+    "language": "de",
+    "name": "Fleischwurst (Rind)",
+    "notes": "کالباس حلال رو تو مغازه‌های ترکی/عربی/ایرانی پیدا می‌کنی"
+  },
+  {
+    "ingredient": "turmeric",
+    "language": "de",
+    "name": "Kurkuma, gemahlen",
+    "notes": null
+  },
+  {
+    "ingredient": "carrot",
+    "language": "de",
+    "name": "Karotten (Möhren)",
+    "notes": null
+  },
+  {
+    "ingredient": "green_onion",
+    "language": "de",
+    "name": "Frühlingszwiebeln",
+    "notes": null
+  },
+  {
+    "ingredient": "mozzarella",
+    "language": "de",
+    "name": "Mozzarella",
+    "notes": null
+  },
+  {
+    "ingredient": "potato",
+    "language": "de",
+    "name": "Kartoffeln",
+    "notes": null
+  },
+  {
+    "ingredient": "lavash_bread",
+    "language": "de",
+    "name": "Lavash-Fladenbrot (dünn)",
+    "notes": "تو نونوایی‌های ترکی «Yufka» هم شبیه لواشه"
+  },
+  {
+    "ingredient": "spinach",
+    "language": "de",
+    "name": "Blattspinat",
+    "notes": null
+  },
+  {
+    "ingredient": "beef_mince",
+    "language": "de",
+    "name": "Rinderhackfleisch",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon",
+    "language": "de",
+    "name": "Zitronen",
+    "notes": null
+  },
+  {
+    "ingredient": "lamb_stew_meat",
+    "language": "de",
+    "name": "Lammgulasch",
+    "notes": null
+  },
+  {
+    "ingredient": "kidney_bean",
+    "language": "de",
+    "name": "Kidneybohnen, getrocknet",
+    "notes": null
+  },
+  {
+    "ingredient": "ghormeh_sabzi_herbs",
+    "language": "de",
+    "name": "Ghormeh-Sabzi-Kräutermischung, getrocknet",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه؛ جایگزین: جعفری، تره و شنبلیله‌ی تازه"
+  },
+  {
+    "ingredient": "dried_lime",
+    "language": "de",
+    "name": "Getrocknete Limetten",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "water",
+    "language": "de",
+    "name": "Wasser",
+    "notes": null
+  },
+  {
+    "ingredient": "basmati_rice",
+    "language": "de",
+    "name": "Basmatireis",
+    "notes": "برنج ایرانی (طارم/هاشمی) رو تو مغازه‌های ایرانی پیدا می‌کنی"
+  },
+  {
+    "ingredient": "chicken_thigh",
+    "language": "de",
+    "name": "Hähnchenschenkel ohne Knochen",
+    "notes": null
+  },
+  {
+    "ingredient": "saffron",
+    "language": "de",
+    "name": "Safran (Fäden)",
+    "notes": "زعفران ایرانی رو از مغازه‌ی ایرانی بخر؛ اصل‌تر و به‌صرفه‌تره"
+  },
+  {
+    "ingredient": "barberry",
+    "language": "de",
+    "name": "Berberitzen, getrocknet",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "soy_mince",
+    "language": "de",
+    "name": "Sojagranulat (Soja-Hack)",
+    "notes": "سویای ایرانی تو مغازه‌های ایرانی هم هست"
+  },
+  {
+    "ingredient": "green_bean",
+    "language": "de",
+    "name": "Grüne Bohnen",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_corn",
+    "language": "de",
+    "name": "Gemüsemais (Dose)",
+    "notes": null
+  },
+  {
+    "ingredient": "oregano",
+    "language": "de",
+    "name": "Oregano, gerebelt",
+    "notes": null
+  },
+  {
+    "ingredient": "arborio_rice",
+    "language": "de",
+    "name": "Risottoreis (Arborio)",
+    "notes": null
+  },
+  {
+    "ingredient": "vegetable_stock",
+    "language": "de",
+    "name": "Gemüsebrühe",
+    "notes": null
+  },
+  {
+    "ingredient": "frozen_peas",
+    "language": "de",
+    "name": "TK-Erbsen",
+    "notes": null
+  },
+  {
+    "ingredient": "ginger",
+    "language": "de",
+    "name": "Ingwer (frisch)",
+    "notes": null
+  },
+  {
+    "ingredient": "curry_powder",
+    "language": "de",
+    "name": "Currypulver",
+    "notes": null
+  },
+  {
+    "ingredient": "coconut_milk",
+    "language": "de",
+    "name": "Kokosmilch",
+    "notes": null
+  },
+  {
+    "ingredient": "plain_yogurt",
+    "language": "de",
+    "name": "Naturjoghurt 3,5%",
+    "notes": null
+  },
+  {
+    "ingredient": "green_lentil",
+    "language": "de",
+    "name": "Tellerlinsen",
+    "notes": "Tellerlinsen همون عدس معمولی ایرانیه"
+  },
+  {
+    "ingredient": "yellow_split_pea",
+    "language": "de",
+    "name": "Gelbe Schälerbsen",
+    "notes": null
+  },
+  {
+    "ingredient": "lemon_juice",
+    "language": "de",
+    "name": "Zitronensaft",
+    "notes": null
+  },
+  {
+    "ingredient": "caper",
+    "language": "de",
+    "name": "Kapern",
+    "notes": null
+  },
+  {
+    "ingredient": "cucumber",
+    "language": "de",
+    "name": "Salatgurke",
+    "notes": null
+  },
+  {
+    "ingredient": "eggplant",
+    "language": "de",
+    "name": "Aubergine",
+    "notes": null
+  },
+  {
+    "ingredient": "zucchini",
+    "language": "de",
+    "name": "Zucchini",
+    "notes": null
+  },
+  {
+    "ingredient": "dried_thyme",
+    "language": "de",
+    "name": "Thymian, gerebelt",
+    "notes": null
+  },
+  {
+    "ingredient": "basil",
+    "language": "de",
+    "name": "Basilikum",
+    "notes": null
+  },
+  {
+    "ingredient": "spaghetti",
+    "language": "de",
+    "name": "Spaghetti",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tomato",
+    "language": "de",
+    "name": "Gehackte Tomaten (Dose)",
+    "notes": null
+  },
+  {
+    "ingredient": "parmesan",
+    "language": "de",
+    "name": "Parmesan (Parmigiano Reggiano)",
+    "notes": null
+  },
+  {
+    "ingredient": "fettuccine",
+    "language": "de",
+    "name": "Fettuccine",
+    "notes": null
+  },
+  {
+    "ingredient": "mushroom",
+    "language": "de",
+    "name": "Champignons (weiß)",
+    "notes": null
+  },
+  {
+    "ingredient": "cream_cheese",
+    "language": "de",
+    "name": "Frischkäse",
+    "notes": null
+  },
+  {
+    "ingredient": "penne",
+    "language": "de",
+    "name": "Penne",
+    "notes": null
+  },
+  {
+    "ingredient": "red_lentil",
+    "language": "de",
+    "name": "Rote Linsen",
+    "notes": null
+  },
+  {
+    "ingredient": "egg_noodle",
+    "language": "de",
+    "name": "Eiernudeln (Mie-Nudeln)",
+    "notes": null
+  },
+  {
+    "ingredient": "cabbage",
+    "language": "de",
+    "name": "Weißkohl",
+    "notes": null
+  },
+  {
+    "ingredient": "soy_sauce",
+    "language": "de",
+    "name": "Sojasauce",
+    "notes": null
+  },
+  {
+    "ingredient": "sesame_oil",
+    "language": "de",
+    "name": "Sesamöl (geröstet)",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_kidney_bean",
+    "language": "de",
+    "name": "Kidneybohnen (Dose)",
+    "notes": null
+  },
+  {
+    "ingredient": "tortilla",
+    "language": "de",
+    "name": "Weizentortillas (Wraps)",
+    "notes": null
+  },
+  {
+    "ingredient": "cilantro",
+    "language": "de",
+    "name": "Koriander (frisch)",
+    "notes": null
+  },
+  {
+    "ingredient": "chicken_breast",
+    "language": "de",
+    "name": "Hähnchenbrustfilet",
+    "notes": null
+  },
+  {
+    "ingredient": "rolled_oats",
+    "language": "de",
+    "name": "Haferflocken (kernig)",
+    "notes": null
+  },
+  {
+    "ingredient": "flour",
+    "language": "de",
+    "name": "Weizenmehl Type 405",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_white_bean",
+    "language": "de",
+    "name": "Weiße Bohnen (Dose)",
+    "notes": null
+  },
+  {
+    "ingredient": "tahini",
+    "language": "de",
+    "name": "Tahin (Sesammus)",
+    "notes": null
+  },
+  {
+    "ingredient": "date_syrup",
+    "language": "de",
+    "name": "Dattelsirup",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "halva",
+    "language": "de",
+    "name": "Halva (Tahin-Helva)",
+    "notes": "حلوای ارده‌ی ترکی/عربی تقریباً همونه"
+  },
+  {
+    "ingredient": "banana",
+    "language": "de",
+    "name": "Bananen",
+    "notes": null
+  },
+  {
+    "ingredient": "apple",
+    "language": "de",
+    "name": "Äpfel",
+    "notes": null
+  },
+  {
+    "ingredient": "puff_pastry",
+    "language": "de",
+    "name": "Blätterteig",
+    "notes": null
+  },
+  {
+    "ingredient": "digestive_biscuit",
+    "language": "de",
+    "name": "Vollkornkekse (Digestive)",
+    "notes": null
+  },
+  {
+    "ingredient": "heavy_cream",
+    "language": "de",
+    "name": "Schlagsahne 30%",
+    "notes": null
+  },
+  {
+    "ingredient": "powdered_sugar",
+    "language": "de",
+    "name": "Puderzucker",
+    "notes": null
+  },
+  {
+    "ingredient": "walnut",
+    "language": "de",
+    "name": "Walnusskerne",
+    "notes": null
+  },
+  {
+    "ingredient": "golpar",
+    "language": "de",
+    "name": "Golpar (persischer Bärenklau, gemahlen)",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه"
+  },
+  {
+    "ingredient": "dried_mint",
+    "language": "de",
+    "name": "Minze, getrocknet",
+    "notes": null
+  },
+  {
+    "ingredient": "chia_seed",
+    "language": "de",
+    "name": "Chiasamen",
+    "notes": null
+  },
+  {
+    "ingredient": "red_onion",
+    "language": "de",
+    "name": "Rote Zwiebeln",
+    "notes": null
+  },
+  {
+    "ingredient": "black_olive",
+    "language": "de",
+    "name": "Schwarze Oliven",
+    "notes": null
+  },
+  {
+    "ingredient": "breadcrumbs",
+    "language": "de",
+    "name": "Paniermehl",
+    "notes": null
+  },
+  {
+    "ingredient": "canned_tuna",
+    "language": "de",
+    "name": "Thunfisch (Dose)",
+    "notes": null
+  },
+  {
+    "ingredient": "mayonnaise",
+    "language": "de",
+    "name": "Mayonnaise",
+    "notes": null
+  },
+  {
+    "ingredient": "pickle",
+    "language": "de",
+    "name": "Gewürzgurken",
+    "notes": null
+  },
+  {
+    "ingredient": "raisin",
+    "language": "de",
+    "name": "Rosinen",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_petal",
+    "language": "de",
+    "name": "Getrocknete Rosenblüten",
+    "notes": "تو مغازه‌های ایرانی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "lettuce",
+    "language": "de",
+    "name": "Kopfsalat",
+    "notes": null
+  },
+  {
+    "ingredient": "sumac",
+    "language": "de",
+    "name": "Sumach",
+    "notes": "تو مغازه‌های ترکی/عربی پیدا می‌شه"
+  },
+  {
+    "ingredient": "cherry_tomato",
+    "language": "de",
+    "name": "Cherrytomaten",
+    "notes": null
+  },
+  {
+    "ingredient": "doogh",
+    "language": "de",
+    "name": "Ayran (Joghurtgetränk)",
+    "notes": "جایگزین: آیران یا ماست رقیق با نمک و نعناع خشک"
+  },
+  {
+    "ingredient": "lighvan_cheese",
+    "language": "de",
+    "name": "Schafskäse in Salzlake",
+    "notes": "جایگزین: پنیر فتای گوسفندی؛ لیقوان اصل تو مغازه‌های ایرانی هست"
+  },
+  {
+    "ingredient": "chickpea",
+    "language": "de",
+    "name": "Kichererbsen, getrocknet",
+    "notes": null
+  },
+  {
+    "ingredient": "kashk",
+    "language": "de",
+    "name": "Kashk (flüssiger Trockenjoghurt)",
+    "notes": "تو مغازه‌های ایرانی پیدا می‌شه؛ جایگزین: ماست چکیده با کمی نمک"
+  },
+  {
+    "ingredient": "pistachio",
+    "language": "de",
+    "name": "Pistazien",
+    "notes": null
+  },
+  {
+    "ingredient": "date",
+    "language": "de",
+    "name": "Datteln",
+    "notes": null
+  },
+  {
+    "ingredient": "rose_water",
+    "language": "de",
+    "name": "Rosenwasser",
+    "notes": "تو مغازه‌های ترکی/عربی پیدا می‌شه و ارزون‌تره"
+  },
+  {
+    "ingredient": "sour_cream",
+    "language": "de",
+    "name": "Schmand (Saure Sahne)",
+    "notes": null
+  },
+  {
+    "ingredient": "cottage_cheese",
+    "language": "de",
+    "name": "Hüttenkäse",
+    "notes": null
+  },
+  {
+    "ingredient": "orange",
+    "language": "de",
+    "name": "Orangen",
+    "notes": null
+  },
+  {
+    "ingredient": "mint",
+    "language": "de",
+    "name": "Minze (frisch)",
+    "notes": null
+  },
+  {
+    "ingredient": "cardamom",
+    "language": "de",
+    "name": "Kardamom (grün)",
+    "notes": null
+  }
+]

@@ -4,9 +4,18 @@ import type { BrowserContext } from "@playwright/test";
 
 export const db = new PrismaClient();
 
+/** Users created by this worker; each spec file removes only these in afterAll. */
+const createdUsers: string[] = [];
+
+export async function cleanupUsers() {
+  const ids = createdUsers.splice(0);
+  if (ids.length) await db.user.deleteMany({ where: { id: { in: ids } } });
+}
+
 /** Create a user with a live database session and put its cookie in the browser (no email needed). */
 export async function signInAs(context: BrowserContext, email = `e2e-${randomUUID()}@test.local`) {
   const user = await db.user.create({ data: { email, name: "تست", timezone: "Asia/Yerevan" } });
+  createdUsers.push(user.id);
   const sessionToken = randomUUID();
   await db.session.create({
     data: { sessionToken, userId: user.id, expires: new Date(Date.now() + 86_400_000) },
@@ -22,6 +31,48 @@ export async function signInAs(context: BrowserContext, email = `e2e-${randomUUI
     },
   ]);
   return user;
+}
+
+/** Add a second account to an existing household (shared live list). */
+export async function joinHousehold(context: BrowserContext, householdId: string) {
+  const user = await signInAs(context);
+  await db.householdUser.create({ data: { householdId, userId: user.id, role: "member" } });
+  await db.user.update({
+    where: { id: user.id },
+    data: { onboardingCompletedAt: new Date(), countryCode: "AM" },
+  });
+  return user;
+}
+
+/** An active plan with the given meals ({slug, slot, dayOffset}). */
+export async function createPlanWith(
+  householdId: string,
+  meals: Array<{ slug: string; slot: string; day?: number }>,
+  days = 3,
+) {
+  const today = todayIn();
+  const members = await db.member.findMany({ where: { householdId } });
+  const servings = Object.fromEntries(members.map((m) => [m.id, Number(m.portionFactor)]));
+  const plan = await db.mealPlan.create({
+    data: { householdId, startDate: new Date(`${today}T00:00:00Z`), days, status: "active" },
+  });
+  for (const m of meals) {
+    const r = await db.recipe.findUniqueOrThrow({ where: { slug: m.slug } });
+    await db.plannedMeal.create({
+      data: {
+        mealPlanId: plan.id,
+        date: new Date(`${addDays(today, m.day ?? 0)}T00:00:00Z`),
+        slot: m.slot,
+        recipeId: r.id,
+        servingsByMember: servings,
+      },
+    });
+  }
+  return plan;
+}
+
+export async function ingredientId(key: string) {
+  return (await db.ingredient.findUniqueOrThrow({ where: { canonicalName: key } })).id;
 }
 
 /** Skip the wizard: create a household straight in the database. */

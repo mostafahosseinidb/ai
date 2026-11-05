@@ -80,6 +80,21 @@ export function autofillPlan(input: AutofillInput): CandidateMeal[] {
       lastIranian = date;
   }
 
+  // pantry items that expire within the window and that no meal has used yet
+  const expiryLimit = addDaysISO(input.startDate, 3);
+  const unusedExpiring = new Set(
+    (input.ctx.pantry ?? []).filter(
+      (p) => p.expiry && p.expiry <= expiryLimit && p.expiry >= input.startDate,
+    ),
+  );
+  const expiringUsedBy = (r: AutofillRecipe, date: ISODate) =>
+    [...unusedExpiring].filter(
+      (p) =>
+        date <= p.expiry! &&
+        ((p.ingredientId && r.ingredientIds?.includes(p.ingredientId)) ||
+          (p.ingredientKey && r.ingredientKeys.includes(p.ingredientKey))),
+    );
+
   const orderedSlots = [
     "breakfast",
     "mid_morning",
@@ -149,6 +164,8 @@ export function autofillPlan(input: AutofillInput): CandidateMeal[] {
         )
           score -= 0.7;
         if ((slot === "lunch" || slot === "dinner") && r.mealTypes.includes("dessert")) score -= 3;
+        // use up what's about to go off (spec §5.3 rule 6)
+        score += 3 * expiringUsedBy(r, date).length;
         scored.push({ r, score });
       }
       scored.sort((a, b) => b.score - a.score);
@@ -156,6 +173,7 @@ export function autofillPlan(input: AutofillInput): CandidateMeal[] {
       if (!pick) continue;
       plan.push({ date, slot, recipeId: pick.id });
       taken.add(`${date}|${slot}`);
+      for (const p of expiringUsedBy(pick, date)) unusedExpiring.delete(p);
       usedCount.set(pick.id, (usedCount.get(pick.id) ?? 0) + 1);
       if (pick.cuisine === "iranian" && (slot === "lunch" || slot === "dinner")) lastIranian = date;
     }
