@@ -14,7 +14,10 @@ export const fa = {
     settings: "تنظیمات",
     signOut: "خروج از حساب",
   },
-  assistant: { fab: "بگو چی شده", soon: "دستیار به‌زودی میاد! فعلاً از دکمه‌های هر کارت استفاده کن." },
+  assistant: {
+    fab: "بگو چی شده",
+    soon: "دستیار به‌زودی میاد! فعلاً از دکمه‌های هر کارت استفاده کن.",
+  },
 
   slots: {
     breakfast: "صبحانه",
@@ -107,11 +110,25 @@ export const fa = {
     seafood: "غذای دریایی",
   } as Record<string, string>,
 
-  goals: { maintain: "حفظ وزن", lose_slow: "کم کردن آروم", lose: "کم کردن وزن", gain_muscle: "عضله‌سازی" } as Record<string, string>,
-  activity: { sedentary: "پشت میز", light: "کم‌تحرک", moderate: "متوسط", active: "فعال" } as Record<string, string>,
+  goals: {
+    maintain: "حفظ وزن",
+    lose_slow: "کم کردن آروم",
+    lose: "کم کردن وزن",
+    gain_muscle: "عضله‌سازی",
+  } as Record<string, string>,
+  activity: { sedentary: "پشت میز", light: "کم‌تحرک", moderate: "متوسط", active: "فعال" } as Record<
+    string,
+    string
+  >,
   sex: { female: "زن", male: "مرد", other: "ترجیح می‌دم نگم" } as Record<string, string>,
 
-  status: { done: "خوردیم", skipped: "رد شد", eaten_out: "بیرون خوردیم", replaced: "عوض شد", planned: "" } as Record<string, string>,
+  status: {
+    done: "خوردیم",
+    skipped: "رد شد",
+    eaten_out: "بیرون خوردیم",
+    replaced: "عوض شد",
+    planned: "",
+  } as Record<string, string>,
 
   meal: {
     check: "خوردیم",
@@ -129,7 +146,12 @@ export const fa = {
     fromFreezer: "از فریزر",
     active: "دقیقه آشپزی",
     dislikeWhy: "چه چیزش؟",
-    dislikeReasons: { taste: "طعم", texture: "بافت", hard: "سخت بود", heavy: "سنگین بود" } as Record<string, string>,
+    dislikeReasons: {
+      taste: "طعم",
+      texture: "بافت",
+      hard: "سخت بود",
+      heavy: "سنگین بود",
+    } as Record<string, string>,
     send: "ثبت",
     freeLog: "یه چیز دیگه هم خوردیم",
     freeLogPlaceholder: "مثلاً شیر موز آخر شب",

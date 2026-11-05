@@ -1,13 +1,87 @@
 import { z } from "zod";
 import { UNITS } from "@/lib/domain/units";
 
-export const AISLES = ["produce", "dairy", "meat", "bakery", "grains_legumes", "spices", "canned", "frozen", "drinks", "other"] as const;
-export const FLAGS = ["red_meat", "pork", "poultry", "seafood", "processed_meat", "dairy", "lactose", "gluten", "nuts", "egg", "soy", "alcohol", "legume", "sweet", "spicy", "animal_product"] as const;
-export const CUISINES = ["iranian", "turkish", "armenian", "greek", "italian", "mexican", "indian", "asian", "spanish", "french", "american", "other"] as const;
+export const AISLES = [
+  "produce",
+  "dairy",
+  "meat",
+  "bakery",
+  "grains_legumes",
+  "spices",
+  "canned",
+  "frozen",
+  "drinks",
+  "other",
+] as const;
+export const FLAGS = [
+  "red_meat",
+  "pork",
+  "poultry",
+  "seafood",
+  "processed_meat",
+  "dairy",
+  "lactose",
+  "gluten",
+  "nuts",
+  "egg",
+  "soy",
+  "alcohol",
+  "legume",
+  "sweet",
+  "spicy",
+  "animal_product",
+] as const;
+export const CUISINES = [
+  "iranian",
+  "turkish",
+  "armenian",
+  "greek",
+  "italian",
+  "mexican",
+  "indian",
+  "asian",
+  "spanish",
+  "french",
+  "american",
+  "other",
+] as const;
 export const MEAL_TYPES = ["breakfast", "lunch", "dinner", "snack", "dessert", "drink"] as const;
-export const EQUIPMENT = ["oven", "microwave", "airfryer", "pressure_cooker", "blender", "mixer", "sandwich_maker", "toaster", "freezer"] as const;
-export const RECIPE_TAGS = ["one_pot", "no_cook", "ten_minute", "high_protein", "vegetarian", "vegan", "low_red_meat", "light", "freezer", "leftover_friendly", "budget", "no_oven", "sweet", "iranian_classic"] as const;
-export const SLOTS = ["breakfast", "mid_morning", "lunch", "after_lunch", "snack", "dinner", "late"] as const;
+export const EQUIPMENT = [
+  "oven",
+  "microwave",
+  "airfryer",
+  "pressure_cooker",
+  "blender",
+  "mixer",
+  "sandwich_maker",
+  "toaster",
+  "freezer",
+] as const;
+export const RECIPE_TAGS = [
+  "one_pot",
+  "no_cook",
+  "ten_minute",
+  "high_protein",
+  "vegetarian",
+  "vegan",
+  "low_red_meat",
+  "light",
+  "freezer",
+  "leftover_friendly",
+  "budget",
+  "no_oven",
+  "sweet",
+  "iranian_classic",
+] as const;
+export const SLOTS = [
+  "breakfast",
+  "mid_morning",
+  "lunch",
+  "after_lunch",
+  "snack",
+  "dinner",
+  "late",
+] as const;
 
 const nutrition = z.object({
   kcal: z.number().min(0),
@@ -29,14 +103,25 @@ export const ingredientSeed = z.object({
   default_unit: z.enum(UNITS),
   grams_per_unit: z.record(z.string(), z.number().positive()),
   nutrition_per_100g: nutrition,
-  shelf_life_days: z.object({ fridge: days, freezer: days, pantry: days, after_opening_fridge: days }),
+  shelf_life_days: z.object({
+    fridge: days,
+    freezer: days,
+    pantry: days,
+    after_opening_fridge: days,
+  }),
   freezable: z.boolean(),
   flags: z.array(z.enum(FLAGS)),
 });
 export type IngredientSeed = z.infer<typeof ingredientSeed>;
 
-export const stepSchema = z.object({ text: z.string().min(1), timer_seconds: z.number().int().positive().optional().nullable() });
-export const prepAheadSchema = z.object({ text: z.string().min(1), hours_before: z.number().positive() });
+export const stepSchema = z.object({
+  text: z.string().min(1),
+  timer_seconds: z.number().int().positive().optional().nullable(),
+});
+export const prepAheadSchema = z.object({
+  text: z.string().min(1),
+  hours_before: z.number().positive(),
+});
 
 export const recipeSeed = z.object({
   key: z.string().regex(/^[a-z][a-z0-9_]*$/),
@@ -76,17 +161,27 @@ export const recipeSeed = z.object({
 export type RecipeSeed = z.infer<typeof recipeSeed>;
 
 /** Validate both seed files together; returns a list of human-readable problems. */
-export function checkSeed(ingredientsRaw: unknown, recipesRaw: unknown): { problems: string[]; ingredients: IngredientSeed[]; recipes: RecipeSeed[] } {
+export function checkSeed(
+  ingredientsRaw: unknown,
+  recipesRaw: unknown,
+): { problems: string[]; ingredients: IngredientSeed[]; recipes: RecipeSeed[] } {
   const problems: string[] = [];
   const ing = z.array(ingredientSeed).safeParse(ingredientsRaw);
   const rec = z.array(recipeSeed).safeParse(recipesRaw);
-  if (!ing.success) problems.push(...ing.error.issues.slice(0, 20).map((i) => `ingredients ${i.path.join(".")}: ${i.message}`));
-  if (!rec.success) problems.push(...rec.error.issues.slice(0, 20).map((i) => `recipes ${i.path.join(".")}: ${i.message}`));
+  if (!ing.success)
+    problems.push(
+      ...ing.error.issues.slice(0, 20).map((i) => `ingredients ${i.path.join(".")}: ${i.message}`),
+    );
+  if (!rec.success)
+    problems.push(
+      ...rec.error.issues.slice(0, 20).map((i) => `recipes ${i.path.join(".")}: ${i.message}`),
+    );
   const ingredients = ing.success ? ing.data : [];
   const recipes = rec.success ? rec.data : [];
   const byKey = new Map(ingredients.map((i) => [i.key, i]));
   if (byKey.size !== ingredients.length) problems.push("duplicate ingredient keys");
-  if (new Set(recipes.map((r) => r.key)).size !== recipes.length) problems.push("duplicate recipe keys");
+  if (new Set(recipes.map((r) => r.key)).size !== recipes.length)
+    problems.push("duplicate recipe keys");
   for (const r of recipes) {
     for (const x of r.ingredients) {
       const i = byKey.get(x.ingredient);
@@ -94,7 +189,8 @@ export function checkSeed(ingredientsRaw: unknown, recipesRaw: unknown): { probl
       else if (!["g", "ml", "tsp", "tbsp", "cup"].includes(x.unit) && !(x.unit in i.grams_per_unit))
         problems.push(`${r.key}: ${x.ingredient} has no gram weight for unit ${x.unit}`);
     }
-    if (r.requires_equipment.includes("oven") && r.tags.includes("no_oven")) problems.push(`${r.key}: requires oven but tagged no_oven`);
+    if (r.requires_equipment.includes("oven") && r.tags.includes("no_oven"))
+      problems.push(`${r.key}: requires oven but tagged no_oven`);
   }
   return { problems, ingredients, recipes };
 }

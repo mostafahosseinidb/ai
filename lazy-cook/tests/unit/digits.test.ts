@@ -23,5 +23,6 @@ describe("jalali dates", () => {
   it("formats 2026-11-05 as 14 Aban", () => expect(formatDayMonth("2026-11-05")).toBe("۱۴ آبان"));
   it("adds days across month ends", () => expect(addDaysISO("2026-12-30", 3)).toBe("2027-01-02"));
   it("diffs days", () => expect(diffDaysISO("2026-11-12", "2026-11-05")).toBe(7));
-  it("today in a time zone", () => expect(todayISO("Asia/Yerevan", new Date("2026-11-05T22:30:00Z"))).toBe("2026-11-06"));
+  it("today in a time zone", () =>
+    expect(todayISO("Asia/Yerevan", new Date("2026-11-05T22:30:00Z"))).toBe("2026-11-06"));
 });

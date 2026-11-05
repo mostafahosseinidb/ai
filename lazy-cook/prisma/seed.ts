@@ -8,7 +8,10 @@ const seedDir = new URL("../seed/", import.meta.url);
 const read = (p: string) => JSON.parse(readFileSync(new URL(p, seedDir), "utf8"));
 
 async function main() {
-  const { problems, ingredients, recipes } = checkSeed(read("ingredients.json"), read("recipes.json"));
+  const { problems, ingredients, recipes } = checkSeed(
+    read("ingredients.json"),
+    read("recipes.json"),
+  );
   if (problems.length) throw new Error(`seed data invalid:\n${problems.join("\n")}`);
 
   const idByKey = new Map<string, string>();
@@ -38,12 +41,24 @@ async function main() {
   if (existsSync(localesDir)) {
     for (const file of readdirSync(localesDir).filter((f) => f.endsWith(".json"))) {
       const country = file.replace(".json", "").toUpperCase();
-      const rows = JSON.parse(readFileSync(new URL(file, localesDir), "utf8")) as Array<{ ingredient: string; language: string; name: string; notes?: string }>;
+      const rows = JSON.parse(readFileSync(new URL(file, localesDir), "utf8")) as Array<{
+        ingredient: string;
+        language: string;
+        name: string;
+        notes?: string;
+      }>;
       await db.ingredientLocalName.deleteMany({ where: { countryCode: country, source: "seed" } });
       await db.ingredientLocalName.createMany({
         data: rows
           .filter((r) => idByKey.has(r.ingredient))
-          .map((r) => ({ ingredientId: idByKey.get(r.ingredient)!, countryCode: country, language: r.language, name: r.name, notes: r.notes ?? null, source: "seed" as const })),
+          .map((r) => ({
+            ingredientId: idByKey.get(r.ingredient)!,
+            countryCode: country,
+            language: r.language,
+            name: r.name,
+            notes: r.notes ?? null,
+            source: "seed" as const,
+          })),
       });
     }
   }
@@ -72,7 +87,12 @@ async function main() {
       source: "seed" as const,
       sourceCredit: r.source_credit,
     };
-    const row = await db.recipe.upsert({ where: { slug: r.key }, create: { slug: r.key, ...data }, update: data, select: { id: true } });
+    const row = await db.recipe.upsert({
+      where: { slug: r.key },
+      create: { slug: r.key, ...data },
+      update: data,
+      select: { id: true },
+    });
     await db.recipeIngredient.deleteMany({ where: { recipeId: row.id } });
     await db.recipeIngredient.createMany({
       data: r.ingredients.map((x, position) => ({

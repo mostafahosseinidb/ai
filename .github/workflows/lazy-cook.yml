@@ -1,0 +1,46 @@
+name: lazy-cook
+
+on:
+  push:
+    paths: ["lazy-cook/**", ".github/workflows/lazy-cook.yml"]
+  pull_request:
+    paths: ["lazy-cook/**", ".github/workflows/lazy-cook.yml"]
+
+defaults:
+  run:
+    working-directory: lazy-cook
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: lazy
+          POSTGRES_PASSWORD: lazy
+          POSTGRES_DB: lazycook
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U lazy" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://lazy:lazy@localhost:5432/lazycook?schema=public
+      AUTH_SECRET: ci-only-secret-not-used-anywhere-else
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: lazy-cook/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run seed:check
+      - run: npm test
+      - run: npx prisma migrate deploy
+      - run: npm run db:seed
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

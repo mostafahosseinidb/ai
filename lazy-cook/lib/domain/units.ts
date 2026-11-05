@@ -15,7 +15,13 @@ export const UNITS = [
 export type Unit = (typeof UNITS)[number];
 
 /** Units that represent whole things — scaled quantities are rounded to whole/half items. */
-export const COUNT_UNITS: ReadonlySet<string> = new Set(["piece", "clove", "slice", "bunch", "can"]);
+export const COUNT_UNITS: ReadonlySet<string> = new Set([
+  "piece",
+  "clove",
+  "slice",
+  "bunch",
+  "can",
+]);
 
 /** Spoon/cup units — rounded to the nearest ¼. */
 export const SPOON_UNITS: ReadonlySet<string> = new Set(["tbsp", "tsp", "cup"]);
@@ -43,7 +49,11 @@ export type GramsPerUnit = Partial<Record<string, number>>;
  * Convert a quantity of an ingredient to grams. Returns null when the conversion is unknown
  * (e.g. "1 bunch" of something with no recorded bunch weight).
  */
-export function toGrams(quantity: number, unit: string, gramsPerUnit: GramsPerUnit = {}): number | null {
+export function toGrams(
+  quantity: number,
+  unit: string,
+  gramsPerUnit: GramsPerUnit = {},
+): number | null {
   if (unit === "g") return quantity;
   const direct = gramsPerUnit[unit];
   if (typeof direct === "number") return quantity * direct;
@@ -57,7 +67,11 @@ export function toGrams(quantity: number, unit: string, gramsPerUnit: GramsPerUn
 }
 
 /** Convert grams back to a given unit for the same ingredient; null if impossible. */
-export function fromGrams(grams: number, unit: string, gramsPerUnit: GramsPerUnit = {}): number | null {
+export function fromGrams(
+  grams: number,
+  unit: string,
+  gramsPerUnit: GramsPerUnit = {},
+): number | null {
   const one = toGrams(1, unit, gramsPerUnit);
   if (one === null || one === 0) return null;
   return grams / one;

@@ -21,7 +21,13 @@ export function addNutrition(a: Nutrition, b: Nutrition): Nutrition {
 }
 
 export function scaleNutrition(n: Nutrition, f: number): Nutrition {
-  return { kcal: n.kcal * f, protein: n.protein * f, carbs: n.carbs * f, fat: n.fat * f, fiber: n.fiber * f };
+  return {
+    kcal: n.kcal * f,
+    protein: n.protein * f,
+    carbs: n.carbs * f,
+    fat: n.fat * f,
+    fiber: n.fiber * f,
+  };
 }
 
 /**
@@ -29,7 +35,13 @@ export function scaleNutrition(n: Nutrition, f: number): Nutrition {
  * can't be converted to grams are skipped and reported, so the caller can fall back to a stored value.
  */
 export function nutritionFromIngredients(
-  items: Array<{ quantity: number; unit: string; gramsPerUnit: GramsPerUnit; per100g: Nutrition; optional?: boolean }>,
+  items: Array<{
+    quantity: number;
+    unit: string;
+    gramsPerUnit: GramsPerUnit;
+    per100g: Nutrition;
+    optional?: boolean;
+  }>,
   servings: number,
 ): { perServing: Nutrition; unconverted: number } {
   let total = ZERO_NUTRITION;
@@ -58,7 +70,12 @@ const ACTIVITY_FACTOR: Record<Activity, number> = {
 };
 
 /** Daily kcal adjustment per goal; weight loss never targets more than ~0.5 kg/week (spec §11.1 caps at 1). */
-const GOAL_DELTA: Record<Goal, number> = { maintain: 0, lose_slow: -250, lose: -500, gain_muscle: 250 };
+const GOAL_DELTA: Record<Goal, number> = {
+  maintain: 0,
+  lose_slow: -250,
+  lose: -500,
+  gain_muscle: 250,
+};
 
 /** Safety floors from spec §11.1. */
 export const KCAL_FLOOR = { female: 1200, male: 1500, other: 1200 } as const;
@@ -93,7 +110,12 @@ export function estimateDailyKcal(input: {
 export function portionFactor(input: Parameters<typeof estimateDailyKcal>[0]): number {
   const kcal = estimateDailyKcal(input);
   if (kcal === null) {
-    const byGoal: Record<Goal, number> = { maintain: 1, lose_slow: 0.9, lose: 0.85, gain_muscle: 1.15 };
+    const byGoal: Record<Goal, number> = {
+      maintain: 1,
+      lose_slow: 0.9,
+      lose: 0.85,
+      gain_muscle: 1.15,
+    };
     return byGoal[input.goal];
   }
   const f = kcal / 2000;

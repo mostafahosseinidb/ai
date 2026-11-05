@@ -8,7 +8,11 @@ import { COUNT_UNITS, SPOON_UNITS } from "./units";
  *  - grams / ml → nearest 5 (nearest 1 under 10, so small spice amounts don't vanish).
  *  - pinch → whole pinches, at least 1.
  */
-export function roundQuantity(quantity: number, unit: string, opts: { halvesAllowed?: boolean } = {}): number {
+export function roundQuantity(
+  quantity: number,
+  unit: string,
+  opts: { halvesAllowed?: boolean } = {},
+): number {
   if (!Number.isFinite(quantity) || quantity <= 0) return 0;
 
   if (COUNT_UNITS.has(unit)) {

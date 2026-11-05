@@ -106,7 +106,8 @@ export function forbiddenFlags(member: MemberFacts): Set<string> {
   const out = new Set<string>();
   for (const p of member.preferences) {
     if (p.type === "diet") (DIET_FORBIDS[p.value] ?? []).forEach((f) => out.add(f));
-    if (p.type === "intolerance") (INTOLERANCE_FORBIDS[p.value] ?? [p.value]).forEach((f) => out.add(f));
+    if (p.type === "intolerance")
+      (INTOLERANCE_FORBIDS[p.value] ?? [p.value]).forEach((f) => out.add(f));
     if (p.type === "avoid") out.add(p.value);
   }
   return out;
@@ -158,7 +159,8 @@ export function validatePlan(meals: CandidateMeal[], ctx: RuleContext): Violatio
 
     // 1. equipment
     for (const eq of recipe.requiresEquipment) {
-      if (!equipment.has(eq)) v.push({ ...at, code: "equipment", detail: `«${recipe.titleFa}» به ${eq} نیاز دارد` });
+      if (!equipment.has(eq))
+        v.push({ ...at, code: "equipment", detail: `«${recipe.titleFa}» به ${eq} نیاز دارد` });
     }
 
     // 2. forbidden ingredients per member (unless a substitution for that member is given)
@@ -166,7 +168,13 @@ export function validatePlan(meals: CandidateMeal[], ctx: RuleContext): Violatio
       const member = memberById.get(id);
       if (!member || meal.substitutions?.[id]) continue;
       const bad = recipeConflict(recipe, member);
-      if (bad) v.push({ ...at, code: "forbidden_ingredient", memberId: id, detail: `${member.displayName}: ${bad}` });
+      if (bad)
+        v.push({
+          ...at,
+          code: "forbidden_ingredient",
+          memberId: id,
+          detail: `${member.displayName}: ${bad}`,
+        });
     }
 
     // 4. dislikes — rated down in the last 90 days, or a free-text dislike
@@ -177,7 +185,13 @@ export function validatePlan(meals: CandidateMeal[], ctx: RuleContext): Violatio
     for (const id of meal.eaterIds ?? allMemberIds) {
       const member = memberById.get(id);
       const hit = member && matchesTextDislike(recipe, member);
-      if (hit) v.push({ ...at, code: "disliked", memberId: id, detail: `${member.displayName} «${hit}» دوست ندارد` });
+      if (hit)
+        v.push({
+          ...at,
+          code: "disliked",
+          memberId: id,
+          detail: `${member.displayName} «${hit}» دوست ندارد`,
+        });
     }
   }
 
@@ -196,7 +210,13 @@ export function validatePlan(meals: CandidateMeal[], ctx: RuleContext): Violatio
       if (m.leftoverOf) continue;
       if (yesterday.some((y) => y.recipeId === m.recipeId)) {
         const title = ctx.recipes.get(m.recipeId!)?.titleFa ?? "";
-        v.push({ code: "repeat_consecutive", date, slot: m.slot, recipeId: m.recipeId!, detail: `«${title}» دو روز پشت سر هم` });
+        v.push({
+          code: "repeat_consecutive",
+          date,
+          slot: m.slot,
+          recipeId: m.recipeId!,
+          detail: `«${title}» دو روز پشت سر هم`,
+        });
       }
     }
   }
@@ -215,7 +235,12 @@ export function validatePlan(meals: CandidateMeal[], ctx: RuleContext): Violatio
           (item.ingredientKey && r.ingredientKeys.includes(item.ingredientKey))
         );
       });
-      if (!used) v.push({ code: "expiring_unused", date: item.expiry, detail: `«${item.label}» تا ${item.expiry} مصرف نشده` });
+      if (!used)
+        v.push({
+          code: "expiring_unused",
+          date: item.expiry,
+          detail: `«${item.label}» تا ${item.expiry} مصرف نشده`,
+        });
     }
   }
 
@@ -300,10 +325,20 @@ export function derivePrepTasks(
     for (const p of r.prepAhead) {
       const mealHour = SLOT_HOUR[m.slot] ?? 13;
       if (p.hours_before >= 6 || p.hours_before > mealHour) {
-        out.push({ dueDate: addDaysISO(m.date, -1), dueTime: eveningTime, text: `${p.text} (برای ${r.titleFa})`, mealKey: { date: m.date, slot: m.slot } });
+        out.push({
+          dueDate: addDaysISO(m.date, -1),
+          dueTime: eveningTime,
+          text: `${p.text} (برای ${r.titleFa})`,
+          mealKey: { date: m.date, slot: m.slot },
+        });
       } else {
         const h = Math.max(0, mealHour - Math.ceil(p.hours_before));
-        out.push({ dueDate: m.date, dueTime: `${String(h).padStart(2, "0")}:00`, text: `${p.text} (برای ${r.titleFa})`, mealKey: { date: m.date, slot: m.slot } });
+        out.push({
+          dueDate: m.date,
+          dueTime: `${String(h).padStart(2, "0")}:00`,
+          text: `${p.text} (برای ${r.titleFa})`,
+          mealKey: { date: m.date, slot: m.slot },
+        });
       }
     }
   }

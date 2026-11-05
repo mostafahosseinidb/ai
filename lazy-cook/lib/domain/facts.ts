@@ -20,7 +20,9 @@ export function recipeFacts(r: FactsSourceRecipe): AutofillRecipe {
   const required = r.ingredients.filter((i) => !i.optional);
   const flags = new Set<string>();
   for (const i of required) i.flags.forEach((f) => flags.add(f));
-  const prep = Array.isArray(r.prepAhead) ? (r.prepAhead as Array<{ text: string; hours_before: number }>) : [];
+  const prep = Array.isArray(r.prepAhead)
+    ? (r.prepAhead as Array<{ text: string; hours_before: number }>)
+    : [];
   const n = r.nutritionPerServing as { kcal?: number } | null;
   return {
     id: r.id,

@@ -22,7 +22,11 @@ export const facts = seed.recipes.map((r) =>
     fridgeDays: r.fridge_days,
     prepAhead: r.prep_ahead,
     nutritionPerServing: r.nutrition_per_serving,
-    ingredients: r.ingredients.map((x) => ({ key: x.ingredient, flags: ingredientsByKey.get(x.ingredient)?.flags ?? [], optional: x.optional })),
+    ingredients: r.ingredients.map((x) => ({
+      key: x.ingredient,
+      flags: ingredientsByKey.get(x.ingredient)?.flags ?? [],
+      optional: x.optional,
+    })),
   }),
 );
 export const factsById = new Map(facts.map((f) => [f.id, f]));

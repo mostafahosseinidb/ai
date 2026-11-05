@@ -71,14 +71,24 @@ export function autofillPlan(input: AutofillInput): CandidateMeal[] {
   const taken = new Set(plan.map((m) => `${m.date}|${m.slot}`));
   const byId = new Map(input.recipes.map((r) => [r.id, r]));
   const usedCount = new Map<string, number>();
-  for (const m of plan) if (m.recipeId) usedCount.set(m.recipeId, (usedCount.get(m.recipeId) ?? 0) + 1);
+  for (const m of plan)
+    if (m.recipeId) usedCount.set(m.recipeId, (usedCount.get(m.recipeId) ?? 0) + 1);
 
   let lastIranian: ISODate | null = null;
   for (const [id, date] of input.recentlyCooked ?? []) {
-    if (byId.get(id)?.cuisine === "iranian" && (!lastIranian || date > lastIranian)) lastIranian = date;
+    if (byId.get(id)?.cuisine === "iranian" && (!lastIranian || date > lastIranian))
+      lastIranian = date;
   }
 
-  const orderedSlots = ["breakfast", "mid_morning", "lunch", "after_lunch", "snack", "dinner", "late"].filter((s) => input.slots.includes(s));
+  const orderedSlots = [
+    "breakfast",
+    "mid_morning",
+    "lunch",
+    "after_lunch",
+    "snack",
+    "dinner",
+    "late",
+  ].filter((s) => input.slots.includes(s));
 
   for (let d = 0; d < input.days; d++) {
     const date = addDaysISO(input.startDate, d);
@@ -93,7 +103,12 @@ export function autofillPlan(input: AutofillInput): CandidateMeal[] {
         const source = latestMain(plan, date, slot);
         const r = source?.recipeId ? byId.get(source.recipeId) : undefined;
         if (source && r && (r.fridgeDays ?? 1) >= diffDaysISO(date, source.date)) {
-          const leftover: CandidateMeal = { date, slot, recipeId: r.id, leftoverOf: { date: source.date, slot: source.slot } };
+          const leftover: CandidateMeal = {
+            date,
+            slot,
+            recipeId: r.id,
+            leftoverOf: { date: source.date, slot: source.slot },
+          };
           const before = validatePlan(plan, input.ctx).length;
           if (validatePlan([...plan, leftover], input.ctx).length === before) {
             plan.push(leftover);
@@ -117,12 +132,22 @@ export function autofillPlan(input: AutofillInput): CandidateMeal[] {
         score -= (usedCount.get(r.id) ?? 0) * 2;
         const recent = input.recentlyCooked?.get(r.id);
         if (recent && diffDaysISO(date, recent) < 7) score -= 1;
-        if (iranianDue && r.cuisine === "iranian" && (slot === "lunch" || slot === "dinner")) score += 2.5;
+        if (iranianDue && r.cuisine === "iranian" && (slot === "lunch" || slot === "dinner"))
+          score += 2.5;
         if (slot === "dinner" && (r.tags.includes("light") || (r.kcal ?? 600) < 450)) score += 0.6;
         if (r.tags.includes("one_pot")) score += 0.3;
         if (!cooking && r.tags.includes("ten_minute")) score += 0.8;
         // avoid two dishes of the same cuisine on the same day
-        if (plan.some((m) => m.date === date && m.recipeId && byId.get(m.recipeId)?.cuisine === r.cuisine && r.cuisine !== "other")) score -= 0.7;
+        if (
+          plan.some(
+            (m) =>
+              m.date === date &&
+              m.recipeId &&
+              byId.get(m.recipeId)?.cuisine === r.cuisine &&
+              r.cuisine !== "other",
+          )
+        )
+          score -= 0.7;
         if ((slot === "lunch" || slot === "dinner") && r.mealTypes.includes("dessert")) score -= 3;
         scored.push({ r, score });
       }
@@ -143,6 +168,12 @@ function latestMain(plan: CandidateMeal[], date: ISODate, slot: string): Candida
   const order = (m: CandidateMeal) => `${m.date}|${m.slot === "lunch" ? 1 : 2}`;
   const here = `${date}|${slot === "lunch" ? 1 : 2}`;
   return plan
-    .filter((m) => (m.slot === "lunch" || m.slot === "dinner") && m.recipeId && !m.leftoverOf && order(m) < here)
+    .filter(
+      (m) =>
+        (m.slot === "lunch" || m.slot === "dinner") &&
+        m.recipeId &&
+        !m.leftoverOf &&
+        order(m) < here,
+    )
     .sort((a, b) => order(b).localeCompare(order(a)))[0];
 }
