@@ -1,0 +1,661 @@
+// Data model — spec §8. Tables are snake_case (@@map); fields are camelCase in code.
+// Every table has id (UUID), createdAt, updatedAt; soft deletes use deletedAt.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- enums ----------
+
+enum CalendarKind {
+  jalali
+  gregorian
+}
+
+enum UnitSystem {
+  metric
+  cups
+}
+
+enum HouseholdRole {
+  owner
+  member
+}
+
+enum Goal {
+  maintain
+  lose_slow
+  lose
+  gain_muscle
+}
+
+enum ActivityLevel {
+  sedentary
+  light
+  moderate
+  active
+}
+
+enum Sex {
+  female
+  male
+  other
+}
+
+enum PreferenceType {
+  diet
+  avoid
+  limit
+  dislike
+  like
+  intolerance
+}
+
+enum RecipeSource {
+  seed
+  ai
+  user_import
+  user_manual
+}
+
+enum PlanStatus {
+  draft
+  active
+  completed
+  archived
+}
+
+enum MealStatus {
+  planned
+  done
+  skipped
+  eaten_out
+  replaced
+}
+
+enum Rating {
+  up
+  down
+}
+
+enum StorageLocation {
+  fridge
+  freezer
+  pantry
+}
+
+enum PantryStatus {
+  active
+  used
+  discarded
+}
+
+enum ShoppingSection {
+  required
+  optional
+}
+
+enum AddedBy {
+  auto
+  user
+  assistant
+}
+
+enum Actor {
+  user
+  assistant
+  system
+}
+
+enum LocalNameSource {
+  seed
+  ai
+  user
+}
+
+// ---------- auth (Auth.js) + users ----------
+
+model User {
+  id                    String       @id @default(uuid()) @db.Uuid
+  email                 String?      @unique
+  emailVerified         DateTime?
+  name                  String?
+  image                 String?
+  locale                String       @default("fa")
+  countryCode           String?      @db.VarChar(2)
+  city                  String?
+  timezone              String       @default("UTC")
+  currency              String?      @db.VarChar(3)
+  calendar              CalendarKind @default(jalali)
+  units                 UnitSystem   @default(metric)
+  subscriptionStatus    String       @default("free")
+  onboardingCompletedAt DateTime?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  deletedAt             DateTime?
+
+  accounts          Account[]
+  sessions          Session[]
+  households        HouseholdUser[]
+  ownedHouseholds   Household[]        @relation("HouseholdOwner")
+  assistantMessages AssistantMessage[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(uuid()) @db.Uuid
+  sessionToken String   @unique
+  userId       String   @db.Uuid
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ---------- household ----------
+
+model Household {
+  id                       String    @id @default(uuid()) @db.Uuid
+  name                     String
+  ownerUserId              String    @db.Uuid
+  cookingDaysPerWeek       Int       @default(4)
+  batchPrepWeekday         Int? // 0 = Sunday … 6 = Saturday
+  iranianFoodFrequencyDays Int       @default(7)
+  weeklyBudget             Decimal?  @db.Decimal(10, 2)
+  activeMealSlots          String[]  @default(["breakfast", "lunch", "dinner"])
+  bedtime                  String? // "HH:mm"
+  kitchenEquipment         String[]  @default([])
+  burners                  Int       @default(2)
+  autoDeductPantry         Boolean   @default(true)
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+  deletedAt                DateTime?
+
+  owner          User               @relation("HouseholdOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+  users          HouseholdUser[]
+  members        Member[]
+  recipes        Recipe[]
+  mealPlans      MealPlan[]
+  freeLogs       FreeLog[]
+  prepTasks      PrepTask[]
+  pantryItems    PantryItem[]
+  shoppingItems  ShoppingItem[]
+  wishlistItems  WishlistItem[]
+  recurringRules RecurringRule[]
+  messages       AssistantMessage[]
+  changeLog      ChangeLog[]
+
+  @@map("households")
+}
+
+model HouseholdUser {
+  id          String        @id @default(uuid()) @db.Uuid
+  householdId String        @db.Uuid
+  userId      String        @db.Uuid
+  role        HouseholdRole @default(member)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([householdId, userId])
+  @@map("household_users")
+}
+
+model Member {
+  id                String        @id @default(uuid()) @db.Uuid
+  householdId       String        @db.Uuid
+  displayName       String
+  birthYear         Int?
+  sex               Sex?
+  heightCm          Int?
+  weightKg          Decimal?      @db.Decimal(5, 1)
+  goal              Goal          @default(maintain)
+  activityLevel     ActivityLevel @default(light)
+  portionFactor     Decimal       @default(1.0) @db.Decimal(3, 2)
+  dailyKcalEstimate Int?
+  waterGoalMl       Int?
+  position          Int           @default(0)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  deletedAt         DateTime?
+
+  household   Household          @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  preferences MemberPreference[]
+  feedback    MealFeedback[]
+
+  @@map("members")
+}
+
+model MemberPreference {
+  id           String         @id @default(uuid()) @db.Uuid
+  memberId     String         @db.Uuid
+  type         PreferenceType
+  value        String
+  limitPerWeek Int?
+  note         String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  deletedAt    DateTime?
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+  @@map("member_preferences")
+}
+
+// ---------- ingredients & recipes ----------
+
+model Ingredient {
+  id               String    @id @default(uuid()) @db.Uuid
+  canonicalName    String    @unique
+  nameFa           String
+  aliasesFa        String[]  @default([])
+  category         String
+  defaultUnit      String
+  gramsPerUnit     Json      @default("{}")
+  nutritionPer100g Json
+  shelfLifeDays    Json
+  freezable        Boolean   @default(false)
+  flags            String[]  @default([])
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+
+  localNames        IngredientLocalName[]
+  recipeIngredients RecipeIngredient[]
+  pantryItems       PantryItem[]
+  shoppingItems     ShoppingItem[]
+
+  @@map("ingredients")
+}
+
+model IngredientLocalName {
+  id           String          @id @default(uuid()) @db.Uuid
+  ingredientId String          @db.Uuid
+  countryCode  String          @db.VarChar(2)
+  language     String
+  name         String
+  notes        String?
+  source       LocalNameSource @default(seed)
+  upvotes      Int             @default(0)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  deletedAt    DateTime?
+
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@index([ingredientId, countryCode])
+  @@map("ingredient_local_names")
+}
+
+model Recipe {
+  id                      String       @id @default(uuid()) @db.Uuid
+  slug                    String?      @unique // stable key for seed recipes
+  ownerHouseholdId        String?      @db.Uuid
+  titleFa                 String
+  titleOriginal           String?
+  introFa                 String?
+  cuisine                 String
+  mealTypes               String[]
+  baseServings            Int          @default(2)
+  activeMinutes           Int
+  totalMinutes            Int
+  difficulty              Int          @default(1)
+  requiresEquipment       String[]     @default([])
+  equipmentAlternativesFa String?
+  steps                   Json // [{text, timer_seconds?}]
+  nutritionPerServing     Json?
+  freezerFriendly         Boolean      @default(false)
+  fridgeDays              Int?
+  reheatNote              String?
+  prepAhead               Json         @default("[]") // [{text, hours_before}]
+  tags                    String[]     @default([])
+  source                  RecipeSource @default(user_manual)
+  sourceCredit            String?
+  parentRecipeId          String?      @db.Uuid
+  photoUrl                String?
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+  deletedAt               DateTime?
+
+  ownerHousehold Household?         @relation(fields: [ownerHouseholdId], references: [id], onDelete: Cascade)
+  parent         Recipe?            @relation("RecipeVersions", fields: [parentRecipeId], references: [id])
+  children       Recipe[]           @relation("RecipeVersions")
+  ingredients    RecipeIngredient[]
+  plannedMeals   PlannedMeal[]
+  pantryItems    PantryItem[]
+  wishlistItems  WishlistItem[]
+  recurringRules RecurringRule[]
+
+  @@index([ownerHouseholdId])
+  @@map("recipes")
+}
+
+model RecipeIngredient {
+  id           String   @id @default(uuid()) @db.Uuid
+  recipeId     String   @db.Uuid
+  ingredientId String   @db.Uuid
+  quantity     Decimal  @db.Decimal(10, 3)
+  unit         String
+  prepNote     String?
+  optional     Boolean  @default(false)
+  group        String?
+  position     Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@index([recipeId])
+  @@map("recipe_ingredients")
+}
+
+// ---------- planning ----------
+
+model MealPlan {
+  id              String     @id @default(uuid()) @db.Uuid
+  householdId     String     @db.Uuid
+  startDate       DateTime   @db.Date
+  days            Int
+  status          PlanStatus @default(draft)
+  generationInput Json?
+  aiCallId        String?    @db.Uuid
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  deletedAt       DateTime?
+
+  household     Household      @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  aiCall        AiCall?        @relation(fields: [aiCallId], references: [id])
+  meals         PlannedMeal[]
+  prepTasks     PrepTask[]
+  shoppingItems ShoppingItem[]
+
+  @@index([householdId, status])
+  @@map("meal_plans")
+}
+
+model PlannedMeal {
+  id                      String     @id @default(uuid()) @db.Uuid
+  mealPlanId              String     @db.Uuid
+  date                    DateTime   @db.Date
+  slot                    String
+  recipeId                String?    @db.Uuid
+  freeText                String?
+  servingsByMember        Json       @default("{}") // {memberId: factor}
+  leftoverOfPlannedMealId String?    @db.Uuid
+  fromFreezerPantryItemId String?    @db.Uuid
+  side                    String?
+  drink                   String?
+  memberNotes             Json       @default("{}") // {memberId: text}
+  tag                     String?
+  status                  MealStatus @default(planned)
+  eatenOutText            String?
+  doneAt                  DateTime?
+  position                Int        @default(0)
+  createdAt               DateTime   @default(now())
+  updatedAt               DateTime   @updatedAt
+  deletedAt               DateTime?
+
+  mealPlan      MealPlan       @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  recipe        Recipe?        @relation(fields: [recipeId], references: [id])
+  leftoverOf    PlannedMeal?   @relation("Leftovers", fields: [leftoverOfPlannedMealId], references: [id], onDelete: SetNull)
+  leftovers     PlannedMeal[]  @relation("Leftovers")
+  fromFreezer   PantryItem?    @relation(fields: [fromFreezerPantryItemId], references: [id], onDelete: SetNull)
+  feedback      MealFeedback[]
+  prepTasks     PrepTask[]
+  wishlistItems WishlistItem[]
+
+  @@index([mealPlanId, date])
+  @@map("planned_meals")
+}
+
+model MealFeedback {
+  id            String    @id @default(uuid()) @db.Uuid
+  plannedMealId String    @db.Uuid
+  memberId      String?   @db.Uuid
+  rating        Rating
+  reasons       String[]  @default([])
+  comment       String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  plannedMeal PlannedMeal @relation(fields: [plannedMealId], references: [id], onDelete: Cascade)
+  member      Member?     @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  @@index([plannedMealId])
+  @@map("meal_feedback")
+}
+
+model FreeLog {
+  id                 String    @id @default(uuid()) @db.Uuid
+  householdId        String    @db.Uuid
+  date               DateTime  @db.Date
+  slot               String?
+  text               String
+  estimatedNutrition Json?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  deletedAt          DateTime?
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+
+  @@index([householdId, date])
+  @@map("free_logs")
+}
+
+model PrepTask {
+  id                   String    @id @default(uuid()) @db.Uuid
+  householdId          String    @db.Uuid
+  mealPlanId           String?   @db.Uuid
+  dueDate              DateTime  @db.Date
+  dueTime              String    @default("21:00")
+  text                 String
+  relatedPlannedMealId String?   @db.Uuid
+  doneAt               DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  deletedAt            DateTime?
+
+  household          Household    @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  mealPlan           MealPlan?    @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  relatedPlannedMeal PlannedMeal? @relation(fields: [relatedPlannedMealId], references: [id], onDelete: Cascade)
+
+  @@index([householdId, dueDate])
+  @@map("prep_tasks")
+}
+
+// ---------- pantry & shopping ----------
+
+model PantryItem {
+  id                 String          @id @default(uuid()) @db.Uuid
+  householdId        String          @db.Uuid
+  ingredientId       String?         @db.Uuid
+  customName         String?
+  recipeId           String?         @db.Uuid
+  quantity           Decimal         @db.Decimal(10, 3)
+  unit               String
+  location           StorageLocation
+  purchasedAt        DateTime?
+  openedAt           DateTime?
+  packageExpiryDate  DateTime?       @db.Date
+  computedExpiryDate DateTime?       @db.Date
+  status             PantryStatus    @default(active)
+  note               String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  deletedAt          DateTime?
+
+  household    Household     @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  ingredient   Ingredient?   @relation(fields: [ingredientId], references: [id])
+  recipe       Recipe?       @relation(fields: [recipeId], references: [id])
+  plannedMeals PlannedMeal[]
+
+  @@index([householdId, status])
+  @@map("pantry_items")
+}
+
+model ShoppingItem {
+  id           String          @id @default(uuid()) @db.Uuid
+  householdId  String          @db.Uuid
+  mealPlanId   String?         @db.Uuid
+  ingredientId String?         @db.Uuid
+  customName   String?
+  quantity     Decimal?        @db.Decimal(10, 3)
+  unit         String?
+  packageHint  String?
+  section      ShoppingSection @default(required)
+  aisle        String          @default("other")
+  checkedAt    DateTime?
+  addedBy      AddedBy         @default(auto)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  deletedAt    DateTime?
+
+  household  Household   @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  mealPlan   MealPlan?   @relation(fields: [mealPlanId], references: [id], onDelete: SetNull)
+  ingredient Ingredient? @relation(fields: [ingredientId], references: [id])
+
+  @@index([householdId])
+  @@map("shopping_items")
+}
+
+model WishlistItem {
+  id                     String    @id @default(uuid()) @db.Uuid
+  householdId            String    @db.Uuid
+  recipeId               String    @db.Uuid
+  note                   String?
+  priority               Int       @default(0)
+  scheduledPlannedMealId String?   @db.Uuid
+  doneAt                 DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  deletedAt              DateTime?
+
+  household            Household    @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  recipe               Recipe       @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  scheduledPlannedMeal PlannedMeal? @relation(fields: [scheduledPlannedMealId], references: [id], onDelete: SetNull)
+
+  @@map("wishlist_items")
+}
+
+model RecurringRule {
+  id               String    @id @default(uuid()) @db.Uuid
+  householdId      String    @db.Uuid
+  recipeId         String    @db.Uuid
+  everyDays        Int
+  preferredWeekday Int?
+  lastCookedOn     DateTime? @db.Date
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  recipe    Recipe    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("recurring_rules")
+}
+
+// ---------- assistant, undo, AI accounting ----------
+
+model AssistantMessage {
+  id              String    @id @default(uuid()) @db.Uuid
+  householdId     String    @db.Uuid
+  userId          String?   @db.Uuid
+  role            String
+  content         String
+  attachments     Json      @default("[]")
+  proposedChanges Json?
+  appliedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([householdId, createdAt])
+  @@map("assistant_messages")
+}
+
+model ChangeLog {
+  id          String    @id @default(uuid()) @db.Uuid
+  householdId String    @db.Uuid
+  batchId     String?   @db.Uuid // groups the changes applied together, undone together
+  entity      String
+  entityId    String    @db.Uuid
+  before      Json?
+  after       Json?
+  actor       Actor
+  revertedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+
+  @@index([householdId, createdAt])
+  @@map("change_log")
+}
+
+model AiCall {
+  id           String   @id @default(uuid()) @db.Uuid
+  householdId  String?  @db.Uuid
+  purpose      String
+  model        String
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  costUsd      Decimal  @default(0) @db.Decimal(10, 6)
+  latencyMs    Int      @default(0)
+  success      Boolean
+  error        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  mealPlans MealPlan[]
+
+  @@map("ai_calls")
+}

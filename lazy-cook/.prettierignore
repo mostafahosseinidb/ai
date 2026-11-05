@@ -1,0 +1,7 @@
+.next
+node_modules
+seed/*.json
+seed/locales
+prisma/migrations
+playwright-report
+test-results

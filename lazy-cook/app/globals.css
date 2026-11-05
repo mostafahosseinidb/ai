@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+/* Colour tokens — spec §6.2. Light first, dark under prefers-color-scheme. */
+:root {
+  --bg: #fbf6ee;
+  --surface: #ffffff;
+  --surface-2: #f4ece0;
+  --text: #2b1b17;
+  --muted: #6b5e57;
+  --border: #e8dccb;
+  --primary: #9b2d3a;
+  --primary-contrast: #ffffff;
+  --accent: #e3a23a;
+  --success: #2f6b4f;
+  --warning: #c77d14;
+  --danger: #b3322c;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1917;
+    --surface: #292524;
+    --surface-2: #33302d;
+    --text: #f5efe6;
+    --muted: #a8a29e;
+    --border: #44403c;
+    --primary: #e0707d;
+    --primary-contrast: #1c1917;
+    --accent: #e3a23a;
+    --success: #6fbf96;
+    --warning: #e9a64a;
+    --danger: #f08a83;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-contrast: var(--primary-contrast);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-sans: "Vazirmatn", Tahoma, sans-serif;
+  --radius-card: 16px;
+  --radius-btn: 12px;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Skeleton shimmer (loading states use skeletons, not spinners — spec §6.3) */
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 12px;
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Check-off animation, 200ms */
+.pop {
+  animation: pop 200ms ease-out;
+}
+@keyframes pop {
+  50% {
+    transform: scale(1.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}

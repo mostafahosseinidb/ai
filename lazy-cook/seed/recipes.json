@@ -1,0 +1,6611 @@
+[
+  {
+    "key": "shakshuka",
+    "title_fa": "شکشوکا",
+    "title_original": "Shakshuka",
+    "intro_fa": "یه تابه، چند تا تخم‌مرغ و کلی گوجه؛ ظرف کمتر، کیف بیشتر!",
+    "cuisine": "other",
+    "meal_types": [
+      "breakfast",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 30,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "olive_oil",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "bell_pepper",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "نواری خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 3,
+        "unit": "clove",
+        "prep_note": "له‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 4,
+        "unit": "piece",
+        "prep_note": "رنده یا ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato_paste",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "sugar",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cumin",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "paprika",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 4,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "parsley",
+        "quantity": 0.25,
+        "unit": "bunch",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "feta_cheese",
+        "quantity": 40,
+        "unit": "g",
+        "prep_note": "ریز‌ریزشده",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "پیاز و فلفل دلمه رو با روغن زیتون تو تابه تفت بده تا نرم بشن.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "سیر، رب، زیره و پاپریکا رو اضافه کن و یه دقیقه تفت بده.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "گوجه‌ها رو با شکر و نمک و فلفل بریز تو تابه و بذار سس غلیظ بشه.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "با قاشق چهار تا گودی درست کن و تخم‌مرغ‌ها رو توش بشکن."
+      },
+      {
+        "text": "درِ تابه رو بذار تا سفیده ببنده ولی زرده شل بمونه.",
+        "timer_seconds": 360
+      },
+      {
+        "text": "جعفری و فتا بپاش و با نون داغ بزن تو رگ!"
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 290,
+      "protein": 16,
+      "carbs": 20,
+      "fat": 17,
+      "fiber": 5
+    },
+    "freezer_friendly": false,
+    "fridge_days": 1,
+    "reheat_note": "بهتره سس رو جدا نگه داری و موقع خوردن، داغش کنی و تخم‌مرغ تازه توش بشکنی.",
+    "prep_ahead": [],
+    "tags": [
+      "one_pot",
+      "vegetarian",
+      "no_oven",
+      "budget",
+      "light"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "cilbir",
+    "title_fa": "چیلبیر ترکی",
+    "title_original": "Çılbır",
+    "intro_fa": "صبحونه‌ی شیک ترکی، با زحمت یه تخم‌مرغ آب‌پز!",
+    "cuisine": "turkish",
+    "meal_types": [
+      "breakfast"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 15,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "greek_yogurt",
+        "quantity": 250,
+        "unit": "g",
+        "prep_note": "دمای اتاق",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 1,
+        "unit": "clove",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 4,
+        "unit": "piece",
+        "prep_note": "تازه",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vinegar",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": "برای آب پختن تخم‌مرغ",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "ترجیحاً پول‌بیبر",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "paprika",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "dill",
+        "quantity": 0.25,
+        "unit": "bunch",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "toast_bread",
+        "quantity": 2,
+        "unit": "slice",
+        "prep_note": "برای سرو",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "سیر رو با ماست و یه کم نمک هم بزن و کف دو تا بشقاب پهن کن."
+      },
+      {
+        "text": "یه قابلمه آب رو با سرکه برسون به جوش آروم.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "آب رو بچرخون تا گرداب بشه و تخم‌مرغ‌ها رو یکی‌یکی آروم بنداز توش."
+      },
+      {
+        "text": "بذار سه دقیقه بپزن تا سفیده ببنده و زرده شل بمونه.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "کره رو آب کن و پول‌بیبر و پاپریکا رو چند ثانیه توش تفت بده.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "تخم‌مرغ‌ها رو بذار روی ماست، کره‌ی قرمز رو بریز روش و شوید بپاش."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 340,
+      "protein": 20,
+      "carbs": 9,
+      "fat": 25,
+      "fiber": 0.5
+    },
+    "freezer_friendly": false,
+    "fridge_days": 1,
+    "reheat_note": "تازه بخورش؛ ماست سیری رو جدا تا دو روز می‌تونی تو یخچال نگه داری.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "high_protein",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "french_toast",
+    "title_fa": "فرنچ تست",
+    "title_original": "French Toast",
+    "intro_fa": "نون بیات رو نریز دور، بکنش دسر!",
+    "cuisine": "french",
+    "meal_types": [
+      "breakfast",
+      "dessert"
+    ],
+    "base_servings": 2,
+    "active_minutes": 10,
+    "total_minutes": 15,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "toast_bread",
+        "quantity": 4,
+        "unit": "slice",
+        "prep_note": "ترجیحاً یه کم بیات",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "milk",
+        "quantity": 120,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "sugar",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cinnamon",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vanilla",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "honey",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": true,
+        "group": "برای سرو"
+      }
+    ],
+    "steps": [
+      {
+        "text": "تخم‌مرغ، شیر، شکر، دارچین و وانیل رو تو یه ظرف گود هم بزن."
+      },
+      {
+        "text": "هر برش نون رو چند ثانیه از دو طرف بخوابون تو مخلوط."
+      },
+      {
+        "text": "کره رو تو تابه روی شعله‌ی متوسط آب کن."
+      },
+      {
+        "text": "نون‌ها رو بذار و هر طرف حدود دو سه دقیقه سرخ کن تا طلایی بشن.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "با عسل یا میوه‌ی تازه سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 380,
+      "protein": 13,
+      "carbs": 50,
+      "fat": 14,
+      "fiber": 2
+    },
+    "freezer_friendly": true,
+    "fridge_days": 1,
+    "reheat_note": "تو توستر یا تابه‌ی خشک گرم کن تا دوباره ترد بشه.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "sweet",
+      "no_oven",
+      "budget",
+      "leftover_friendly"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "pan_con_tomate",
+    "title_fa": "پان کون توماته",
+    "title_original": "Pan con tomate",
+    "intro_fa": "صبحونه‌ی اسپانیایی که از نون‌پنیر هم راحت‌تره!",
+    "cuisine": "spanish",
+    "meal_types": [
+      "breakfast",
+      "snack"
+    ],
+    "base_servings": 2,
+    "active_minutes": 5,
+    "total_minutes": 8,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "toast_bread",
+        "quantity": 4,
+        "unit": "slice",
+        "prep_note": "یا نون باگت",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "رسیده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 1,
+        "unit": "clove",
+        "prep_note": "نصف‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "نون‌ها رو تو تابه‌ی خشک یا توستر برشته کن.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "سیر رو بمال روی نون داغ."
+      },
+      {
+        "text": "گوجه رو نصف کن و از سمت برش رنده کن؛ پوستش رو بنداز دور."
+      },
+      {
+        "text": "گوجه‌ی رنده‌شده رو روی نون‌ها پهن کن."
+      },
+      {
+        "text": "روغن زیتون و یه کم نمک بریز روش و تموم!"
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 260,
+      "protein": 6,
+      "carbs": 34,
+      "fat": 11,
+      "fiber": 3
+    },
+    "freezer_friendly": false,
+    "fridge_days": 1,
+    "reheat_note": "گوجه‌ی رنده رو جدا تو یخچال نگه دار و نون رو هر بار تازه برشته کن.",
+    "prep_ahead": [],
+    "tags": [
+      "vegan",
+      "vegetarian",
+      "ten_minute",
+      "no_oven",
+      "budget",
+      "light"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "sausage_pepper_omelette",
+    "title_fa": "املت کالباس و فلفل دلمه",
+    "title_original": "Bologna & Pepper Omelette",
+    "intro_fa": "شام دانشجویی نوستالژیک، حالا تو غربت!",
+    "cuisine": "iranian",
+    "meal_types": [
+      "breakfast",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 10,
+    "total_minutes": 15,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 0.5,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "bell_pepper",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "مکعبی خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "kalbas",
+        "quantity": 100,
+        "unit": "g",
+        "prep_note": "مکعبی خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 4,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "turmeric",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "پیاز و فلفل دلمه رو با روغن تفت بده تا نرم بشن.",
+        "timer_seconds": 240
+      },
+      {
+        "text": "کالباس رو اضافه کن تا یه کم برشته بشه.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "گوجه رو بریز و بذار آبش کشیده بشه.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "تخم‌مرغ‌ها رو با نمک و فلفل و زردچوبه هم بزن و بریز تو تابه."
+      },
+      {
+        "text": "درش رو بذار تا تخم‌مرغ ببنده.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "با نون لواش و خیارشور بزن تو رگ."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 380,
+      "protein": 22,
+      "carbs": 10,
+      "fat": 28,
+      "fiber": 2
+    },
+    "freezer_friendly": false,
+    "fridge_days": 1,
+    "reheat_note": "تو تابه با شعله‌ی کم گرم کن.",
+    "prep_ahead": [],
+    "tags": [
+      "one_pot",
+      "high_protein",
+      "no_oven",
+      "budget"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "rolled_omelette",
+    "title_fa": "رول املت",
+    "title_original": "Rolled Omelette (Gyeran-mari)",
+    "intro_fa": "املت معمولی، فقط یه کم لوله‌شده که کلاس بذاره!",
+    "cuisine": "asian",
+    "meal_types": [
+      "breakfast",
+      "lunch"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 15,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "egg",
+        "quantity": 4,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "milk",
+        "quantity": 30,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "carrot",
+        "quantity": 0.5,
+        "unit": "piece",
+        "prep_note": "ریز رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "green_onion",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "mozzarella",
+        "quantity": 30,
+        "unit": "g",
+        "prep_note": "رنده‌شده",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "تخم‌مرغ‌ها رو با شیر، نمک، هویج و پیازچه خوب هم بزن."
+      },
+      {
+        "text": "تابه‌ی نچسب رو با یه ذره روغن روی شعله‌ی کم داغ کن."
+      },
+      {
+        "text": "یه لایه‌ی نازک از مایه بریز و بذار نیم‌بند بشه.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "از یه طرف لوله‌ش کن و رول رو بکش لبه‌ی تابه."
+      },
+      {
+        "text": "لایه‌ی بعدی رو بریز، بذار زیر رول هم بره و دوباره لوله کن تا مایه تموم بشه.",
+        "timer_seconds": 240
+      },
+      {
+        "text": "یه دقیقه بذار استراحت کنه و بعد برش بزن.",
+        "timer_seconds": 60
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 210,
+      "protein": 15,
+      "carbs": 4,
+      "fat": 15,
+      "fiber": 0.5
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "سرد هم خوشمزه‌ست؛ مستقیم بذارش تو لانچ‌باکس.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "high_protein",
+      "no_oven",
+      "light",
+      "budget"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "hash_browns",
+    "title_fa": "سیب‌زمینی هش",
+    "title_original": "Hash Browns",
+    "intro_fa": "سیب‌زمینی رنده‌شده‌ی ترد که دل همه رو می‌بره!",
+    "cuisine": "american",
+    "meal_types": [
+      "breakfast",
+      "snack"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 25,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "potato",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": "متوسط",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 0.5,
+        "unit": "piece",
+        "prep_note": "رنده‌شده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "سیب‌زمینی‌ها رو پوست بکن و درشت رنده کن."
+      },
+      {
+        "text": "رنده‌شده‌ها رو تو یه دستمال تمیز بپیچ و تا جون داری آبش رو بگیر."
+      },
+      {
+        "text": "نمک، فلفل و پیاز رنده رو قاطی کن."
+      },
+      {
+        "text": "روغن رو تو تابه خوب داغ کن، مایه رو پهن کن و فشار بده."
+      },
+      {
+        "text": "بدون دست زدن بذار زیرش طلایی و ترد بشه.",
+        "timer_seconds": 360
+      },
+      {
+        "text": "برش گردون و طرف دیگه رو هم سرخ کن.",
+        "timer_seconds": 300
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 280,
+      "protein": 4,
+      "carbs": 38,
+      "fat": 13,
+      "fiber": 4
+    },
+    "freezer_friendly": true,
+    "fridge_days": 2,
+    "reheat_note": "تو تابه‌ی داغ بدون روغن اضافه گرم کن تا دوباره ترد بشه.",
+    "prep_ahead": [],
+    "tags": [
+      "vegan",
+      "vegetarian",
+      "budget",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "gozleme_lavash",
+    "title_fa": "گوزلمه‌ی ترکی با لواش",
+    "title_original": "Lavash Gözleme",
+    "intro_fa": "گوزلمه‌ی استانبولی بدون ورز دادن خمیر؛ لواش جورش رو می‌کشه!",
+    "cuisine": "turkish",
+    "meal_types": [
+      "breakfast",
+      "lunch",
+      "snack"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 20,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "lavash_bread",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "spinach",
+        "quantity": 150,
+        "unit": "g",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "feta_cheese",
+        "quantity": 100,
+        "unit": "g",
+        "prep_note": "ریزریزشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "mozzarella",
+        "quantity": 60,
+        "unit": "g",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "اسفناج رو با یه کم کره تو تابه بذار تا آبش کشیده بشه.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "اسفناج رو با فتا، موتزارلا و فلفل قاطی کن."
+      },
+      {
+        "text": "مایه رو روی نصف هر لواش پهن کن و لواش رو تا بزن."
+      },
+      {
+        "text": "تابه رو با یه کم کره داغ کن و گوزلمه رو بذار توش."
+      },
+      {
+        "text": "هر طرف دو سه دقیقه سرخ کن تا ترد بشه و پنیر آب بشه.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "برش بزن و با چای یا دوغ بخور."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 390,
+      "protein": 19,
+      "carbs": 36,
+      "fat": 19,
+      "fiber": 3
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "تو تابه‌ی خشک گرم کن تا دوباره ترد بشه.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "no_oven",
+      "budget",
+      "leftover_friendly"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "sigara_borek",
+    "title_fa": "سیگارا بورک",
+    "title_original": "Sigara Böreği",
+    "intro_fa": "سیگاری که فقط برای شکمت ضرر داره، اونم کم!",
+    "cuisine": "turkish",
+    "meal_types": [
+      "snack",
+      "breakfast"
+    ],
+    "base_servings": 2,
+    "active_minutes": 20,
+    "total_minutes": 25,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "lavash_bread",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": "یا یوفکا، به مثلث‌های بلند بریده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "feta_cheese",
+        "quantity": 150,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "parsley",
+        "quantity": 0.5,
+        "unit": "bunch",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "برای چسبوندن لبه‌ها",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "فتا رو با چنگال له کن و با جعفری و فلفل قاطی کن."
+      },
+      {
+        "text": "لواش رو به مثلث‌های بلند ببر."
+      },
+      {
+        "text": "یه قاشق مایه سمت پهن مثلث بذار، کناره‌ها رو تا بزن و سفت لوله کن."
+      },
+      {
+        "text": "سر لواش رو با یه کم آب یا تخم‌مرغ بچسبون."
+      },
+      {
+        "text": "بورک‌ها رو تو روغن داغ بچین و همه‌ی طرف‌هاشون رو طلایی کن.",
+        "timer_seconds": 300
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 340,
+      "protein": 14,
+      "carbs": 26,
+      "fat": 20,
+      "fiber": 1
+    },
+    "freezer_friendly": true,
+    "fridge_days": 2,
+    "reheat_note": "خامش رو فریز کن و یخ‌زده مستقیم بنداز تو تابه؛ پخته‌ش رو تو تابه‌ی خشک گرم کن.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "no_oven",
+      "leftover_friendly"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "pan_lahmacun",
+    "title_fa": "لاهماجون تابه‌ای",
+    "title_original": "Pan Lahmacun",
+    "intro_fa": "پیتزای ترکی بدون فر، با لواشی که ته یخچال داشتی!",
+    "cuisine": "turkish",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 20,
+    "total_minutes": 30,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "lavash_bread",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "beef_mince",
+        "quantity": 150,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 0.5,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "bell_pepper",
+        "quantity": 0.5,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 1,
+        "unit": "clove",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato_paste",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "parsley",
+        "quantity": 0.5,
+        "unit": "bunch",
+        "prep_note": "نصفش برای مایه، نصفش برای سرو",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "paprika",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "lemon",
+        "quantity": 0.5,
+        "unit": "piece",
+        "prep_note": "برای سرو",
+        "optional": false,
+        "group": "برای سرو"
+      }
+    ],
+    "steps": [
+      {
+        "text": "پیاز، گوجه، فلفل، سیر و نصف جعفری رو خیلی ریز خرد کن."
+      },
+      {
+        "text": "همه رو با چرخ‌کرده، رب، ادویه‌ها و نمک خوب ورز بده."
+      },
+      {
+        "text": "یه لایه‌ی خیلی نازک از مایه رو روی هر لواش پهن کن."
+      },
+      {
+        "text": "تابه رو با یه ذره روغن داغ کن و لواش رو با سمت گوشت رو به بالا بذار توش."
+      },
+      {
+        "text": "درِ تابه رو ببند تا گوشت با بخار بپزه و زیرش ترد بشه.",
+        "timer_seconds": 480
+      },
+      {
+        "text": "با جعفری و آب‌لیمو لوله کن و بخور."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 420,
+      "protein": 22,
+      "carbs": 38,
+      "fat": 20,
+      "fiber": 4
+    },
+    "freezer_friendly": false,
+    "fridge_days": 1,
+    "reheat_note": "مایه‌ی گوشت خام رو تا دو روز تو یخچال نگه دار و هر بار تازه بپز.",
+    "prep_ahead": [],
+    "tags": [
+      "high_protein",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "ghormeh_sabzi",
+    "title_fa": "قرمه‌سبزی",
+    "title_original": "Ghormeh Sabzi",
+    "intro_fa": "بوی قرمه‌سبزی که بپیچه، همسایه‌ها هم ایرانی می‌شن!",
+    "cuisine": "iranian",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 4,
+    "active_minutes": 40,
+    "total_minutes": 180,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "lamb_stew_meat",
+        "quantity": 500,
+        "unit": "g",
+        "prep_note": "یا گوشت گوساله، مکعبی خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "kidney_bean",
+        "quantity": 150,
+        "unit": "g",
+        "prep_note": "از شب قبل خیس‌خورده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "خلالی خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "ghormeh_sabzi_herbs",
+        "quantity": 60,
+        "unit": "g",
+        "prep_note": "سبزی خشک؛ یا ۵۰۰ گرم سبزی تازه‌ی سرخ‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "dried_lime",
+        "quantity": 4,
+        "unit": "piece",
+        "prep_note": "سوراخ‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "turmeric",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "water",
+        "quantity": 1200,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "پیاز رو با روغن و زردچوبه طلایی کن و گوشت رو اضافه کن تا رنگش برگرده.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "لوبیای خیس‌خورده و آب رو بریز و با شعله‌ی کم بذار بپزه؛ با زودپز (اختیاری) ۲۵ دقیقه کافیه.",
+        "timer_seconds": 3600
+      },
+      {
+        "text": "سبزی خشک رو ده دقیقه خیس کن، آبش رو بگیر و با یه کم روغن تفت بده تا عطرش بلند بشه.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "سبزی، لیموعمانی، نمک و فلفل رو بریز تو قابلمه."
+      },
+      {
+        "text": "بذار حداقل یه ساعت دیگه جا بیفته تا روغن بندازه.",
+        "timer_seconds": 3600
+      },
+      {
+        "text": "با پلو یا کته سرو کن؛ فرداش خوشمزه‌تره!"
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 480,
+      "protein": 32,
+      "carbs": 24,
+      "fat": 28,
+      "fiber": 9
+    },
+    "freezer_friendly": true,
+    "fridge_days": 4,
+    "reheat_note": "روی شعله‌ی کم با چند قاشق آب گرم کن.",
+    "prep_ahead": [
+      {
+        "text": "لوبیا قرمز رو از شب قبل خیس کن و یکی دو بار آبش رو عوض کن.",
+        "hours_before": 12
+      }
+    ],
+    "tags": [
+      "iranian_classic",
+      "freezer",
+      "one_pot",
+      "high_protein",
+      "leftover_friendly",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "one_pot_chicken_polo",
+    "title_fa": "پلو مرغ یک‌قابلمه‌ای",
+    "title_original": "One-pot Chicken Polo",
+    "intro_fa": "پلو و مرغ با هم تو یه قابلمه؛ ظرف‌شستن تعطیل!",
+    "cuisine": "iranian",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 20,
+    "total_minutes": 70,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "basmati_rice",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chicken_thigh",
+        "quantity": 400,
+        "unit": "g",
+        "prep_note": "بی‌استخوان، تکه‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "خلالی خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "turmeric",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "water",
+        "quantity": 450,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "saffron",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": "دم‌کرده در ۲ قاشق آب جوش",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "barberry",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": "شسته",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "برنج رو بشور و نیم ساعت خیس کن.",
+        "timer_seconds": 1800
+      },
+      {
+        "text": "پیاز رو با روغن و زردچوبه تفت بده و مرغ رو اضافه کن تا رنگش برگرده.",
+        "timer_seconds": 480
+      },
+      {
+        "text": "برنجِ آبکش‌شده، نمک، فلفل و آب رو بریز تو همون قابلمه."
+      },
+      {
+        "text": "بذار بجوشه تا آبش کشیده بشه.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "زعفرون و کره رو بریز روش و درِ قابلمه رو با دم‌کنی ببند."
+      },
+      {
+        "text": "با شعله‌ی خیلی کم بذار دم بکشه.",
+        "timer_seconds": 1800
+      },
+      {
+        "text": "اگه زرشک داری، با یه ذره کره تفت بده و بپاش روش."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 620,
+      "protein": 36,
+      "carbs": 72,
+      "fat": 20,
+      "fiber": 2
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "با یه قاشق آب، درِ ظرف بسته، خوب داغش کن؛ برنج پخته رو بیشتر از دو روز نگه ندار.",
+    "prep_ahead": [],
+    "tags": [
+      "one_pot",
+      "high_protein",
+      "low_red_meat",
+      "leftover_friendly",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "mexican_lubia_polo_soy",
+    "title_fa": "لوبیاپلوی مکزیکی با سویا",
+    "title_original": "Mexican-style Bean Rice with Soy",
+    "intro_fa": "لوبیاپلوی مامان رفته مکزیک و گیاهخوار برگشته!",
+    "cuisine": "mexican",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 20,
+    "total_minutes": 55,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "basmati_rice",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": "شسته",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "soy_mince",
+        "quantity": 50,
+        "unit": "g",
+        "prep_note": "خشک",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "green_bean",
+        "quantity": 150,
+        "unit": "g",
+        "prep_note": "خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "kidney_bean",
+        "quantity": 120,
+        "unit": "g",
+        "prep_note": "پخته یا کنسروی، آبکش‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "canned_corn",
+        "quantity": 80,
+        "unit": "g",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 2,
+        "unit": "clove",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato_paste",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cumin",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "paprika",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "oregano",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "water",
+        "quantity": 400,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "سویا رو ده دقیقه تو آب جوش خیس کن و آبش رو خوب بگیر.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "پیاز و سیر رو تفت بده و سویا رو اضافه کن تا یه کم برشته بشه.",
+        "timer_seconds": 360
+      },
+      {
+        "text": "رب، گوجه و ادویه‌ها رو بریز و دو دقیقه هم بزن.",
+        "timer_seconds": 120
+      },
+      {
+        "text": "لوبیا سبز، لوبیا قرمز، ذرت و برنج رو اضافه کن."
+      },
+      {
+        "text": "آب و نمک رو بریز و بذار آبش کشیده بشه.",
+        "timer_seconds": 720
+      },
+      {
+        "text": "شعله رو کم کن، درش رو با دم‌کنی ببند و بذار دم بکشه.",
+        "timer_seconds": 1500
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 520,
+      "protein": 21,
+      "carbs": 92,
+      "fat": 9,
+      "fiber": 10
+    },
+    "freezer_friendly": false,
+    "fridge_days": 3,
+    "reheat_note": "با یه کم آب، درِ ظرف بسته، خوب داغش کن.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "vegan",
+      "one_pot",
+      "budget",
+      "no_oven",
+      "leftover_friendly"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "vegetable_paella",
+    "title_fa": "پائیای سبزیجات",
+    "title_original": "Paella de verduras",
+    "intro_fa": "ته‌دیگ اسپانیایی، بدون اینکه کسی سرش دعوا کنه!",
+    "cuisine": "spanish",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 20,
+    "total_minutes": 45,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "arborio_rice",
+        "quantity": 180,
+        "unit": "g",
+        "prep_note": "نشسته",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 3,
+        "unit": "clove",
+        "prep_note": "له‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "bell_pepper",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "قرمز، نواری",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "paprika",
+        "quantity": 1.5,
+        "unit": "tsp",
+        "prep_note": "ترجیحاً دودی",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "saffron",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": "دم‌کرده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_stock",
+        "quantity": 600,
+        "unit": "ml",
+        "prep_note": "داغ",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "green_bean",
+        "quantity": 100,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "frozen_peas",
+        "quantity": 80,
+        "unit": "g",
+        "prep_note": "فریزری هم خوبه",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "lemon",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "قاچ‌شده",
+        "optional": false,
+        "group": "برای سرو"
+      }
+    ],
+    "steps": [
+      {
+        "text": "پیاز، فلفل دلمه و سیر رو تو روغن زیتون تفت بده.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "گوجه و پاپریکا رو اضافه کن و بذار یه کم غلیظ بشه.",
+        "timer_seconds": 240
+      },
+      {
+        "text": "برنجِ نشسته رو بریز و یه دقیقه تو سس هم بزن.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "آب سبزیجات، زعفرون و نمک رو بریز و از این به بعد دیگه هم نزن!"
+      },
+      {
+        "text": "لوبیا سبز و نخودفرنگی رو روش بچین و با شعله‌ی متوسط رو به کم بذار بپزه.",
+        "timer_seconds": 1080
+      },
+      {
+        "text": "آخرش یه دقیقه شعله رو زیاد کن تا ته‌دیگ بگیره.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "با قاچ‌های لیمو سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 480,
+      "protein": 11,
+      "carbs": 82,
+      "fat": 13,
+      "fiber": 8
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "با یه قاشق آب تو تابه‌ی دربسته داغ کن.",
+    "prep_ahead": [],
+    "tags": [
+      "vegan",
+      "vegetarian",
+      "one_pot",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "chicken_curry_kateh",
+    "title_fa": "کاری مرغ با کته",
+    "title_original": "Chicken Curry with Kateh",
+    "intro_fa": "کاری هندی با کته‌ی ایرانی؛ ازدواج فرهنگی موفق!",
+    "cuisine": "indian",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 25,
+    "total_minutes": 50,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "basmati_rice",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": "شسته",
+        "optional": false,
+        "group": "کته"
+      },
+      {
+        "ingredient": "water",
+        "quantity": 400,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": "کته"
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "کته"
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "کته"
+      },
+      {
+        "ingredient": "chicken_thigh",
+        "quantity": 400,
+        "unit": "g",
+        "prep_note": "بی‌استخوان، تکه‌شده",
+        "optional": false,
+        "group": "کاری"
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": "کاری"
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 2,
+        "unit": "clove",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": "کاری"
+      },
+      {
+        "ingredient": "ginger",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": "کاری"
+      },
+      {
+        "ingredient": "curry_powder",
+        "quantity": 1.5,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "کاری"
+      },
+      {
+        "ingredient": "turmeric",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "کاری"
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "خردشده",
+        "optional": false,
+        "group": "کاری"
+      },
+      {
+        "ingredient": "coconut_milk",
+        "quantity": 200,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": "کاری"
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "کاری"
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "کاری"
+      },
+      {
+        "ingredient": "plain_yogurt",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": "فقط موقع سرو",
+        "optional": true,
+        "group": "موقع سرو"
+      }
+    ],
+    "steps": [
+      {
+        "text": "برنج رو با آب، نمک و کره بذار بجوشه تا آبش کشیده بشه، بعد درش رو ببند و با شعله‌ی کم دم بذار.",
+        "timer_seconds": 1800
+      },
+      {
+        "text": "همزمان پیاز رو تو روغن طلایی کن و سیر و زنجبیل رو اضافه کن.",
+        "timer_seconds": 480
+      },
+      {
+        "text": "مرغ رو بریز و تفت بده تا رنگش برگرده.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "پودر کاری و زردچوبه رو اضافه کن و یه دقیقه تفت بده تا عطرش دربیاد.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "گوجه، شیر نارگیل و نمک رو بریز و بذار جا بیفته.",
+        "timer_seconds": 1200
+      },
+      {
+        "text": "ماست رو فقط موقع سرو تو بشقاب اضافه کن تا کاری قابل فریز بمونه."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 720,
+      "protein": 38,
+      "carbs": 80,
+      "fat": 28,
+      "fiber": 4
+    },
+    "freezer_friendly": true,
+    "fridge_days": 3,
+    "reheat_note": "کاری رو بدون ماست فریز کن و روی شعله‌ی کم گرم کن؛ کته رو فریز نکن و بیشتر از دو روز نگه ندار.",
+    "prep_ahead": [],
+    "tags": [
+      "freezer",
+      "high_protein",
+      "low_red_meat",
+      "leftover_friendly",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "mujaddara",
+    "title_fa": "مجدره",
+    "title_original": "Mujaddara",
+    "intro_fa": "عدس‌پلوی فقیرانه با پیاز داغی که شاهانه‌ش می‌کنه!",
+    "cuisine": "other",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 25,
+    "total_minutes": 50,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "green_lentil",
+        "quantity": 150,
+        "unit": "g",
+        "prep_note": "شسته",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "basmati_rice",
+        "quantity": 120,
+        "unit": "g",
+        "prep_note": "شسته",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": "نازک خلالی",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 5,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cumin",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "water",
+        "quantity": 700,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "عدس رو با آب بذار بپزه تا نیم‌پز بشه.",
+        "timer_seconds": 900
+      },
+      {
+        "text": "همزمان پیازها رو با روغن زیتون سرخ کن تا قهوه‌ای و ترد بشن.",
+        "timer_seconds": 1200
+      },
+      {
+        "text": "نصف پیازها رو بردار برای روی غذا."
+      },
+      {
+        "text": "برنج، زیره، نمک، فلفل و بقیه‌ی پیاز رو بریز تو قابلمه‌ی عدس."
+      },
+      {
+        "text": "بذار آبش کشیده بشه، بعد درش رو ببند تا دم بکشه.",
+        "timer_seconds": 1200
+      },
+      {
+        "text": "با پیاز ترد فراوون و یه سالاد ساده سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 560,
+      "protein": 20,
+      "carbs": 82,
+      "fat": 18,
+      "fiber": 14
+    },
+    "freezer_friendly": false,
+    "fridge_days": 3,
+    "reheat_note": "با یه قاشق آب، درِ ظرف بسته گرم کن؛ پیاز ترد رو جدا نگه دار.",
+    "prep_ahead": [],
+    "tags": [
+      "vegan",
+      "vegetarian",
+      "budget",
+      "leftover_friendly",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "greek_fava",
+    "title_fa": "فاوای یونانی",
+    "title_original": "Fava (Greek split pea purée)",
+    "intro_fa": "لپه‌ای که رفته یونان و پوره‌ی مخملی شده!",
+    "cuisine": "greek",
+    "meal_types": [
+      "lunch",
+      "dinner",
+      "snack"
+    ],
+    "base_servings": 4,
+    "active_minutes": 15,
+    "total_minutes": 55,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "yellow_split_pea",
+        "quantity": 250,
+        "unit": "g",
+        "prep_note": "شسته",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "درشت خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 1,
+        "unit": "clove",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "water",
+        "quantity": 800,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": "نصفش برای روی کار",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "lemon_juice",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "caper",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": true,
+        "group": "برای سرو"
+      },
+      {
+        "ingredient": "oregano",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": true,
+        "group": "برای سرو"
+      }
+    ],
+    "steps": [
+      {
+        "text": "لپه رو اون‌قدر بشور تا آبش زلال بشه."
+      },
+      {
+        "text": "با پیاز، سیر و آب بذار بجوشه و کفش رو بگیر.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "با شعله‌ی کم بپزه تا کاملاً له بشه.",
+        "timer_seconds": 2400
+      },
+      {
+        "text": "نمک، آب‌لیمو و نصف روغن زیتون رو اضافه کن و با گوشت‌کوب یا همزن دستی پوره‌ش کن."
+      },
+      {
+        "text": "روش روغن زیتون و کیپر بریز و با نون بخور."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 330,
+      "protein": 15,
+      "carbs": 40,
+      "fat": 13,
+      "fiber": 14
+    },
+    "freezer_friendly": true,
+    "fridge_days": 4,
+    "reheat_note": "سرد یا ولرم خوشمزه‌ست؛ اگه سفت شد با یه کم آب گرم هم بزن.",
+    "prep_ahead": [],
+    "tags": [
+      "vegan",
+      "vegetarian",
+      "freezer",
+      "budget",
+      "no_oven",
+      "leftover_friendly"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "tzatziki",
+    "title_fa": "تزاتزیکی",
+    "title_original": "Tzatziki",
+    "intro_fa": "ماست‌وخیارِ یونانی که خودش رو گرفته!",
+    "cuisine": "greek",
+    "meal_types": [
+      "snack"
+    ],
+    "base_servings": 4,
+    "active_minutes": 10,
+    "total_minutes": 25,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "greek_yogurt",
+        "quantity": 300,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cucumber",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 1,
+        "unit": "clove",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "lemon_juice",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "dill",
+        "quantity": 0.25,
+        "unit": "bunch",
+        "prep_note": "ریز خردشده؛ یا یه قاشق نعناع خشک",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "خیار رو رنده کن، یه کم نمک بزن و آبش رو حسابی بگیر."
+      },
+      {
+        "text": "خیار، سیر، آب‌لیمو و شوید رو با ماست قاطی کن."
+      },
+      {
+        "text": "روش روغن زیتون بریز و بذار یه ربع تو یخچال بمونه تا طعم‌ها جا بیفتن.",
+        "timer_seconds": 900
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 110,
+      "protein": 8,
+      "carbs": 5,
+      "fat": 6,
+      "fiber": 0.5
+    },
+    "freezer_friendly": false,
+    "fridge_days": 3,
+    "reheat_note": null,
+    "prep_ahead": [],
+    "tags": [
+      "no_cook",
+      "vegetarian",
+      "light",
+      "no_oven",
+      "budget"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "ratatouille",
+    "title_fa": "راتاتویی",
+    "title_original": "Ratatouille",
+    "intro_fa": "همون غذای موش سرآشپز، فقط بدون موش!",
+    "cuisine": "french",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 25,
+    "total_minutes": 80,
+    "difficulty": 2,
+    "requires_equipment": [
+      "oven"
+    ],
+    "equipment_alternatives_fa": "بدون فر: حلقه‌ها رو روی سس تو همون تابه بچین، درش رو ببند و روی شعله‌ی کم ۳۵ تا ۴۰ دقیقه بپز.",
+    "ingredients": [
+      {
+        "ingredient": "eggplant",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "zucchini",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": "سفت",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "bell_pepper",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 3,
+        "unit": "clove",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato_paste",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "dried_thyme",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "basil",
+        "quantity": 0.25,
+        "unit": "bunch",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "فر رو روی ۱۹۰ درجه روشن کن."
+      },
+      {
+        "text": "پیاز، فلفل دلمه و سیر رو با رب و یه کم روغن تو یه تابه‌ی فرخور تفت بده تا سس بشه.",
+        "timer_seconds": 480
+      },
+      {
+        "text": "بادمجون، کدو و گوجه رو حلقه‌ای نازک ببر."
+      },
+      {
+        "text": "حلقه‌ها رو یکی‌درمیون روی سس بچین، درست مثل کارتون!"
+      },
+      {
+        "text": "روغن زیتون، آویشن، نمک و فلفل بپاش و روش رو فویل بکش."
+      },
+      {
+        "text": "چهل دقیقه با فویل و یه ربع بدون فویل تو فر بپز.",
+        "timer_seconds": 3300
+      },
+      {
+        "text": "با نون یا برنج سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 280,
+      "protein": 5,
+      "carbs": 26,
+      "fat": 19,
+      "fiber": 9
+    },
+    "freezer_friendly": true,
+    "fridge_days": 4,
+    "reheat_note": "روی شعله‌ی کم یا تو مایکروویو گرم کن؛ سرد هم خوبه.",
+    "prep_ahead": [],
+    "tags": [
+      "vegan",
+      "vegetarian",
+      "light",
+      "freezer",
+      "leftover_friendly"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "armenian_eggplant_caviar",
+    "title_fa": "خاویار بادمجان ارمنی",
+    "title_original": "Eggplant Caviar (Ikra)",
+    "intro_fa": "خاویار فقیرانه که از اصلش خوشمزه‌تره!",
+    "cuisine": "armenian",
+    "meal_types": [
+      "snack",
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 4,
+    "active_minutes": 25,
+    "total_minutes": 75,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "eggplant",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "مکعبی خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "carrot",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "bell_pepper",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 2,
+        "unit": "clove",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "sugar",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "parsley",
+        "quantity": 0.25,
+        "unit": "bunch",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "بادمجون رو نمک بزن و یه ربع بذار تلخیش بره، بعد آبش رو بگیر.",
+        "timer_seconds": 900
+      },
+      {
+        "text": "پیاز و هویج رو با روغن تفت بده تا نرم بشن.",
+        "timer_seconds": 360
+      },
+      {
+        "text": "فلفل دلمه و بادمجون رو اضافه کن و تفت بده.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "گوجه رو بریز، درش رو بذار و با شعله‌ی کم بپزه.",
+        "timer_seconds": 1800
+      },
+      {
+        "text": "درش رو بردار تا آبش کشیده بشه و آخر کار سیر و فلفل رو اضافه کن.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "بذار خنک بشه و سرد با نون بخور؛ فرداش بهتره!"
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 190,
+      "protein": 3,
+      "carbs": 18,
+      "fat": 13,
+      "fiber": 7
+    },
+    "freezer_friendly": true,
+    "fridge_days": 5,
+    "reheat_note": "گرم کردن لازم نیست؛ سرد یا هم‌دمای اتاق بخور.",
+    "prep_ahead": [],
+    "tags": [
+      "vegan",
+      "vegetarian",
+      "light",
+      "budget",
+      "freezer",
+      "leftover_friendly",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "spaghetti_eggplant_rolls",
+    "title_fa": "اسپاگتی گوجه با رول بادمجان",
+    "title_original": "Spaghetti with Eggplant Rolls",
+    "intro_fa": "بادمجون‌های لوله‌شده با پنیر کش‌دار؛ ایتالیا با چاشنی ایران!",
+    "cuisine": "italian",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 25,
+    "total_minutes": 40,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "spaghetti",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "eggplant",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "از طول ورقه‌ای نازک",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "mozzarella",
+        "quantity": 80,
+        "unit": "g",
+        "prep_note": "تکه‌تکه",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "canned_tomato",
+        "quantity": 1,
+        "unit": "can",
+        "prep_note": "۴۰۰ گرمی، له‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 2,
+        "unit": "clove",
+        "prep_note": "ورقه‌ای",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "sugar",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "basil",
+        "quantity": 0.25,
+        "unit": "bunch",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "parmesan",
+        "quantity": 20,
+        "unit": "g",
+        "prep_note": "رنده‌شده",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "ورقه‌های بادمجون رو تو تابه با یه کم روغن هر طرف طلایی کن.",
+        "timer_seconds": 480
+      },
+      {
+        "text": "روی هر ورقه یه تیکه موتزارلا بذار و لوله‌ش کن."
+      },
+      {
+        "text": "سیر رو تو روغن زیتون تفت بده و گوجه، نمک و یه ذره شکر رو بریز.",
+        "timer_seconds": 120
+      },
+      {
+        "text": "رول‌ها رو بچین تو سس و درش رو ببند تا پنیر آب بشه.",
+        "timer_seconds": 900
+      },
+      {
+        "text": "همزمان اسپاگتی رو تو آب‌نمک بپز.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "اسپاگتی رو با یه کم سس قاطی کن، رول‌ها رو بذار روش و پارمزان بپاش."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 680,
+      "protein": 26,
+      "carbs": 92,
+      "fat": 24,
+      "fiber": 10
+    },
+    "freezer_friendly": false,
+    "fridge_days": 3,
+    "reheat_note": "سس و رول‌ها رو روی شعله‌ی کم گرم کن و پاستا رو با یه قاشق آب قاطی کن.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "fettuccine_alfredo_light",
+    "title_fa": "فتوچینی",
+    "title_original": "Creamy Mushroom Fettuccine",
+    "intro_fa": "پاستای خامه‌ای رستورانی، با بودجه‌ی دانشجویی!",
+    "cuisine": "italian",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 20,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "fettuccine",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "mushroom",
+        "quantity": 250,
+        "unit": "g",
+        "prep_note": "ورقه‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 2,
+        "unit": "clove",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "milk",
+        "quantity": 200,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cream_cheese",
+        "quantity": 50,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "parmesan",
+        "quantity": 30,
+        "unit": "g",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "parsley",
+        "quantity": 0.25,
+        "unit": "bunch",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "فتوچینی رو تو آب‌نمک بپز و یه لیوان از آبش رو نگه دار.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "همزمان قارچ رو با کره و روغن تفت بده تا آبش بره و طلایی بشه.",
+        "timer_seconds": 480
+      },
+      {
+        "text": "سیر رو اضافه کن و یه دقیقه تفت بده.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "شیر و پنیر خامه‌ای رو بریز و هم بزن تا سس صاف بشه.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "پاستا، پارمزان و یه کم از آب پاستا رو اضافه کن و هم بزن تا سس براق بشه."
+      },
+      {
+        "text": "با فلفل سیاه و جعفری سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 620,
+      "protein": 24,
+      "carbs": 82,
+      "fat": 22,
+      "fiber": 5
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "با یه کم شیر یا آب روی شعله‌ی کم گرم کن تا سس دوباره روون بشه.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "lentil_pasta",
+    "title_fa": "پاستا با عدس",
+    "title_original": "Pasta e lenticchie",
+    "intro_fa": "عدسی و ماکارونی رفتن تو یه قابلمه و عاشق هم شدن!",
+    "cuisine": "italian",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 35,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "penne",
+        "quantity": 150,
+        "unit": "g",
+        "prep_note": "پنه یا پیچی",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "red_lentil",
+        "quantity": 100,
+        "unit": "g",
+        "prep_note": "شسته",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "carrot",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 2,
+        "unit": "clove",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato_paste",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "oregano",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "water",
+        "quantity": 900,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "parmesan",
+        "quantity": 20,
+        "unit": "g",
+        "prep_note": "رنده‌شده",
+        "optional": true,
+        "group": "برای سرو"
+      }
+    ],
+    "steps": [
+      {
+        "text": "پیاز، هویج و سیر رو تو روغن زیتون تفت بده.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "رب و ادویه‌ها رو اضافه کن و یه دقیقه تفت بده.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "عدس و آب رو بریز و بذار بجوشه.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "پاستا و نمک رو اضافه کن و گاهی هم بزن تا بپزه.",
+        "timer_seconds": 660
+      },
+      {
+        "text": "اگه زیادی سفت شد یه کم آب جوش اضافه کن."
+      },
+      {
+        "text": "با پارمزان یا یه ذره روغن زیتون سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 560,
+      "protein": 24,
+      "carbs": 90,
+      "fat": 12,
+      "fiber": 12
+    },
+    "freezer_friendly": false,
+    "fridge_days": 3,
+    "reheat_note": "با یه کم آب روی شعله گرم کن، چون تو یخچال سفت می‌شه.",
+    "prep_ahead": [],
+    "tags": [
+      "one_pot",
+      "vegetarian",
+      "vegan",
+      "budget",
+      "no_oven",
+      "leftover_friendly"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "asian_noodles",
+    "title_fa": "نودل آسیایی",
+    "title_original": "Stir-fried Noodles",
+    "intro_fa": "از نودل فوری خوشمزه‌تر، تقریباً با همون تنبلی!",
+    "cuisine": "asian",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 20,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "egg_noodle",
+        "quantity": 150,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "carrot",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "خلالی نازک",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "bell_pepper",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "خلالی نازک",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cabbage",
+        "quantity": 150,
+        "unit": "g",
+        "prep_note": "خلالی نازک",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "green_onion",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 2,
+        "unit": "clove",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "ginger",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "رنده‌شده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "soy_sauce",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "honey",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "یا شکر",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "sesame_oil",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "نودل رو طبق دستور بسته بپز، آبکش کن و یه کم روغن بزن که نچسبه.",
+        "timer_seconds": 240
+      },
+      {
+        "text": "سیر و زنجبیل رو چند ثانیه تو روغن خیلی داغ تفت بده."
+      },
+      {
+        "text": "سبزی‌ها رو اضافه کن و با شعله‌ی زیاد سه دقیقه هم بزن تا ترد بمونن.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "سبزی‌ها رو بزن کنار و تخم‌مرغ‌ها رو همون‌جا هم بزن تا ببندن.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "نودل، سس سویا و عسل رو اضافه کن و همه چی رو با هم تفت بده.",
+        "timer_seconds": 120
+      },
+      {
+        "text": "پیازچه و روغن کنجد بپاش و داغ بخور."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 520,
+      "protein": 19,
+      "carbs": 72,
+      "fat": 17,
+      "fiber": 5
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "تو تابه‌ی داغ با یه قاشق آب سریع تفت بده.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "mexican_chili",
+    "title_fa": "چیلی مکزیکی",
+    "title_original": "Chili con carne",
+    "intro_fa": "یه قابلمه بار بذار، تا آخر هفته غذا داری و کسی هم نمی‌فهمه چقدر تنبلی.",
+    "cuisine": "mexican",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 4,
+    "active_minutes": 20,
+    "total_minutes": 75,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "beef_mince",
+        "quantity": 400,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "kidney_bean",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": "از شب قبل خیس‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "canned_kidney_bean",
+        "quantity": 2,
+        "unit": "can",
+        "prep_note": "به‌جای لوبیای خشک، آب‌کشیده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 3,
+        "unit": "clove",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "bell_pepper",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "مکعبی خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato_paste",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cumin",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "paprika",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "به اندازه‌ی تحملت",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "water",
+        "quantity": 500,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "اگه لوبیای خشک داری، لوبیای خیس‌خورده رو تو آب بپز تا نیم‌پز بشه؛ کنسروی داری از این مرحله بپر.",
+        "timer_seconds": 2700
+      },
+      {
+        "text": "پیاز رو با روغن تفت بده تا طلایی بشه، سیر رو هم بنداز.",
+        "timer_seconds": 360
+      },
+      {
+        "text": "گوشت چرخ‌کرده رو اضافه کن و هم بزن تا رنگش عوض بشه.",
+        "timer_seconds": 480
+      },
+      {
+        "text": "فلفل دلمه، رب و ادویه‌ها رو بریز و یه دقیقه تفت بده.",
+        "timer_seconds": 90
+      },
+      {
+        "text": "گوجه، لوبیا و آب رو اضافه کن، درش رو بذار و بذار آروم جا بیفته.",
+        "timer_seconds": 2400
+      },
+      {
+        "text": "نمکش رو تنظیم کن و با نون یا برنج بزن به بدن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 470,
+      "protein": 32,
+      "carbs": 38,
+      "fat": 20,
+      "fiber": 12
+    },
+    "freezer_friendly": true,
+    "fridge_days": 4,
+    "reheat_note": "تو قابلمه با یه کم آب روی حرارت ملایم گرم کن.",
+    "prep_ahead": [
+      {
+        "text": "اگه لوبیای خشک داری، از شب قبل خیسش کن.",
+        "hours_before": 12
+      }
+    ],
+    "tags": [
+      "one_pot",
+      "high_protein",
+      "freezer",
+      "leftover_friendly",
+      "no_oven",
+      "budget"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "chilaquiles",
+    "title_fa": "چیلاکیلس",
+    "title_original": "Chilaquiles",
+    "intro_fa": "نون خشکای ته کابینت بالاخره یه روز به درد می‌خورن، اونم امروزه.",
+    "cuisine": "mexican",
+    "meal_types": [
+      "breakfast",
+      "lunch"
+    ],
+    "base_servings": 2,
+    "active_minutes": 20,
+    "total_minutes": 25,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "tortilla",
+        "quantity": 4,
+        "unit": "piece",
+        "prep_note": "مثلثی بریده؛ لواش هم میشه",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 0.5,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 1,
+        "unit": "clove",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "feta_cheese",
+        "quantity": 50,
+        "unit": "g",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "cilantro",
+        "quantity": 0.25,
+        "unit": "bunch",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "تیکه‌های نون رو تو روغن سرخ کن تا ترد بشن و بذارشون کنار.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "تو همون تابه پیاز و سیر رو تفت بده.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "گوجه، فلفل و نمک رو بریز تا یه سس غلیظ بشه.",
+        "timer_seconds": 420
+      },
+      {
+        "text": "چیپس‌ها رو بریز تو سس و سریع هم بزن که خیس نخورن.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "تخم‌مرغ‌ها رو روش بشکن و درش رو بذار تا سفیده ببنده.",
+        "timer_seconds": 240
+      },
+      {
+        "text": "پنیر و گشنیز بپاش و تا داغه بخور."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 430,
+      "protein": 16,
+      "carbs": 42,
+      "fat": 22,
+      "fiber": 5
+    },
+    "freezer_friendly": false,
+    "fridge_days": 1,
+    "reheat_note": null,
+    "prep_ahead": [],
+    "tags": [
+      "one_pot",
+      "vegetarian",
+      "no_oven",
+      "budget"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "oat_crusted_chicken_bean_dip",
+    "title_fa": "مرغ سوخاری با جو پرک روی دیپ لوبیا",
+    "title_original": "Oat-crusted chicken with bean dip",
+    "intro_fa": "سوخاری بدون سرخ‌کن و بدون فر؛ فقط یه تابه و یه کم ادا.",
+    "cuisine": "other",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 25,
+    "total_minutes": 30,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "chicken_breast",
+        "quantity": 300,
+        "unit": "g",
+        "prep_note": "نازک بازشده",
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "rolled_oats",
+        "quantity": 60,
+        "unit": "g",
+        "prep_note": "با دست یه کم خردشده",
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "هم‌زده",
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "flour",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "paprika",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "canned_white_bean",
+        "quantity": 1,
+        "unit": "can",
+        "prep_note": "آب‌کشیده",
+        "optional": false,
+        "group": "دیپ"
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 1,
+        "unit": "clove",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": "دیپ"
+      },
+      {
+        "ingredient": "lemon_juice",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "دیپ"
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "دیپ"
+      },
+      {
+        "ingredient": "cumin",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "دیپ"
+      }
+    ],
+    "steps": [
+      {
+        "text": "لوبیا رو با سیر، آبلیمو، روغن زیتون، زیره و یه کم نمک با چنگال له کن."
+      },
+      {
+        "text": "مرغ رو نمک و فلفل و پاپریکا بزن."
+      },
+      {
+        "text": "اول تو آرد، بعد تخم‌مرغ، بعد جو پرک بغلتونش."
+      },
+      {
+        "text": "تو روغن داغ هر طرف رو سرخ کن تا طلایی و پخته بشه.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "یه دقیقه رو دستمال کاغذی استراحت بده.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "دیپ رو کف بشقاب پهن کن و مرغ رو بُرش‌بُرش بذار روش."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 560,
+      "protein": 45,
+      "carbs": 42,
+      "fat": 22,
+      "fiber": 9
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "مرغ رو تو تابه‌ی خشک گرم کن که ترد بمونه؛ دیپ سرد هم خوبه.",
+    "prep_ahead": [],
+    "tags": [
+      "high_protein",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "cheesecake_toast",
+    "title_fa": "تست چیزکیکی",
+    "title_original": "Cheesecake toast",
+    "intro_fa": "هوس چیزکیک کردی ولی حوصله‌ی چیزکیک نداری؟ این همونه.",
+    "cuisine": "other",
+    "meal_types": [
+      "breakfast",
+      "snack",
+      "dessert"
+    ],
+    "base_servings": 2,
+    "active_minutes": 5,
+    "total_minutes": 12,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "toast_bread",
+        "quantity": 2,
+        "unit": "slice",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cream_cheese",
+        "quantity": 60,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "sugar",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cinnamon",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "honey",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "برای روش",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "پنیر خامه‌ای، تخم‌مرغ و شکر رو با چنگال هم بزن تا صاف بشه."
+      },
+      {
+        "text": "وسط نون رو با قاشق یه کم فشار بده که گود بشه و مایه رو بریز توش."
+      },
+      {
+        "text": "کره رو تو تابه آب کن و نون‌ها رو بذار توش."
+      },
+      {
+        "text": "درش رو بذار و روی حرارت کم بذار تا روش ببنده.",
+        "timer_seconds": 420
+      },
+      {
+        "text": "دارچین و عسل بزن و نوش جان."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 260,
+      "protein": 8,
+      "carbs": 22,
+      "fat": 15,
+      "fiber": 1
+    },
+    "freezer_friendly": false,
+    "fridge_days": 1,
+    "reheat_note": null,
+    "prep_ahead": [],
+    "tags": [
+      "ten_minute",
+      "vegetarian",
+      "sweet",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "halva_tahini_toast",
+    "title_fa": "تست حلوا ارده",
+    "title_original": "تست حلوا ارده",
+    "intro_fa": "صبحونه‌ی مامان‌بزرگی با یه نون تست؛ زحمتش اندازه‌ی باز کردن در شیشه‌ست.",
+    "cuisine": "iranian",
+    "meal_types": [
+      "breakfast",
+      "snack"
+    ],
+    "base_servings": 2,
+    "active_minutes": 3,
+    "total_minutes": 5,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "toast_bread",
+        "quantity": 2,
+        "unit": "slice",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tahini",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "date_syrup",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": "یا شیره‌ی انگور",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "halva",
+        "quantity": 30,
+        "unit": "g",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "banana",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "حلقه‌حلقه",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "نون رو تو تابه یا توستر برشته کن.",
+        "timer_seconds": 120
+      },
+      {
+        "text": "ارده و شیره رو تو یه کاسه هم بزن تا حلوا ارده بشه."
+      },
+      {
+        "text": "بمالش رو نون و اگه داری حلوا و موز بذار روش."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 250,
+      "protein": 6,
+      "carbs": 34,
+      "fat": 10,
+      "fiber": 3
+    },
+    "freezer_friendly": false,
+    "fridge_days": 1,
+    "reheat_note": null,
+    "prep_ahead": [],
+    "tags": [
+      "ten_minute",
+      "no_cook",
+      "vegan",
+      "sweet",
+      "no_oven",
+      "iranian_classic"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "banana_milk",
+    "title_fa": "شیر موز",
+    "title_original": "شیر موز",
+    "intro_fa": "صبحونه‌ای که فقط یه دکمه زدن لازم داره.",
+    "cuisine": "iranian",
+    "meal_types": [
+      "breakfast",
+      "drink",
+      "snack"
+    ],
+    "base_servings": 2,
+    "active_minutes": 3,
+    "total_minutes": 3,
+    "difficulty": 1,
+    "requires_equipment": [
+      "blender"
+    ],
+    "equipment_alternatives_fa": "بدون مخلوط‌کن: موز رو حسابی با چنگال له کن و با شیر تو یه شیشه‌ی دربسته تکون بده.",
+    "ingredients": [
+      {
+        "ingredient": "banana",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "هرچی رسیده‌تر، بهتر",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "milk",
+        "quantity": 500,
+        "unit": "ml",
+        "prep_note": "سرد",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "honey",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "cinnamon",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "موزها رو پوست بکن و تیکه کن."
+      },
+      {
+        "text": "همه‌چی رو بریز تو مخلوط‌کن و بزن تا کف کنه.",
+        "timer_seconds": 30
+      },
+      {
+        "text": "بریز تو لیوان و سرد بخور."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 240,
+      "protein": 9,
+      "carbs": 40,
+      "fat": 5,
+      "fiber": 3
+    },
+    "freezer_friendly": false,
+    "fridge_days": 1,
+    "reheat_note": null,
+    "prep_ahead": [],
+    "tags": [
+      "ten_minute",
+      "no_cook",
+      "vegetarian",
+      "sweet",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "pan_tarte_tatin",
+    "title_fa": "تارت تاتن تابه‌ای",
+    "title_original": "Tarte Tatin",
+    "intro_fa": "دسر فرانسوی پرافاده، بدون فر و بدون اینکه بدونی چطوری تلفظش کنی.",
+    "cuisine": "french",
+    "meal_types": [
+      "dessert"
+    ],
+    "base_servings": 4,
+    "active_minutes": 20,
+    "total_minutes": 40,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "apple",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": "چهارقاچ، بی‌هسته",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "sugar",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cinnamon",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "lavash_bread",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": "هم‌اندازه‌ی تابه بریده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "puff_pastry",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": "به‌جای لواش",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "شکر و دو قاشق کره رو تو تابه بذار تا کاراملی و طلایی بشه.",
+        "timer_seconds": 240
+      },
+      {
+        "text": "سیب‌ها رو مرتب بچین تو کارامل و دارچین بپاش."
+      },
+      {
+        "text": "بذار سیب‌ها تو کارامل نرم بشن.",
+        "timer_seconds": 480
+      },
+      {
+        "text": "لواش‌ها رو با بقیه‌ی کره چرب کن و لایه‌لایه روی سیب‌ها بذار و دورش رو بگیر زیر."
+      },
+      {
+        "text": "درش رو بذار و روی شعله‌ی خیلی کم بذار تا ته‌اش ترد بشه.",
+        "timer_seconds": 900
+      },
+      {
+        "text": "پنج دقیقه صبر کن، بشقاب رو بذار روش و با یه حرکت شجاعانه برعکسش کن.",
+        "timer_seconds": 300
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 290,
+      "protein": 3,
+      "carbs": 45,
+      "fat": 11,
+      "fiber": 3
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "تو تابه‌ی دربسته روی حرارت کم چند دقیقه گرم کن.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "sweet",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "apple_pirashki_lavash",
+    "title_fa": "پیراشکی سیب با لواش",
+    "title_original": "پیراشکی سیب",
+    "intro_fa": "پیراشکی بدون ورز دادن خمیر؛ لواش خودش کار رو کرده.",
+    "cuisine": "other",
+    "meal_types": [
+      "snack",
+      "dessert"
+    ],
+    "base_servings": 2,
+    "active_minutes": 20,
+    "total_minutes": 25,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "apple",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "sugar",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cinnamon",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "lavash_bread",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "هر کدوم چهار تیکه",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "هم‌زده، برای چسبوندن لبه‌ها",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "سیب، شکر و دارچین رو تو تابه بپز تا نرم و مربایی بشه.",
+        "timer_seconds": 480
+      },
+      {
+        "text": "یه قاشق از مایه رو بذار گوشه‌ی هر تیکه لواش."
+      },
+      {
+        "text": "لواش رو تا کن و لبه‌هاش رو با تخم‌مرغ یا آب بچسبون."
+      },
+      {
+        "text": "تو کره هر طرف رو سرخ کن تا طلایی بشه.",
+        "timer_seconds": 240
+      },
+      {
+        "text": "یه کم صبر کن خنک بشه، وگرنه زبونت می‌سوزه.",
+        "timer_seconds": 120
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 340,
+      "protein": 7,
+      "carbs": 52,
+      "fat": 12,
+      "fiber": 4
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "تو تابه‌ی خشک یه دقیقه هر طرف گرم کن.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "sweet",
+      "no_oven",
+      "budget"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "no_bake_salted_caramel_cheesecake",
+    "title_fa": "چیزکیک کارامل نمکی بدون فر",
+    "title_original": "No-bake salted caramel cheesecake",
+    "intro_fa": "یخچال زحمتش رو می‌کشه، تو فقط اسمش رو می‌ذاری رو خودت.",
+    "cuisine": "american",
+    "meal_types": [
+      "dessert"
+    ],
+    "base_servings": 6,
+    "active_minutes": 30,
+    "total_minutes": 390,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "digestive_biscuit",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": "پودرشده",
+        "optional": false,
+        "group": "کف"
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 80,
+        "unit": "g",
+        "prep_note": "آب‌شده",
+        "optional": false,
+        "group": "کف"
+      },
+      {
+        "ingredient": "cream_cheese",
+        "quantity": 400,
+        "unit": "g",
+        "prep_note": "هم‌دمای اتاق",
+        "optional": false,
+        "group": "مایه"
+      },
+      {
+        "ingredient": "heavy_cream",
+        "quantity": 200,
+        "unit": "ml",
+        "prep_note": "سرد",
+        "optional": false,
+        "group": "مایه"
+      },
+      {
+        "ingredient": "powdered_sugar",
+        "quantity": 60,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": "مایه"
+      },
+      {
+        "ingredient": "vanilla",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": true,
+        "group": "مایه"
+      },
+      {
+        "ingredient": "sugar",
+        "quantity": 100,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": "کارامل"
+      },
+      {
+        "ingredient": "heavy_cream",
+        "quantity": 100,
+        "unit": "ml",
+        "prep_note": "ولرم",
+        "optional": false,
+        "group": "کارامل"
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": "ترجیحاً نمک درشت",
+        "optional": false,
+        "group": "کارامل"
+      }
+    ],
+    "steps": [
+      {
+        "text": "بیسکویت پودرشده رو با کره قاطی کن و کف یه ظرف فشار بده."
+      },
+      {
+        "text": "ظرف رو بذار یخچال تا کفش سفت بشه.",
+        "timer_seconds": 900
+      },
+      {
+        "text": "خامه رو با همزن دستی بزن تا پف کنه، بعد پنیر و پودرقند رو اضافه کن و صاف کن.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "مایه رو بریز رو کف و صافش کن."
+      },
+      {
+        "text": "شکر رو تو قابلمه آب کن تا کهربایی بشه، خامه و نمک رو بریز و هم بزن.",
+        "timer_seconds": 480
+      },
+      {
+        "text": "کارامل که خنک شد بریز روش و بذار یخچال تا کامل ببنده.",
+        "timer_seconds": 21600
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 560,
+      "protein": 7,
+      "carbs": 44,
+      "fat": 40,
+      "fiber": 1
+    },
+    "freezer_friendly": true,
+    "fridge_days": 4,
+    "reheat_note": null,
+    "prep_ahead": [
+      {
+        "text": "از صبح یا شب قبل درستش کن تا تو یخچال خوب ببنده.",
+        "hours_before": 6
+      }
+    ],
+    "tags": [
+      "vegetarian",
+      "sweet",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "kuku_sabzi_pan",
+    "title_fa": "کوکو سبزی تابه‌ای",
+    "title_original": "کوکو سبزی",
+    "intro_fa": "سبزی خردکرده‌ی فریزری داری؟ پس نصف راه رو رفتی.",
+    "cuisine": "iranian",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 40,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "egg",
+        "quantity": 4,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "parsley",
+        "quantity": 1,
+        "unit": "bunch",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cilantro",
+        "quantity": 1,
+        "unit": "bunch",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "dill",
+        "quantity": 0.5,
+        "unit": "bunch",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "green_onion",
+        "quantity": 0.5,
+        "unit": "bunch",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 1,
+        "unit": "clove",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "flour",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "turmeric",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "walnut",
+        "quantity": 30,
+        "unit": "g",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "barberry",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": "شسته‌شده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "سبزی‌ها رو بشور، خشک کن و ریز خرد کن."
+      },
+      {
+        "text": "تخم‌مرغ‌ها رو با آرد، زردچوبه، نمک و فلفل هم بزن."
+      },
+      {
+        "text": "سبزی، سیر، گردو و زرشک رو اضافه کن و قاطی کن."
+      },
+      {
+        "text": "مایه رو بریز تو روغن داغ، صافش کن و درش رو بذار.",
+        "timer_seconds": 900
+      },
+      {
+        "text": "چهارقاچش کن، برگردون و بذار اون طرفش هم سرخ بشه.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "با نون و ماست سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 380,
+      "protein": 15,
+      "carbs": 12,
+      "fat": 31,
+      "fiber": 4
+    },
+    "freezer_friendly": true,
+    "fridge_days": 3,
+    "reheat_note": "سرد هم خوشمزه‌ست؛ وگرنه تو تابه‌ی دربسته گرم کن.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "no_oven",
+      "leftover_friendly",
+      "iranian_classic"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "adasi",
+    "title_fa": "عدسی",
+    "title_original": "عدسی",
+    "intro_fa": "عدس رو بذار بپزه و برو بخواب؛ صبح بهترین صبحونه‌ی دنیا منتظرته.",
+    "cuisine": "iranian",
+    "meal_types": [
+      "breakfast",
+      "dinner"
+    ],
+    "base_servings": 4,
+    "active_minutes": 15,
+    "total_minutes": 60,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "green_lentil",
+        "quantity": 300,
+        "unit": "g",
+        "prep_note": "شسته‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "water",
+        "quantity": 1200,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "potato",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "مکعبی خردشده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "خلالی",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "turmeric",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "golpar",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "برای روش",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "dried_mint",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "برای روش",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "عدس و سیب‌زمینی رو با آب بذار بپزه تا عدس کاملاً نرم بشه.",
+        "timer_seconds": 2700
+      },
+      {
+        "text": "تو این فاصله پیاز رو با روغن و زردچوبه سرخ کن.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "با گوشت‌کوب یه کم از عدس‌ها رو له کن که لعاب بیاد."
+      },
+      {
+        "text": "پیاز داغ، نمک و فلفل رو بریز و بذار جا بیفته.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "با گلپر و نعنا خشک و نون داغ بزن به بدن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 310,
+      "protein": 17,
+      "carbs": 47,
+      "fat": 8,
+      "fiber": 13
+    },
+    "freezer_friendly": true,
+    "fridge_days": 4,
+    "reheat_note": "با یه کم آب تو قابلمه گرم کن چون غلیظ میشه.",
+    "prep_ahead": [],
+    "tags": [
+      "one_pot",
+      "vegan",
+      "budget",
+      "freezer",
+      "leftover_friendly",
+      "no_oven",
+      "iranian_classic"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "overnight_oats",
+    "title_fa": "اوورنایت اوتس",
+    "title_original": "Overnight oats",
+    "intro_fa": "شب دو دقیقه زحمت، صبح یه صبحونه‌ی حاضر که انگار فرشته‌ها درست کردن.",
+    "cuisine": "other",
+    "meal_types": [
+      "breakfast"
+    ],
+    "base_servings": 2,
+    "active_minutes": 5,
+    "total_minutes": 485,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "rolled_oats",
+        "quantity": 100,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "milk",
+        "quantity": 250,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "greek_yogurt",
+        "quantity": 100,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "honey",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cinnamon",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chia_seed",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "banana",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "حلقه‌حلقه، برای روش",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "جو، شیر، ماست، عسل، دارچین و چیا رو تو یه شیشه هم بزن."
+      },
+      {
+        "text": "درش رو ببند و بذار یخچال تا صبح.",
+        "timer_seconds": 28800
+      },
+      {
+        "text": "صبح موز بذار روش و مستقیم از تو شیشه بخور."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 320,
+      "protein": 14,
+      "carbs": 50,
+      "fat": 7,
+      "fiber": 6
+    },
+    "freezer_friendly": false,
+    "fridge_days": 3,
+    "reheat_note": null,
+    "prep_ahead": [
+      {
+        "text": "شب قبل همه‌چی رو قاطی کن و بذار یخچال.",
+        "hours_before": 8
+      }
+    ],
+    "tags": [
+      "no_cook",
+      "vegetarian",
+      "light",
+      "sweet",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "mirza_ghasemi",
+    "title_fa": "میرزاقاسمی",
+    "title_original": "میرزاقاسمی",
+    "intro_fa": "بادمجون رو مستقیم بذار رو شعله و بذار گاز آشپزی کنه.",
+    "cuisine": "iranian",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 25,
+    "total_minutes": 40,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "eggplant",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 4,
+        "unit": "clove",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "turmeric",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "بادمجون‌ها رو مستقیم رو شعله‌ی گاز بذار و هی بچرخون تا کامل کبابی بشن.",
+        "timer_seconds": 900
+      },
+      {
+        "text": "پوستشون رو بکن و با چاقو ریز خرد کن."
+      },
+      {
+        "text": "سیر و زردچوبه رو تو روغن تفت بده تا بوش بلند بشه.",
+        "timer_seconds": 90
+      },
+      {
+        "text": "گوجه رو بریز و بذار آبش کشیده بشه.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "بادمجون رو اضافه کن و حسابی هم بزن.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "تخم‌مرغ‌ها رو بشکن توش و هم بزن تا ببنده.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "نمک و فلفل بزن و با نون یا کته سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 290,
+      "protein": 10,
+      "carbs": 24,
+      "fat": 18,
+      "fiber": 11
+    },
+    "freezer_friendly": false,
+    "fridge_days": 3,
+    "reheat_note": "تو تابه روی حرارت ملایم گرم کن.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "budget",
+      "no_oven",
+      "leftover_friendly",
+      "iranian_classic"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "greek_salad",
+    "title_fa": "سالاد یونانی",
+    "title_original": "Horiatiki",
+    "intro_fa": "یه چاقو، یه کاسه و پنج دقیقه؛ انگار رفتی تعطیلات یونان.",
+    "cuisine": "greek",
+    "meal_types": [
+      "lunch",
+      "dinner",
+      "snack"
+    ],
+    "base_servings": 2,
+    "active_minutes": 10,
+    "total_minutes": 10,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "tomato",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "قاچ‌قاچ",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cucumber",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "حلقه‌ای ضخیم",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "red_onion",
+        "quantity": 0.5,
+        "unit": "piece",
+        "prep_note": "حلقه‌ی نازک",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "bell_pepper",
+        "quantity": 0.5,
+        "unit": "piece",
+        "prep_note": "سبز، حلقه‌ای",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_olive",
+        "quantity": 50,
+        "unit": "g",
+        "prep_note": "ترجیحاً کالاماتا",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "feta_cheese",
+        "quantity": 100,
+        "unit": "g",
+        "prep_note": "یه تیکه‌ی درسته",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "oregano",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vinegar",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "گوجه، خیار، پیاز و فلفل رو درشت خرد کن و بریز تو کاسه."
+      },
+      {
+        "text": "زیتون رو اضافه کن و یه کم نمک بزن."
+      },
+      {
+        "text": "فتا رو درسته بذار روش، روغن زیتون و سرکه بریز و پونه‌کوهی بپاش."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 300,
+      "protein": 9,
+      "carbs": 12,
+      "fat": 25,
+      "fiber": 3
+    },
+    "freezer_friendly": false,
+    "fridge_days": 1,
+    "reheat_note": null,
+    "prep_ahead": [],
+    "tags": [
+      "no_cook",
+      "ten_minute",
+      "vegetarian",
+      "light",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "mercimek_corbasi",
+    "title_fa": "سوپ عدس ترکی",
+    "title_original": "Mercimek çorbası",
+    "intro_fa": "سوپیه که خودش له میشه؛ حتی زحمت همزدن زیاد هم نداره.",
+    "cuisine": "turkish",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 4,
+    "active_minutes": 15,
+    "total_minutes": 40,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "red_lentil",
+        "quantity": 250,
+        "unit": "g",
+        "prep_note": "شسته‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "carrot",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "potato",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "رنده‌شده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "tomato_paste",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cumin",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "water",
+        "quantity": 1500,
+        "unit": "ml",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "برای روغن روی سوپ",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "dried_mint",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "برای روغن روی سوپ",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "lemon",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "قاچ‌شده، برای سرو",
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "پیاز رو با دو قاشق روغن تفت بده، هویج و سیب‌زمینی رو هم بنداز.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "رب و زیره رو اضافه کن و یه دقیقه تفت بده.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "عدس و آب رو بریز و بذار بپزه تا عدس کاملاً وا بره.",
+        "timer_seconds": 1500
+      },
+      {
+        "text": "نمک بزن و با همزن دستی یا گوشت‌کوب حسابی له کن تا صاف بشه."
+      },
+      {
+        "text": "بقیه‌ی روغن رو با فلفل قرمز و نعنا داغ کن و بریز روش.",
+        "timer_seconds": 60
+      },
+      {
+        "text": "با یه قاچ لیمو سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 300,
+      "protein": 15,
+      "carbs": 44,
+      "fat": 9,
+      "fiber": 9
+    },
+    "freezer_friendly": true,
+    "fridge_days": 4,
+    "reheat_note": "با یه کم آب گرم کن، چون تو یخچال سفت میشه.",
+    "prep_ahead": [],
+    "tags": [
+      "one_pot",
+      "vegan",
+      "budget",
+      "freezer",
+      "leftover_friendly",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "menemen",
+    "title_fa": "منمن ترکی",
+    "title_original": "Menemen",
+    "intro_fa": "سر اینکه پیاز داره یا نه دعوا نکن، فقط بخورش.",
+    "cuisine": "turkish",
+    "meal_types": [
+      "breakfast",
+      "lunch"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 20,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "egg",
+        "quantity": 4,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "bell_pepper",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "سبز و ترجیحاً تند، ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "کره و روغن رو داغ کن و فلفل (و اگه طرفداری، پیاز) رو تفت بده.",
+        "timer_seconds": 240
+      },
+      {
+        "text": "گوجه رو اضافه کن و بذار آبش کم بشه.",
+        "timer_seconds": 420
+      },
+      {
+        "text": "نمک و فلفل قرمز بزن."
+      },
+      {
+        "text": "تخم‌مرغ‌ها رو بشکن توش و آروم هم بزن که درشت‌درشت ببنده.",
+        "timer_seconds": 120
+      },
+      {
+        "text": "تا آبدار و داغه با نون بزن تو تابه."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 290,
+      "protein": 14,
+      "carbs": 11,
+      "fat": 21,
+      "fiber": 3
+    },
+    "freezer_friendly": false,
+    "fridge_days": 1,
+    "reheat_note": null,
+    "prep_ahead": [],
+    "tags": [
+      "one_pot",
+      "vegetarian",
+      "budget",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "kotlet",
+    "title_fa": "کتلت",
+    "title_original": "کتلت",
+    "intro_fa": "سیب‌زمینی رو خام رنده کن و از شر آب‌پز کردن راحت شو.",
+    "cuisine": "iranian",
+    "meal_types": [
+      "lunch",
+      "dinner",
+      "snack"
+    ],
+    "base_servings": 2,
+    "active_minutes": 30,
+    "total_minutes": 40,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "beef_mince",
+        "quantity": 250,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "potato",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "خام رنده و آبش گرفته‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "رنده و آبش گرفته‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "turmeric",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "breadcrumbs",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": "برای غلتوندن",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 5,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "سیب‌زمینی و پیاز رو رنده کن و با دست حسابی آبشون رو بگیر."
+      },
+      {
+        "text": "با گوشت، تخم‌مرغ، زردچوبه، نمک و فلفل ورز بده تا یکدست بشه."
+      },
+      {
+        "text": "با دست خیس گلوله‌های کوچیک بردار و تو کف دستت پهن کن."
+      },
+      {
+        "text": "اگه دوست داری تو پودر سوخاری بغلتون."
+      },
+      {
+        "text": "تو روغن داغ یه طرف رو سرخ کن.",
+        "timer_seconds": 240
+      },
+      {
+        "text": "برگردون و طرف دیگه رو هم سرخ کن تا مغزپخت بشه.",
+        "timer_seconds": 240
+      },
+      {
+        "text": "با نون، گوجه و خیارشور لقمه بگیر."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 520,
+      "protein": 30,
+      "carbs": 32,
+      "fat": 30,
+      "fiber": 3
+    },
+    "freezer_friendly": true,
+    "fridge_days": 3,
+    "reheat_note": "تو تابه‌ی دربسته گرم کن؛ سرد لای نون هم عالیه.",
+    "prep_ahead": [],
+    "tags": [
+      "high_protein",
+      "freezer",
+      "leftover_friendly",
+      "no_oven",
+      "iranian_classic"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "tuna_pasta_salad",
+    "title_fa": "سالاد ماکارونی با تن ماهی",
+    "title_original": "Tuna pasta salad",
+    "intro_fa": "ماکارونی بپز، کنسرو باز کن، تمام؛ ناهار فردا هم حل شد.",
+    "cuisine": "other",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 10,
+    "total_minutes": 20,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "penne",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "canned_tuna",
+        "quantity": 1,
+        "unit": "can",
+        "prep_note": "روغنش گرفته‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "mayonnaise",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "pickle",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "canned_corn",
+        "quantity": 100,
+        "unit": "g",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "lemon_juice",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "parsley",
+        "quantity": 0.25,
+        "unit": "bunch",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "ماکارونی رو تو آب نمک بپز تا نرم بشه.",
+        "timer_seconds": 660
+      },
+      {
+        "text": "آبکشش کن و بذار یه کم خنک بشه.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "تن ماهی، خیارشور، ذرت، سس و آبلیمو رو اضافه کن."
+      },
+      {
+        "text": "نمک و فلفل بزن و سرد یا ولرم بخور."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 560,
+      "protein": 30,
+      "carbs": 72,
+      "fat": 17,
+      "fiber": 4
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": null,
+    "prep_ahead": [],
+    "tags": [
+      "high_protein",
+      "leftover_friendly",
+      "budget",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "yeralma_egg_potato",
+    "title_fa": "یرالما",
+    "title_original": "یرالما",
+    "intro_fa": "سیب‌زمینی و تخم‌مرغ؛ دو تا چیزی که همیشه یه گوشه‌ی آشپزخونه پیدا میشه.",
+    "cuisine": "iranian",
+    "meal_types": [
+      "breakfast",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 30,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "potato",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "مکعبی ریز",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "egg",
+        "quantity": 3,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "turmeric",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "پیاز رو با روغن تفت بده تا سبک بشه.",
+        "timer_seconds": 240
+      },
+      {
+        "text": "سیب‌زمینی و زردچوبه رو اضافه کن، درش رو بذار و گاهی هم بزن تا نرم و طلایی بشه.",
+        "timer_seconds": 900
+      },
+      {
+        "text": "نمک و فلفل بزن."
+      },
+      {
+        "text": "تخم‌مرغ‌ها رو بشکن روش و هم بزن تا ببنده.",
+        "timer_seconds": 180
+      },
+      {
+        "text": "با نون و گوجه بخور."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 380,
+      "protein": 13,
+      "carbs": 34,
+      "fat": 21,
+      "fiber": 4
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "تو تابه گرم کن.",
+    "prep_ahead": [],
+    "tags": [
+      "one_pot",
+      "vegetarian",
+      "budget",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "mast_o_khiar",
+    "title_fa": "ماست و خیار",
+    "title_original": "ماست و خیار",
+    "intro_fa": "اگه رنده کردن خیار رو آشپزی حساب کنی، امروز آشپزی کردی.",
+    "cuisine": "iranian",
+    "meal_types": [
+      "snack",
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 5,
+    "total_minutes": 5,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "plain_yogurt",
+        "quantity": 300,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cucumber",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "رنده یا ریز خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "dried_mint",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "walnut",
+        "quantity": 20,
+        "unit": "g",
+        "prep_note": "خردشده",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "raisin",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "rose_petal",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "برای روش",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "خیار رو رنده کن یا ریز خرد کن."
+      },
+      {
+        "text": "با ماست، نعنا، نمک، گردو و کشمش قاطی کن."
+      },
+      {
+        "text": "گل‌محمدی بپاش و خنک سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 170,
+      "protein": 8,
+      "carbs": 16,
+      "fat": 9,
+      "fiber": 1
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": null,
+    "prep_ahead": [],
+    "tags": [
+      "no_cook",
+      "ten_minute",
+      "vegetarian",
+      "light",
+      "no_oven",
+      "iranian_classic"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "chicken_shawarma_wrap",
+    "title_fa": "رپ شاورمای مرغ تابه‌ای با لواش",
+    "title_original": "Chicken shawarma wrap",
+    "intro_fa": "شاورمای بیرون‌بر، فقط بدون صف و بدون پیک.",
+    "cuisine": "other",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 20,
+    "total_minutes": 35,
+    "difficulty": 1,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "chicken_thigh",
+        "quantity": 400,
+        "unit": "g",
+        "prep_note": "نواری بریده",
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "plain_yogurt",
+        "quantity": 2,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "lemon_juice",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 2,
+        "unit": "clove",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "cumin",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "paprika",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "turmeric",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "cinnamon",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "vegetable_oil",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "مرغ"
+      },
+      {
+        "ingredient": "plain_yogurt",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": "سس"
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 1,
+        "unit": "clove",
+        "prep_note": "رنده‌شده",
+        "optional": false,
+        "group": "سس"
+      },
+      {
+        "ingredient": "lavash_bread",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": null,
+        "optional": false,
+        "group": "رپ"
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "حلقه‌ای",
+        "optional": false,
+        "group": "رپ"
+      },
+      {
+        "ingredient": "pickle",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "حلقه‌ای",
+        "optional": false,
+        "group": "رپ"
+      },
+      {
+        "ingredient": "lettuce",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "برگ",
+        "optional": true,
+        "group": "رپ"
+      }
+    ],
+    "steps": [
+      {
+        "text": "مرغ رو با ماست، آبلیمو، سیر و همه‌ی ادویه‌ها قاطی کن و بذار یه کم بخوابه.",
+        "timer_seconds": 900
+      },
+      {
+        "text": "تو تابه‌ی داغ با روغن سرخ کن تا ته‌اش برشته بشه.",
+        "timer_seconds": 600
+      },
+      {
+        "text": "ماست و سیر رو با یه کم نمک هم بزن که سس سیر بشه."
+      },
+      {
+        "text": "روی لواش سس بمال، مرغ، گوجه، خیارشور و کاهو بچین."
+      },
+      {
+        "text": "لواش رو محکم لول کن و تو تابه‌ی خشک هر طرف یه دقیقه بذار.",
+        "timer_seconds": 120
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 560,
+      "protein": 44,
+      "carbs": 42,
+      "fat": 22,
+      "fiber": 3
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "مرغ رو جدا تو تابه گرم کن، بعد تازه رپ کن.",
+    "prep_ahead": [
+      {
+        "text": "اگه وقت داری مرغ رو از شب قبل مزه‌دار کن، خوشمزه‌تر میشه.",
+        "hours_before": 8
+      }
+    ],
+    "tags": [
+      "high_protein",
+      "leftover_friendly",
+      "no_oven"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "pan_kabab_tabei",
+    "title_fa": "کباب تابه‌ای",
+    "title_original": "کباب تابه‌ای",
+    "intro_fa": "کباب بدون منقل و دود و همسایه‌ی شاکی.",
+    "cuisine": "iranian",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 20,
+    "total_minutes": 35,
+    "difficulty": 2,
+    "requires_equipment": [],
+    "equipment_alternatives_fa": null,
+    "ingredients": [
+      {
+        "ingredient": "beef_mince",
+        "quantity": 300,
+        "unit": "g",
+        "prep_note": "ترجیحاً قاطی با گوشت گوسفند",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "رنده و آبش گرفته‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "turmeric",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "tomato",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "نصف‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "butter",
+        "quantity": 1,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "sumac",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": "برای سرو",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "lavash_bread",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "برای سرو",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "پیاز رنده‌شده رو حسابی آبش رو بگیر."
+      },
+      {
+        "text": "با گوشت، نمک، فلفل و زردچوبه پنج دقیقه ورز بده تا چسبناک بشه.",
+        "timer_seconds": 300
+      },
+      {
+        "text": "مایه رو کف تابه‌ی سرد پهن کن و با لبه‌ی قاشق خط‌خط کن."
+      },
+      {
+        "text": "درش رو بذار و روی حرارت متوسط بپز.",
+        "timer_seconds": 480
+      },
+      {
+        "text": "آبش رو خالی کن، برگردون و گوجه‌ها و کره رو کنارش بذار.",
+        "timer_seconds": 360
+      },
+      {
+        "text": "با سماق، لواش یا برنج سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 500,
+      "protein": 32,
+      "carbs": 12,
+      "fat": 36,
+      "fiber": 2
+    },
+    "freezer_friendly": true,
+    "fridge_days": 2,
+    "reheat_note": "تو تابه‌ی دربسته با یه قاشق آب گرم کن.",
+    "prep_ahead": [
+      {
+        "text": "مایه‌ی کباب رو چند ساعت قبل درست کن و بذار یخچال که بهتر جا بیفته.",
+        "hours_before": 2
+      }
+    ],
+    "tags": [
+      "high_protein",
+      "one_pot",
+      "no_oven",
+      "iranian_classic"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "baked_feta_pasta",
+    "title_fa": "پاستا با فتای فری",
+    "title_original": "Baked feta pasta",
+    "intro_fa": "همون پاستای معروف اینترنتی که فر همه‌ی کارش رو می‌کنه.",
+    "cuisine": "italian",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 10,
+    "total_minutes": 40,
+    "difficulty": 1,
+    "requires_equipment": [
+      "oven"
+    ],
+    "equipment_alternatives_fa": "بدون فر: گوجه‌گیلاسی، سیر، روغن و فتا رو تو یه تابه‌ی دربسته روی شعله‌ی کم ۱۵ تا ۲۰ دقیقه بذار تا گوجه‌ها بترکن، بعد همون‌جا له کن.",
+    "ingredients": [
+      {
+        "ingredient": "penne",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "feta_cheese",
+        "quantity": 200,
+        "unit": "g",
+        "prep_note": "یه تیکه‌ی درسته",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "cherry_tomato",
+        "quantity": 300,
+        "unit": "g",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 3,
+        "unit": "clove",
+        "prep_note": "درسته یا نصف‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 4,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "chili_flakes",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 1,
+        "unit": "pinch",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "basil",
+        "quantity": 0.25,
+        "unit": "bunch",
+        "prep_note": "برای روش",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "فر رو روی ۲۰۰ درجه روشن کن."
+      },
+      {
+        "text": "گوجه‌گیلاسی و سیر رو تو ظرف فر بریز، فتا رو وسطش بذار و روغن و ادویه رو روش بریز."
+      },
+      {
+        "text": "بذار تو فر تا گوجه‌ها بترکن و فتا طلایی بشه.",
+        "timer_seconds": 1800
+      },
+      {
+        "text": "تو این فاصله پاستا رو بپز و آبکش کن.",
+        "timer_seconds": 660
+      },
+      {
+        "text": "فتا و گوجه‌ها رو له کن، پاستا رو بریز توش و قاطی کن و ریحون بپاش."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 720,
+      "protein": 25,
+      "carbs": 80,
+      "fat": 34,
+      "fiber": 6
+    },
+    "freezer_friendly": false,
+    "fridge_days": 2,
+    "reheat_note": "تو تابه با یه کم آب گرم کن.",
+    "prep_ahead": [],
+    "tags": [
+      "vegetarian",
+      "leftover_friendly"
+    ],
+    "source": "seed",
+    "source_credit": null
+  },
+  {
+    "key": "oven_chicken_vegetables",
+    "title_fa": "مرغ و سبزیجات فری",
+    "title_original": "Sheet-pan chicken and vegetables",
+    "intro_fa": "همه‌چی رو بریز تو سینی، فر رو روشن کن و برو سریالت رو ببین.",
+    "cuisine": "other",
+    "meal_types": [
+      "lunch",
+      "dinner"
+    ],
+    "base_servings": 2,
+    "active_minutes": 15,
+    "total_minutes": 60,
+    "difficulty": 1,
+    "requires_equipment": [
+      "oven"
+    ],
+    "equipment_alternatives_fa": "بدون فر: مرغ رو تو یه تابه‌ی بزرگ سرخ کن، سبزیجات رو اضافه کن، درش رو بذار و روی حرارت کم ۲۵ تا ۳۰ دقیقه بپز.",
+    "ingredients": [
+      {
+        "ingredient": "chicken_thigh",
+        "quantity": 500,
+        "unit": "g",
+        "prep_note": "با استخون یا بی‌استخون",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "potato",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "مکعبی درشت",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "carrot",
+        "quantity": 2,
+        "unit": "piece",
+        "prep_note": "حلقه‌ای درشت",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "onion",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "چهارقاچ",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "bell_pepper",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "درشت خردشده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "zucchini",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "حلقه‌ای درشت",
+        "optional": true,
+        "group": null
+      },
+      {
+        "ingredient": "garlic",
+        "quantity": 3,
+        "unit": "clove",
+        "prep_note": "له‌شده",
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "olive_oil",
+        "quantity": 3,
+        "unit": "tbsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "paprika",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "dried_thyme",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "salt",
+        "quantity": 1,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "black_pepper",
+        "quantity": 0.5,
+        "unit": "tsp",
+        "prep_note": null,
+        "optional": false,
+        "group": null
+      },
+      {
+        "ingredient": "lemon",
+        "quantity": 1,
+        "unit": "piece",
+        "prep_note": "قاچ‌شده",
+        "optional": true,
+        "group": null
+      }
+    ],
+    "steps": [
+      {
+        "text": "فر رو روی ۲۰۰ درجه روشن کن."
+      },
+      {
+        "text": "سبزیجات رو درشت خرد کن و بریز تو سینی."
+      },
+      {
+        "text": "مرغ رو بذار لاشون، روغن و ادویه‌ها رو بریز و با دست همه‌چی رو قاطی کن."
+      },
+      {
+        "text": "بذار تو فر تا مرغ طلایی و سیب‌زمینی نرم بشه.",
+        "timer_seconds": 2700
+      },
+      {
+        "text": "وسطش یه بار هم بزن و با لیمو سرو کن."
+      }
+    ],
+    "nutrition_per_serving": {
+      "kcal": 640,
+      "protein": 44,
+      "carbs": 48,
+      "fat": 30,
+      "fiber": 8
+    },
+    "freezer_friendly": false,
+    "fridge_days": 3,
+    "reheat_note": "تو تابه‌ی دربسته یا مایکروویو گرم کن.",
+    "prep_ahead": [],
+    "tags": [
+      "high_protein",
+      "one_pot",
+      "leftover_friendly"
+    ],
+    "source": "seed",
+    "source_credit": null
+  }
+]
