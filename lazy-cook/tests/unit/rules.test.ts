@@ -294,3 +294,45 @@ describe("autofill uses what is about to expire (spec §5.3 rule 6)", () => {
     }
   });
 });
+
+describe("wishlist in the next plan (spec §5.9, acceptance #7 at domain level)", () => {
+  it("at least one wishlist dish is placed, as a main meal, without breaking rules", () => {
+    for (const seed of [1, 2, 3, 4, 5, 6]) {
+      const c = ctx([plain]);
+      const plan = autofillPlan({
+        startDate: START,
+        days: 8,
+        slots: ["breakfast", "lunch", "dinner"],
+        cookingDaysPerWeek: 4,
+        iranianEveryDays: 7,
+        recipes: facts,
+        ctx: c,
+        seed,
+        wishlist: ["vegetable_paella"],
+      });
+      expect(
+        plan.some(
+          (m) => m.recipeId === "vegetable_paella" && (m.slot === "lunch" || m.slot === "dinner"),
+        ),
+      ).toBe(true);
+      expect(validatePlan(plan, c)).toEqual([]);
+    }
+  });
+
+  it("a wish the household can't make (oven) is not forced in", () => {
+    const plan = fill(ctx([plain]), 8, ["breakfast", "lunch", "dinner"], 1);
+    const withWish = autofillPlan({
+      startDate: START,
+      days: 8,
+      slots: ["breakfast", "lunch", "dinner"],
+      cookingDaysPerWeek: 4,
+      iranianEveryDays: 7,
+      recipes: facts,
+      ctx: ctx([plain]),
+      seed: 1,
+      wishlist: ["baked_feta_pasta"],
+    });
+    expect(withWish.some((m) => m.recipeId === "baked_feta_pasta")).toBe(false);
+    expect(withWish.length).toBe(plan.length);
+  });
+});

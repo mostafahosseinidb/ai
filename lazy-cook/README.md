@@ -2,14 +2,14 @@
 
 برنامه‌ی غذایی هفتگیِ فارسی که با زندگی واقعی خانه تغییر می‌کند. PWA موبایل‌اول، راست‌به‌چپ.
 
-Built from the product spec in phases (spec §14). **Status: phases 0, 1 and 2 done.**
+Built from the product spec in phases (spec §14). **Status: phases 0, 1, 2 and the no-AI "2.5" done — ready for a small real beta.** Deploy: [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
 ## Run it
 
 Requirements: Node 20+ and PostgreSQL 14+.
 
 ```bash
-cp .env.example .env          # then set DATABASE_URL and AUTH_SECRET (openssl rand -base64 32)
+cp .env.example .env          # then set DATABASE_URL, DIRECT_URL and AUTH_SECRET (openssl rand -base64 32)
 npm install                   # also runs prisma generate
 npx prisma migrate deploy     # create the tables
 npm run db:seed               # 363 ingredients, 50 recipes, local names for 9 countries (idempotent)
@@ -70,8 +70,19 @@ and the assistant button, installable PWA (manifest `dir: rtl`, service worker),
 - «خریدم» puts the bought amount in the pantry (with undo); add your own items; copy as plain text
   for a messenger; shared live between household members.
 
-**Not yet** (later phases): assistant chat and AI planning, recipe import, adding from a photo,
-wishlist, batch prep, channel posts, notifications, payments, the offline tick queue.
+**Phase 2.5 — everything a real household needs, still without AI:**
+
+- Invite a partner or flatmate with a one-time link; they sign in and land in the same plan, pantry
+  and shopping list. The owner can remove members; anyone can leave.
+- Write your own recipes (or «نسخه‌ی خودم» of any public one) — nutrition is calculated from the
+  ingredients; edit and delete your own.
+- Wishlist («برای برنامه‌ی بعدی»): add from any recipe; the next plan includes at least one, and
+  cooking it ticks it off.
+- Settings → «اطلاعاتت»: download everything as JSON, or delete the account for good.
+- Sign-in rate limits (code requests and wrong codes).
+
+**Not yet** (later phases): assistant chat and AI planning, recipe import from a photo, adding to
+the pantry from a photo, batch prep, channel posts, notifications, payments, the offline tick queue.
 
 ## Layout
 
@@ -83,7 +94,7 @@ lib/i18n/          fa.ts (all UI strings), digits, jalali, emergency numbers
 lib/server/        DB queries and services
 prisma/            schema, migrations, seed script
 seed/              ingredients.json, recipes.json, SCHEMA.md
-docs/              DECISIONS.md, AI_PROMPTS.md
+docs/              DECISIONS.md, AI_PROMPTS.md, DEPLOY.md
 tests/unit, tests/e2e
 ```
 

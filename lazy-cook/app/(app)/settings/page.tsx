@@ -3,11 +3,25 @@ import { signOut } from "@/auth";
 import { Button, ButtonLink, Card, PageHeader } from "@/components/ui/primitives";
 import { fa } from "@/lib/i18n/fa";
 import { SettingsToggles } from "./toggles";
+import { HouseholdAccounts } from "./household-accounts";
+import { YourData } from "./your-data";
+import { db } from "@/lib/db";
 
 export const metadata = { title: fa.settings.title };
 
 export default async function SettingsPage() {
-  const { user } = await requireHousehold();
+  const { user, household } = await requireHousehold();
+  const links = await db.householdUser.findMany({
+    where: { householdId: household.id, deletedAt: null },
+    include: { user: { select: { id: true, name: true, email: true } } },
+    orderBy: { createdAt: "asc" },
+  });
+  const accounts = links.map((l) => ({
+    userId: l.userId,
+    label: l.user.name || l.user.email || "—",
+    role: household.ownerUserId === l.userId ? ("owner" as const) : ("member" as const),
+    isMe: l.userId === user.id,
+  }));
   return (
     <>
       <PageHeader title={fa.settings.title} />
@@ -16,6 +30,8 @@ export default async function SettingsPage() {
         <ButtonLink href="/onboarding" variant="secondary">
           {fa.settings.editOnboarding}
         </ButtonLink>
+        <HouseholdAccounts accounts={accounts} iAmOwner={household.ownerUserId === user.id} />
+        <YourData sharedWithOthers={accounts.length > 1} />
         <Card className="text-muted text-sm leading-6">{fa.healthDisclaimer}</Card>
         <form
           action={async () => {

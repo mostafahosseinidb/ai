@@ -5,7 +5,7 @@ import { Button, Field, inputClass } from "@/components/ui/primitives";
 import { toEnDigits } from "@/lib/i18n/digits";
 import { fa } from "@/lib/i18n/fa";
 
-export function CodeForm({ email }: { email: string }) {
+export function CodeForm({ email, next }: { email: string; next: string }) {
   const [code, setCode] = useState("");
   return (
     <form
@@ -13,7 +13,7 @@ export function CodeForm({ email }: { email: string }) {
       onSubmit={(e) => {
         e.preventDefault();
         const token = toEnDigits(code).replace(/\D/g, "");
-        const q = new URLSearchParams({ email, token, callbackUrl: "/today" });
+        const q = new URLSearchParams({ email, token, callbackUrl: next });
         window.location.href = `/api/auth/callback/nodemailer?${q}`;
       }}
     >

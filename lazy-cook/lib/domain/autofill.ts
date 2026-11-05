@@ -35,6 +35,8 @@ export interface AutofillInput {
   existing?: CandidateMeal[];
   /** recipes the household made recently, most recent date per recipe */
   recentlyCooked?: Map<string, ISODate>;
+  /** «برای برنامه‌ی بعدی» recipes, most wanted first; at least one goes in if the rules allow */
+  wishlist?: string[];
   seed?: number;
 }
 
@@ -94,6 +96,10 @@ export function autofillPlan(input: AutofillInput): CandidateMeal[] {
         ((p.ingredientId && r.ingredientIds?.includes(p.ingredientId)) ||
           (p.ingredientKey && r.ingredientKeys.includes(p.ingredientKey))),
     );
+
+  const wishlistLeft = new Set(
+    (input.wishlist ?? []).filter((id) => byId.has(id) && !plan.some((m) => m.recipeId === id)),
+  );
 
   const orderedSlots = [
     "breakfast",
@@ -164,6 +170,8 @@ export function autofillPlan(input: AutofillInput): CandidateMeal[] {
         )
           score -= 0.7;
         if ((slot === "lunch" || slot === "dinner") && r.mealTypes.includes("dessert")) score -= 3;
+        // the wishlist (spec §5.9): strongly preferred for main meals until one is placed
+        if (wishlistLeft.has(r.id) && (slot === "lunch" || slot === "dinner")) score += 6;
         // use up what's about to go off (spec §5.3 rule 6)
         score += 3 * expiringUsedBy(r, date).length;
         scored.push({ r, score });
@@ -174,8 +182,28 @@ export function autofillPlan(input: AutofillInput): CandidateMeal[] {
       plan.push({ date, slot, recipeId: pick.id });
       taken.add(`${date}|${slot}`);
       for (const p of expiringUsedBy(pick, date)) unusedExpiring.delete(p);
+      wishlistLeft.delete(pick.id);
       usedCount.set(pick.id, (usedCount.get(pick.id) ?? 0) + 1);
       if (pick.cuisine === "iranian" && (slot === "lunch" || slot === "dinner")) lastIranian = date;
+    }
+  }
+  // Still nothing from the wishlist? Swap it in for a cooked main meal nothing else depends on.
+  const wanted = (input.wishlist ?? []).filter((id) => byId.has(id));
+  if (wanted.length && !plan.some((m) => m.recipeId && wanted.includes(m.recipeId))) {
+    outer: for (const id of wanted) {
+      const r = byId.get(id)!;
+      if (!r.mealTypes.some((t) => t === "lunch" || t === "dinner")) continue;
+      for (let i = plan.length - 1; i >= (input.existing?.length ?? 0); i--) {
+        const m = plan[i]!;
+        if (!(m.slot === "lunch" || m.slot === "dinner") || m.leftoverOf) continue;
+        if (plan.some((x) => x.leftoverOf?.date === m.date && x.leftoverOf.slot === m.slot))
+          continue;
+        const trial = plan.map((x, j) => (j === i ? { ...x, recipeId: id } : x));
+        if (validatePlan(trial, input.ctx).length <= validatePlan(plan, input.ctx).length) {
+          plan[i] = { ...m, recipeId: id };
+          break outer;
+        }
+      }
     }
   }
   return plan.slice(input.existing?.length ?? 0);

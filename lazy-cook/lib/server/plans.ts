@@ -111,6 +111,10 @@ export async function createPlan(
   if (autofill) {
     const { ctx, facts } = await loadRuleContext(household, startDate);
     const recent = await recentlyCooked(household.id, startDate);
+    const wish = await db.wishlistItem.findMany({
+      where: { householdId: household.id, doneAt: null, deletedAt: null },
+      orderBy: [{ priority: "desc" }, { createdAt: "asc" }],
+    });
     meals = autofillPlan({
       startDate,
       days,
@@ -120,6 +124,7 @@ export async function createPlan(
       recipes: facts,
       ctx,
       recentlyCooked: recent,
+      wishlist: wish.map((w) => w.recipeId),
     });
   }
 
@@ -155,6 +160,20 @@ export async function createPlan(
         },
       });
       ids.set(`${m.date}|${m.slot}`, row.id);
+    }
+    // link wishlist items to the meal that now serves them
+    const open = await tx.wishlistItem.findMany({
+      where: { householdId: household.id, doneAt: null, deletedAt: null },
+    });
+    for (const w of open) {
+      const meal = await tx.plannedMeal.findFirst({
+        where: { mealPlanId: plan.id, recipeId: w.recipeId, leftoverOfPlannedMealId: null },
+        orderBy: { date: "asc" },
+      });
+      await tx.wishlistItem.update({
+        where: { id: w.id },
+        data: { scheduledPlannedMealId: meal?.id ?? null },
+      });
     }
     return plan;
   });

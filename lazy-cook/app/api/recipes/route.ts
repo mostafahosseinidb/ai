@@ -1,4 +1,6 @@
-import { withHousehold } from "@/lib/server/api";
+import { parseJson, withHousehold } from "@/lib/server/api";
+import { recipeInput } from "@/lib/recipe-input";
+import { createRecipe } from "@/lib/server/recipe-write";
 import { loadRecipes } from "@/lib/server/recipes";
 import { searchRecipes } from "@/lib/server/recipe-search";
 
@@ -24,4 +26,11 @@ export const GET = withHousehold(async (req, { household }) => {
       requiresEquipment: r.requiresEquipment,
     })),
   };
+});
+
+/** Add your own recipe (visible only to your household). */
+export const POST = withHousehold(async (req, { household }) => {
+  const input = await parseJson(req, recipeInput);
+  const recipe = await createRecipe(household.id, input);
+  return { recipe: { id: recipe.id } };
 });

@@ -67,3 +67,15 @@ Choices the spec leaves open (spec §0.3), one line of reasoning each.
 - **Live sharing = polling every 5 s + refetch on focus (TanStack Query).** Works on any host; Supabase Realtime/SSE can replace it later without UI changes.
 - **Local names: every shelf language of the country is shown** (Yerevan: Armenian · Russian), with an optional Persian tip. Seeded for AM, TR, DE, AT, NL, GB, US, CA, AE for the 119 ingredients the recipes use most; AI fills other countries in phase 3. Ingredient search also matches local names.
 - **Two seed recipes use jarred eggplant caviar** (toast, penne) so the "opened jar" scenario (acceptance #5) has something to plan; the filler scores recipes that use soon-to-expire items higher.
+
+## Phase 2.5 — ready for a small real beta (no AI)
+
+- **Invites are one-time links, valid 7 days**, claimed atomically. A user belongs to one household at a time: joining closes their previous membership (soft) and leaves its data untouched; the join page warns if that household has data.
+- **Only the owner removes members; anyone can leave; the owner can't leave** (delete the account to hand the household over).
+- **Sign-in keeps a `next` path** (invite links), restricted to same-site paths (no open redirect).
+- **Rate limits in Postgres (`auth_attempts`)**: 5 code requests per email and 20 per IP per hour; 5 wrong codes per email in 15 minutes throws every outstanding code away. No Redis needed at this scale.
+- **Users can write recipes** (source `user_manual`, visible only to their household), with the same limits as seed recipes (≤ 7 steps). **Nutrition is computed from the ingredients in code.** `no_oven` is set automatically from equipment.
+- **Public recipes are never edited**: «نسخه‌ی خودم» copies one into the household (`parent_recipe_id` keeps the link).
+- **Wishlist → next plan:** the filler strongly prefers wishlist dishes for main meals and, if none fit naturally, swaps one into a cooked main meal that no leftover depends on — only if no rule breaks. The item links to that meal (`scheduled_planned_meal_id`) and is marked done when the meal is ticked. It never touches the current plan (acceptance #7).
+- **Export = one JSON file of everything about the user and their household; delete = the one hard delete.** A shared household survives (ownership passes to the longest-standing member); a household with no one else in it is deleted with everything in it. Requires typing «حذف».
+- **Deploy target: Vercel + Supabase.** `DIRECT_URL` added for migrations through Supabase's pooler; `vercel-build` runs `prisma migrate deploy` before `next build`. Guide: `docs/DEPLOY.md`.

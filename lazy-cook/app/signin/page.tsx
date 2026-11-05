@@ -3,16 +3,18 @@ import { auth, googleEnabled } from "@/auth";
 import { Button, Field, inputClass } from "@/components/ui/primitives";
 import { fa } from "@/lib/i18n/fa";
 import { googleSignIn, sendCode } from "./actions";
+import { safeNext } from "@/lib/safe-next";
 
 export const metadata = { title: fa.auth.signIn };
 
 export default async function SignIn({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; next?: string }>;
 }) {
-  if ((await auth())?.user) redirect("/today");
-  const { error } = await searchParams;
+  const { error, next: rawNext } = await searchParams;
+  const next = safeNext(rawNext);
+  if ((await auth())?.user) redirect(next);
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-6 px-4">
       <div>
@@ -23,10 +25,13 @@ export default async function SignIn({
       </div>
       {error && (
         <p role="alert" className="bg-danger/10 text-danger rounded-[12px] p-3 text-sm">
-          {fa.auth.error}
+          {error === "too_many"
+            ? "چند بار پشت سر هم امتحان شد. چند دقیقه صبر کن و دوباره کد بگیر."
+            : fa.auth.error}
         </p>
       )}
       <form action={sendCode} className="flex flex-col gap-4">
+        <input type="hidden" name="next" value={next} />
         <Field label={fa.auth.email}>
           <input
             name="email"
@@ -44,6 +49,7 @@ export default async function SignIn({
         <>
           <div className="text-muted text-center text-sm">{fa.auth.or}</div>
           <form action={googleSignIn}>
+            <input type="hidden" name="next" value={next} />
             <Button type="submit" variant="secondary" className="w-full">
               {fa.auth.google}
             </Button>

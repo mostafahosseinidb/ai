@@ -8,6 +8,8 @@ import { Badge, Card } from "@/components/ui/primitives";
 import { fa } from "@/lib/i18n/fa";
 import { formatNumber, toFaDigits } from "@/lib/i18n/digits";
 import { RecipeBody } from "./recipe-body";
+import { RecipeActions } from "./recipe-actions";
+import { db } from "@/lib/db";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { household } = await requireHousehold();
@@ -19,7 +21,12 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
   const { household } = await requireHousehold();
   const recipe = await loadRecipe(household.id, (await params).id);
   if (!recipe) notFound();
-  const members = await loadMembers(household.id);
+  const [members, wish] = await Promise.all([
+    loadMembers(household.id),
+    db.wishlistItem.findFirst({
+      where: { householdId: household.id, recipeId: recipe.id, doneAt: null, deletedAt: null },
+    }),
+  ]);
   const facts = toFacts(recipe);
 
   const missing = recipe.requiresEquipment.filter((e) => !household.kitchenEquipment.includes(e));
@@ -61,6 +68,12 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
             ))}
         </div>
       </header>
+
+      <RecipeActions
+        recipeId={recipe.id}
+        own={recipe.ownerHouseholdId === household.id}
+        inWishlist={!!wish}
+      />
 
       {(missing.length > 0 || conflicts.length > 0) && (
         <div role="note" className="bg-warning/10 rounded-[12px] p-3 text-sm leading-6">

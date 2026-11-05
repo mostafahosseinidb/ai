@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { requireHousehold } from "@/lib/session";
 import { loadRecipes } from "@/lib/server/recipes";
 import { searchRecipes } from "@/lib/server/recipe-search";
-import { Badge, EmptyState, PageHeader, inputClass } from "@/components/ui/primitives";
+import { Badge, ButtonLink, EmptyState, PageHeader, inputClass } from "@/components/ui/primitives";
 import { fa } from "@/lib/i18n/fa";
 import { toFaDigits } from "@/lib/i18n/digits";
 import { CUISINES, MEAL_TYPES } from "@/lib/seed-schema";
@@ -21,12 +21,20 @@ const QUICK_TAGS = [
   "iranian_classic",
 ];
 
-type SP = { q?: string; cuisine?: string; type?: string; tag?: string; all?: string };
+type SP = {
+  q?: string;
+  cuisine?: string;
+  type?: string;
+  tag?: string;
+  all?: string;
+  mine?: string;
+};
 
 export default async function RecipesPage({ searchParams }: { searchParams: Promise<SP> }) {
   const { household } = await requireHousehold();
   const sp = await searchParams;
-  const all = await loadRecipes(household.id);
+  const loaded = await loadRecipes(household.id);
+  const all = sp.mine === "1" ? loaded.filter((r) => r.ownerHouseholdId === household.id) : loaded;
   const showAll = sp.all === "1";
   const results = searchRecipes(all, {
     query: sp.q,
@@ -48,7 +56,15 @@ export default async function RecipesPage({ searchParams }: { searchParams: Prom
 
   return (
     <>
-      <PageHeader title={fa.recipes.title} subtitle={`${toFaDigits(results.length)} دستور`} />
+      <PageHeader
+        title={fa.recipes.title}
+        subtitle={`${toFaDigits(results.length)} دستور`}
+        action={
+          <ButtonLink prefetch={false} href="/recipes/new" variant="secondary" className="text-sm">
+            <Plus className="size-4" /> دستور جدید
+          </ButtonLink>
+        }
+      />
       <form className="px-4" action="/recipes">
         {Object.entries(sp)
           .filter(([k, v]) => k !== "q" && v)
@@ -73,6 +89,12 @@ export default async function RecipesPage({ searchParams }: { searchParams: Prom
       <FilterRow>
         <FilterChip href={href({ type: undefined })} active={!sp.type}>
           {fa.recipes.all}
+        </FilterChip>
+        <FilterChip
+          href={href({ mine: sp.mine === "1" ? undefined : "1" })}
+          active={sp.mine === "1"}
+        >
+          مال خودم
         </FilterChip>
         {MEAL_TYPES.map((t) => (
           <FilterChip

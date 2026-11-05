@@ -1,6 +1,6 @@
 import "server-only";
 import { NextResponse } from "next/server";
-import { ZodError, type ZodType } from "zod";
+import { ZodError, type ZodTypeAny, type output } from "zod";
 import { currentHousehold } from "@/lib/session";
 
 export type Ctx = NonNullable<Awaited<ReturnType<typeof currentHousehold>>>;
@@ -42,7 +42,7 @@ export function withHousehold<P = Record<string, string>>(
   };
 }
 
-export async function parseJson<T>(req: Request, schema: ZodType<T>): Promise<T> {
+export async function parseJson<S extends ZodTypeAny>(req: Request, schema: S): Promise<output<S>> {
   let body: unknown;
   try {
     body = await req.json();

@@ -50,6 +50,11 @@ export const PATCH = withHousehold<{ id: string }>(async (req, { household }, { 
       await restoreForMeal(household.id, meal.id);
     if (meal.status !== "done" && input.status === "done" && household.autoDeductPantry)
       await deductForMeal(household.id, meal.id);
+    // a wishlist dish that got cooked is done (spec §5.9)
+    await db.wishlistItem.updateMany({
+      where: { scheduledPlannedMealId: meal.id, deletedAt: null },
+      data: { doneAt: input.status === "done" ? new Date() : null },
+    });
     await afterPlanChange(meal.mealPlanId);
     return res;
   }

@@ -7,7 +7,9 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url       = env("DATABASE_URL")
+  // migrations need a direct (non-pooled) connection on Supabase; locally both are the same
+  directUrl = env("DIRECT_URL")
 }
 
 // ---------- enums ----------
@@ -211,19 +213,20 @@ model Household {
   updatedAt                DateTime  @updatedAt
   deletedAt                DateTime?
 
-  owner          User               @relation("HouseholdOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
-  users          HouseholdUser[]
-  members        Member[]
-  recipes        Recipe[]
-  mealPlans      MealPlan[]
-  freeLogs       FreeLog[]
-  prepTasks      PrepTask[]
-  pantryItems    PantryItem[]
-  shoppingItems  ShoppingItem[]
-  wishlistItems  WishlistItem[]
-  recurringRules RecurringRule[]
-  messages       AssistantMessage[]
-  changeLog      ChangeLog[]
+  owner            User               @relation("HouseholdOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+  users            HouseholdUser[]
+  members          Member[]
+  recipes          Recipe[]
+  mealPlans        MealPlan[]
+  freeLogs         FreeLog[]
+  prepTasks        PrepTask[]
+  pantryItems      PantryItem[]
+  shoppingItems    ShoppingItem[]
+  wishlistItems    WishlistItem[]
+  recurringRules   RecurringRule[]
+  messages         AssistantMessage[]
+  changeLog        ChangeLog[]
+  householdInvites HouseholdInvite[]
 
   @@map("households")
 }
@@ -658,4 +661,35 @@ model AiCall {
   mealPlans MealPlan[]
 
   @@map("ai_calls")
+}
+
+// ---------- phase 2.5: invites, auth rate limiting ----------
+
+/// A one-time link that adds another account to a household (shared plan, pantry, list).
+model HouseholdInvite {
+  id              String    @id @default(uuid()) @db.Uuid
+  householdId     String    @db.Uuid
+  code            String    @unique
+  createdByUserId String    @db.Uuid
+  expiresAt       DateTime
+  usedAt          DateTime?
+  usedByUserId    String?   @db.Uuid
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  household Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
+
+  @@index([householdId])
+  @@map("household_invites")
+}
+
+/// Sign-in attempts, for rate limiting code requests and code guesses.
+model AuthAttempt {
+  id        String   @id @default(uuid()) @db.Uuid
+  kind      String // "send" | "verify_fail"
+  key       String // "email:…" or "ip:…"
+  createdAt DateTime @default(now())
+
+  @@index([kind, key, createdAt])
+  @@map("auth_attempts")
 }

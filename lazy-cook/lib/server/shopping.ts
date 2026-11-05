@@ -124,29 +124,36 @@ export async function regenerateShopping(householdId: string) {
       },
     })),
   ];
-  const existing = await db.shoppingItem.findMany({
-    where: { householdId, addedBy: "auto", checkedAt: null, deletedAt: null },
-  });
-  const keyOf = (r: (typeof existing)[number]) =>
-    r.ingredientId ? `i|${r.ingredientId}|${r.unit}` : `c|${r.customName}`;
-  const byKey = new Map(existing.map((r) => [keyOf(r), r]));
-  const ops = [];
-  for (const w of wanted) {
-    const row = byKey.get(w.key);
-    byKey.delete(w.key);
-    if (!row)
-      ops.push(
-        db.shoppingItem.create({
+  // One rebuild at a time per household: two members opening the list together (or a page load
+  // during a tick) must not both insert the same row. The advisory lock is held until commit.
+  await db.$transaction(async (tx) => {
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`shopping:${householdId}`}))`;
+    const existing = await tx.shoppingItem.findMany({
+      where: { householdId, addedBy: "auto", checkedAt: null, deletedAt: null },
+      orderBy: { createdAt: "asc" },
+    });
+    const keyOf = (r: (typeof existing)[number]) =>
+      r.ingredientId ? `i|${r.ingredientId}|${r.unit}` : `c|${r.customName}`;
+    const byKey = new Map<string, (typeof existing)[number]>();
+    const stale: string[] = [];
+    for (const r of existing) {
+      if (byKey.has(keyOf(r)))
+        stale.push(r.id); // a duplicate from before: drop it
+      else byKey.set(keyOf(r), r);
+    }
+    for (const w of wanted) {
+      const row = byKey.get(w.key);
+      byKey.delete(w.key);
+      if (!row) {
+        await tx.shoppingItem.create({
           data: { householdId, mealPlanId: plan?.id ?? null, addedBy: "auto", ...w.data },
-        }),
-      );
-    else if (
-      Number(row.quantity ?? 0) !== Number(w.data.quantity ?? 0) ||
-      row.section !== w.data.section ||
-      row.packageHint !== w.data.packageHint
-    )
-      ops.push(
-        db.shoppingItem.update({
+        });
+      } else if (
+        Number(row.quantity ?? 0) !== Number(w.data.quantity ?? 0) ||
+        row.section !== w.data.section ||
+        row.packageHint !== w.data.packageHint
+      ) {
+        await tx.shoppingItem.update({
           where: { id: row.id },
           data: {
             quantity: w.data.quantity,
@@ -154,13 +161,13 @@ export async function regenerateShopping(householdId: string) {
             packageHint: w.data.packageHint,
             mealPlanId: plan?.id ?? null,
           },
-        }),
-      );
-  }
-  // no longer needed (or duplicates)
-  const stale = [...byKey.values()].map((r) => r.id);
-  if (stale.length) ops.push(db.shoppingItem.deleteMany({ where: { id: { in: stale } } }));
-  if (ops.length) await db.$transaction(ops);
+        });
+      }
+    }
+    // no longer needed
+    stale.push(...[...byKey.values()].map((r) => r.id));
+    if (stale.length) await tx.shoppingItem.deleteMany({ where: { id: { in: stale } } });
+  });
   return { today, planId: plan?.id ?? null, count: lines.length };
 }
 
